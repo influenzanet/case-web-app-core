@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { AppConfig, AvatarConfig, LanguageConfig } from '../types/config/appConfig';
+import { AppConfig, AvatarConfig, LanguageConfig } from '../types/appConfig';
 
 export const initialState: AppConfig = {
   instanceId: 'default',

@@ -6,13 +6,13 @@
         {
           "type": "internal",
           "itemKey": "contact",
-          "url": "/contact"
+          "value": "/contact"
         },
         {
           "type": "external",
           "itemKey": "twitter",
           "iconClass": "fab fa-twitter",
-          "url": "https://twitter.com/InfectieradarB"
+          "value": "https://twitter.com/InfectieradarB"
         }
       ]
     },
@@ -22,17 +22,17 @@
         {
           "type": "internal",
           "itemKey": "privacy",
-          "url": "/privacy"
+          "value": "/privacy"
         },
         {
           "type": "internal",
           "itemKey": "disclaimer",
-          "url": "/disclaimer"
+          "value": "/disclaimer"
         },
         {
           "type": "internal",
           "itemKey": "accessibility",
-          "url": "/accessibility"
+          "value": "/accessibility"
         }
       ]
     },
@@ -42,22 +42,22 @@
         {
           "type": "language",
           "itemKey": "nl-be",
-          "languageCode": "nl-be"
+          "value": "nl-be"
         },
         {
           "type": "language",
           "itemKey": "en",
-          "languageCode": "en"
+          "value": "en"
         },
         {
           "type": "language",
           "itemKey": "fr-be",
-          "languageCode": "fr-be"
+          "value": "fr-be"
         },
         {
           "type": "language",
           "itemKey": "de-be",
-          "languageCode": "de-be"
+          "value": "de-be"
         }
       ]
     }

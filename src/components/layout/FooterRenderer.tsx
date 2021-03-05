@@ -1,5 +1,5 @@
-import { Footer } from 'case-web-ui';
 import React from 'react';
+import { Footer } from 'case-web-ui';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
@@ -40,7 +40,6 @@ const FooterRenderer: React.FC<FooterRendererProps> = (props) => {
             return {
               ...item,
               itemText: t(`${column.columnKey}.${item.itemKey}`),
-              value: item.url,
             }
           })
         }

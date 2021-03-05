@@ -1,16 +1,16 @@
 {
-  "layout": "simpleLogo",
   "config": {
+    "type": "simpleLogo",
     "className": "",
     "image": {
       "altKey": "logoAlt",
       "sm": {
-        "url": "/images/logo1.png",
+        "url": "/images/placeholder_image.png",
         "className": "py-2",
         "width": 226
       },
       "lg": {
-        "url": "/images/logo1.png",
+        "url": "/images/placeholder_image.png",
         "className": "py-2",
         "width": 250
       }

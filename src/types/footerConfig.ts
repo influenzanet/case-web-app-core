@@ -10,7 +10,6 @@ export interface FooterColumnConfig {
 export interface FooterLinkItemConfig {
   type: 'internal' | 'external' | 'language';
   itemKey: string;
-  url: string;
+  value: string;
   iconClass?: string;
-  languageCode?: string;
 }
