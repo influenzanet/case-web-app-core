@@ -1,0 +1,16 @@
+{
+  "home": "Welkom",
+  "authhome": "Mijn Infectieradar",
+  "results": "Actuele resultaten",
+  "about": "Over Infectieradar",
+  "faq": "Vraag en antwoord",
+  "login": "Inloggen",
+  "signup": "Aanmelden",
+  "rightMenu": {
+    "settings": "Instellingen",
+    "logout": "Uitloggen",
+    "verified": "Account niet geverifieerd"
+  },
+  "exitSurveyMode": "Verlaten",
+  "selectedProfilePrefixInSurveyMode": "Beantwoorden voor :"
+}
