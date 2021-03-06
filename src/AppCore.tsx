@@ -12,6 +12,7 @@ import { handleOpenExternalPage } from 'case-web-ui';
 import { HeaderConfig } from './types/headerConfig';
 import Navbar from './components/navbar/Navbar';
 import { NavbarConfig } from './types/navbar';
+import GlobalDialogs from './components/dialogs/GlobalDialogs';
 
 interface AppCoreProps {
   appConfig?: AppConfig;
@@ -68,6 +69,9 @@ const AppCore: React.FC<AppCoreProps> = (props) => {
         onOpenExternalPage={handleOpenExternalPage}
       /> : null}
       {props.customFooter ? props.customFooter : null}
+      <GlobalDialogs
+        onChangeLanguage={handleLanguageChange}
+      />
     </Router>
   );
 };
