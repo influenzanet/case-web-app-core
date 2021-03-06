@@ -10,10 +10,13 @@ import { AppConfig } from './types/appConfig';
 import { appConfig } from './store/configSlice';
 import { handleOpenExternalPage } from 'case-web-ui';
 import { HeaderConfig } from './types/headerConfig';
+import Navbar from './components/navbar/Navbar';
+import { NavbarConfig } from './types/navbar';
 
 interface AppCoreProps {
   appConfig?: AppConfig;
   headerConfig?: HeaderConfig;
+  navbarConfig?: NavbarConfig;
   footerConfig?: FooterConfig;
   hideDefaultHeader?: boolean;
   hideDefaultFooter?: boolean;
@@ -52,8 +55,13 @@ const AppCore: React.FC<AppCoreProps> = (props) => {
           onOpenExternalPage={handleOpenExternalPage}
         /> : null
       }
+      <Navbar
+        loading={props.navbarConfig === undefined}
+        content={props.navbarConfig}
+        onOpenExternalPage={handleOpenExternalPage}
+      />
 
-
+      <p>TODO</p>
       { !props.hideDefaultFooter ? <FooterRenderer
         footerConfig={props.footerConfig}
         onChangeLanguage={handleLanguageChange}
