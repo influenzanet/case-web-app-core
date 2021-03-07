@@ -3,11 +3,9 @@ import { initialState as appState } from './appSlice';
 import { initialState as dialogState } from './dialogSlice';
 import { initialState as userState } from './userSlice';
 import { initialState as configState } from './configSlice';
-
-
 import merge from 'lodash.merge';
 import clonedeep from 'lodash.clonedeep';
-import { setDefaultAccessTokenHeader } from "../api/instances/authenticatedApi";
+
 
 const stateKey = 'state';
 
@@ -27,9 +25,6 @@ export const loadState = (): RootState => {
     initialRootState = merge(initialRootState, loadedState);
     initialRootState.app.surveyMode = {
       active: false,
-    }
-    if (initialRootState.app.auth?.accessToken) {
-      setDefaultAccessTokenHeader(initialRootState.app.auth.accessToken);
     }
     // Object.assign(initialRootState, loadedState);
     return initialRootState;

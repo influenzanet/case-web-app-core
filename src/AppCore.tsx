@@ -4,7 +4,7 @@ import HeaderRenderer from './components/layout/HeaderRenderer';
 import FooterRenderer from './components/layout/FooterRenderer';
 import { FooterConfig } from './types/footerConfig';
 import ScrollToTop from './components/misc/ScrollToTop';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { AppConfig } from './types/appConfig';
 import { appConfig } from './store/configSlice';
@@ -15,6 +15,8 @@ import { NavbarConfig } from './types/navbarConfig';
 import GlobalDialogs from './components/dialogs/GlobalDialogs';
 import Pages from './components/pages/Pages';
 import { PagesConfig } from './types/pagesConfig';
+import { RootState } from './store/rootReducer';
+import { setDefaultAccessTokenHeader } from './api/instances/authenticatedApi';
 
 interface AppCoreProps {
   instanceID?: string;
@@ -32,6 +34,13 @@ interface AppCoreProps {
 const AppCore: React.FC<AppCoreProps> = (props) => {
   const dispatch = useDispatch();
   const { i18n } = useTranslation();
+  const accessToken = useSelector((state: RootState) => state.app.auth?.accessToken);
+
+  useEffect(() => {
+    if (accessToken) {
+      setDefaultAccessTokenHeader(accessToken);
+    }
+  }, []);
 
   useEffect(() => {
     dispatch(appConfig.updateInstanceID(props.instanceID ? props.instanceID : 'default'));
