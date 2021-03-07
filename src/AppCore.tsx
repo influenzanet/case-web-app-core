@@ -11,14 +11,17 @@ import { appConfig } from './store/configSlice';
 import { handleOpenExternalPage } from 'case-web-ui';
 import { HeaderConfig } from './types/headerConfig';
 import Navbar from './components/navbar/Navbar';
-import { NavbarConfig } from './types/navbar';
+import { NavbarConfig } from './types/navbarConfig';
 import GlobalDialogs from './components/dialogs/GlobalDialogs';
+import Pages from './components/pages/Pages';
+import { PagesConfig } from './types/pagesConfig';
 
 interface AppCoreProps {
   appConfig?: AppConfig;
   headerConfig?: HeaderConfig;
   navbarConfig?: NavbarConfig;
   footerConfig?: FooterConfig;
+  pagesConfig?: PagesConfig;
   hideDefaultHeader?: boolean;
   hideDefaultFooter?: boolean;
   customHeader?: React.ReactNode;
@@ -48,6 +51,7 @@ const AppCore: React.FC<AppCoreProps> = (props) => {
   return (
     <Router basename={process.env.NODE_ENV === 'production' ? process.env.PUBLIC_URL : undefined}>
       <ScrollToTop />
+
       {props.customHeader ? props.customHeader : null}
       {
         !props.hideDefaultHeader ? <HeaderRenderer
@@ -56,19 +60,25 @@ const AppCore: React.FC<AppCoreProps> = (props) => {
           onOpenExternalPage={handleOpenExternalPage}
         /> : null
       }
+
       <Navbar
         loading={props.navbarConfig === undefined}
         content={props.navbarConfig}
         onOpenExternalPage={handleOpenExternalPage}
       />
 
-      <p>TODO</p>
+      <Pages
+        config={props.pagesConfig}
+        onOpenExternalPage={handleOpenExternalPage}
+      />
+
       { !props.hideDefaultFooter ? <FooterRenderer
         footerConfig={props.footerConfig}
         onChangeLanguage={handleLanguageChange}
         onOpenExternalPage={handleOpenExternalPage}
       /> : null}
       {props.customFooter ? props.customFooter : null}
+
       <GlobalDialogs
         onChangeLanguage={handleLanguageChange}
       />

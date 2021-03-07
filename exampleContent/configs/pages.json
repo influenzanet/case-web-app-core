@@ -58,7 +58,7 @@
                       "type": "navigate",
                       "value": "/about"
                     },
-                    "imageSrc": "/images/about.jpg",
+                    "imageSrc": "/images/placeholder_image.png",
                     "showActionBtn": true
                   }
                 }
@@ -77,7 +77,7 @@
                       "type": "navigate",
                       "value": "/results"
                     },
-                    "imageSrc": "/images/results.jpg",
+                    "imageSrc": "/images/placeholder_image.png",
                     "showActionBtn": true
                   }
                 }
@@ -96,7 +96,7 @@
                       "type": "openDialog",
                       "value": "signup"
                     },
-                    "imageSrc": "images/participate.jpg",
+                    "imageSrc": "images/placeholder_image.png",
                     "showActionBtn": true
                   }
                 }
@@ -268,7 +268,7 @@
                       "type": "openDialog",
                       "value": "signup"
                     },
-                    "imageSrc": "images/participate.jpg",
+                    "imageSrc": "images/placeholder_image.png",
                     "showActionBtn": true
                   }
                 }
@@ -295,7 +295,7 @@
                   "config": {
                     "type": "teaserImage",
                     "image": {
-                      "url": "/images/about2.jpg",
+                      "url": "/images/placeholder_image.png",
                       "backgroundPosition": "50% 43%",
                       "height": 420
                     }
@@ -338,7 +338,7 @@
                       "type": "openDialog",
                       "value": "signup"
                     },
-                    "imageSrc": "images/participate.jpg",
+                    "imageSrc": "images/placeholder_image.png",
                     "showActionBtn": true
                   }
                 },
@@ -352,7 +352,7 @@
                       "type": "navigate",
                       "value": "/home"
                     },
-                    "imageSrc": "images/questionnaire.jpg",
+                    "imageSrc": "images/placeholder_image.png",
                     "showActionBtn": true
                   }
                 },
@@ -368,20 +368,20 @@
                       {
                         "key": "uantwerpen",
                         "altKey": "uantwerpenLogo",
-                        "url": "images/uantwerpen.png",
+                        "url": "images/placeholder_image.png",
                         "width": 260
                       },
                       {
                         "key": "epipose",
                         "altKey": "epiposeLogo",
-                        "url": "images/epipose.jpg",
+                        "url": "images/placeholder_image.png",
                         "className": "",
                         "width": 260
                       },
                       {
                         "key": "uhasselt",
                         "altKey": "hasseltLogo",
-                        "url": "images/uhasselt.jpg",
+                        "url": "images/placeholder_image.png",
                         "width": 260
                       }
                     ]

@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { useIsAuthenticated } from '../../hooks/useIsAuthenticated';
 import { useLogout } from '../../hooks/useLogout';
 import { useHistory } from 'react-router-dom';
-import { NavbarConfig } from '../../types/navbar';
+import { NavbarConfig } from '../../types/navbarConfig';
 import NavbarItem from './NavbarComponents/NavbarItem';
 import Drawer from './NavbarComponents/Drawer';
 import { Profile } from '../../api/types/user';
@@ -45,7 +45,7 @@ const Navbar: React.FC<NavbarProps> = (props) => {
   }
 
   if (props.loading || !props.content) {
-    return <LoadingPlaceholder color="primary" minHeight={44} />
+    return <LoadingPlaceholder color="primary" minHeight={44} iconSize="1rem" />
   }
 
   const breakpoint = props.content.breakpoint ? props.content.breakpoint : 'md';

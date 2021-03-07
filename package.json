@@ -39,7 +39,7 @@
     "babel-loader": "^8.2.2",
     "babel-preset-react-app": "^10.0.0",
     "bootstrap": "^5.0.0-beta2",
-    "case-web-ui": "^1.0.11",
+    "case-web-ui": "^1.0.12",
     "clsx": "^1.1.1",
     "i18next": "^19.9.1",
     "i18next-http-backend": "^1.1.1",

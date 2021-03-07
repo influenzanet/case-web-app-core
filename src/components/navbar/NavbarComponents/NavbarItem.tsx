@@ -5,7 +5,7 @@ import { useIsAuthenticated } from '../../../hooks/useIsAuthenticated';
 import { useTranslation } from 'react-i18next';
 import DropdownItem from './DropdownItem'
 import { useHistory } from 'react-router-dom';
-import { NavbarItemConfig } from '../../../types/navbar';
+import { NavbarItemConfig } from '../../../types/navbarConfig';
 
 
 interface NavbarItemProps {

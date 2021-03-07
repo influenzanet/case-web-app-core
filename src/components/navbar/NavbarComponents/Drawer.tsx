@@ -1,7 +1,7 @@
 import React from 'react';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import { isIOS, isMobile } from 'react-device-detect';
-import { NavbarItemConfig } from '../../../types/navbar';
+import { NavbarItemConfig } from '../../../types/navbarConfig';
 import { useTranslation } from 'react-i18next';
 import { NavLink } from 'react-router-dom';
 import clsx from 'clsx';
