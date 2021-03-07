@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
-import SurveyCard, { SurveyCardProps } from '../cards/SurveyCard';
-import ChevronDown from '../icons/Arrows/ChevronDown';
-import ChevronUp from '../icons/Arrows/ChevronUp';
+import {
+  SurveyCard,
+  ChevronDown,
+  ChevronUp,
+} from 'case-web-ui';
+import { SurveyCardProps } from 'case-web-ui/build/components/cards/SurveyCard';
+
 
 interface OptionalSurveysProps {
   title: string;

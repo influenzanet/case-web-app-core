@@ -1,6 +1,9 @@
 import React from 'react';
-import SurveyCard, { SurveyCardProps } from '../cards/SurveyCard';
-import AlertBox from '../displays/AlertBox';
+import {
+  AlertBox,
+  SurveyCard,
+} from 'case-web-ui';
+import { SurveyCardProps } from 'case-web-ui/build/components/cards/SurveyCard';
 
 interface RequiredSurveysProps {
   title: string;

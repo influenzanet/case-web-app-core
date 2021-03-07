@@ -12,8 +12,6 @@ import { RootState } from '../../../store/rootReducer';
 import { DefaultRoutes } from '../../../types/routing';
 import { SurveyResponse, SurveySingleItemResponse } from 'survey-engine/lib/data_types';
 import { closeSurveyMode, openSurveyMode } from '../../../store/appSlice';
-
-
 import clsx from 'clsx';
 import {
   containerClassName,

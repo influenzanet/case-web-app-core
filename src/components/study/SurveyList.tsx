@@ -5,8 +5,8 @@ import { useHistory } from 'react-router-dom';
 import { enterStudyReq, getAllAssignedSurveysReq, getAllAvailableStudiesReq, getStudiesForUserReq } from '../../api/studyAPI';
 import { AssignedSurvey, StudyInfoForUser, StudyInfos, SurveyInfo } from '../../api/types/studyAPI';
 import { RootState } from '../../store/rootReducer';
-import { DefaultRoutes } from '../../types/config/routing';
-import { SurveyCardProps } from '../cards/SurveyCard';
+import { DefaultRoutes } from '../../types/routing';
+import { SurveyCardProps } from 'case-web-ui/build/components/cards/SurveyCard';
 import OptionalSurveys from './OptionalSurveys';
 import RequiredSurveys from './RequiredSurveys';
 
@@ -21,6 +21,7 @@ const SurveyList: React.FC<SurveyListProps> = (props) => {
   const [loading, setLoading] = useState(false);
   const { t, i18n } = useTranslation([props.pageKey]);
   const currentUser = useSelector((state: RootState) => state.user.currentUser);
+  const avatars = useSelector((state: RootState) => state.config.avatars);
   const history = useHistory();
 
   const [subscribedStudies, setSubscribedStudies] = useState<StudyInfos[]>([]);
@@ -134,6 +135,7 @@ const SurveyList: React.FC<SurveyListProps> = (props) => {
     } else {
       cardInfos.push({
         ...s,
+        avatars: avatars,
         profiles: [
           profile
         ],

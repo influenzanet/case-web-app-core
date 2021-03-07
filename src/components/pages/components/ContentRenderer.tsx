@@ -7,7 +7,6 @@ import { dialogActions } from '../../../store/dialogSlice';
 
 import { PageColumn, PageItem, PageRow } from '../../../types/pagesConfig';
 import {
-  getExternalOrLocalContentURL,
   handleOpenExternalPage,
   ImageCard,
   LoginCard,
@@ -25,15 +24,12 @@ import {
   containerClassName,
 } from 'case-web-ui';
 
-
-/*
 import SystemInfo from '../../settings/SystemInfo';
 import AccountSettings from '../../settings/AccountSettings';
 import CommunicationSettings from '../../settings/CommunicationSettings';
 import DeleteAccount from '../../settings/DeleteAccount';
-*/
 
-// import SurveyList from '../../study/SurveyList';
+import SurveyList from '../../study/SurveyList';
 import { DefaultRoutes } from '../../../types/routing';
 import { setPersistState } from '../../../store/appSlice';
 import { RootState } from '../../../store/rootReducer';
@@ -169,7 +165,6 @@ const ContentRenderer: React.FC<ContentRendererProps> = (props) => {
           content={t(`${item.config.contentKey}`)}
           variant={item.config.variant}
         />
-      /*
       case 'systemInfo':
         return <SystemInfo
           key={item.itemKey}
@@ -191,7 +186,6 @@ const ContentRenderer: React.FC<ContentRendererProps> = (props) => {
           key={item.itemKey}
           itemKey={item.itemKey}
         />
-        */
       case 'logoCredits':
         return <LogoCredits
           key={item.itemKey}
@@ -234,14 +228,14 @@ const ContentRenderer: React.FC<ContentRendererProps> = (props) => {
           language={i18n.language}
           dataUrl={item.config.dataUrl}
         />
-      /*case 'surveyList':
+      case 'surveyList':
         return <SurveyList
           key={item.itemKey}
           className={item.className}
           pageKey={props.pageKey}
           itemKey={item.itemKey}
           defaultRoutes={props.defaultRoutes}
-        />*/
+        />
       case 'router':
         return <p
           key={item.itemKey}
