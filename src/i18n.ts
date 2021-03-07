@@ -7,32 +7,42 @@ export const InterpolationKeys = {
   Date: "date",
 }
 
-i18n
-  .use(Backend)
-  .use(initReactI18next) // passes i18n down to react-i18next
-  .init({
-    lng: process.env.REACT_APP_DEFAULT_LANGUAGE,
-    fallbackLng: process.env.REACT_APP_FALLBACK_LANGUAGE,
-    lowerCaseLng: true,
-    backend: {
-      // for all available options read the backend's repository readme file
-      loadPath: process.env.REACT_APP_CONTENT_URL + '/locales/{{lng}}/{{ns}}.json'
-    },
-    interpolation: {
-      escapeValue: false, // react already safes from xss
-      format: (value, format, lng) => {
-        if (format === InterpolationKeys.Date) {
-          return new Intl.DateTimeFormat(lng).format(value);
+/**
+ * Initialize i18n - use this method at the start of the application, so that the translation files can be loaded
+ * @param lng language code of the default language
+ * @param fallbackLng language code for the fallback language (if a translation is not available)
+ * @param localeUrl root url of the folder that contains the locale definitions (e.g.: https://example.com/static/locales)
+ */
+export const initI18n = (
+  lng: string,
+  fallbackLng: string,
+  localeUrl: string,
+) => {
+  return i18n
+    .use(Backend)
+    .use(initReactI18next) // passes i18n down to react-i18next
+    .init({
+      lng: lng,
+      fallbackLng: fallbackLng,
+      lowerCaseLng: true,
+      backend: {
+        // for all available options read the backend's repository readme file
+        loadPath: localeUrl + '/{{lng}}/{{ns}}.json'
+      },
+      interpolation: {
+        escapeValue: false, // react already safes from xss
+        format: (value, format, lng) => {
+          if (format === InterpolationKeys.Date) {
+            return new Intl.DateTimeFormat(lng).format(value);
+          }
+          return value;
         }
-        return value;
+      },
+      react: {
+        useSuspense: true
       }
-    },
-    react: {
-      useSuspense: true
-    }
-  })
-  .then(() => {
-    // store.dispatch(userActions.initializeLanguage(i18n.language));
-  });
-
-export default i18n;
+    })
+    .then(() => {
+      // store.dispatch(userActions.initializeLanguage(i18n.language));
+    });
+}

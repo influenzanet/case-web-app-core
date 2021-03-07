@@ -17,6 +17,7 @@ import Pages from './components/pages/Pages';
 import { PagesConfig } from './types/pagesConfig';
 
 interface AppCoreProps {
+  instanceID?: string;
   appConfig?: AppConfig;
   headerConfig?: HeaderConfig;
   navbarConfig?: NavbarConfig;
@@ -33,8 +34,8 @@ const AppCore: React.FC<AppCoreProps> = (props) => {
   const { i18n } = useTranslation();
 
   useEffect(() => {
-    dispatch(appConfig.updateInstanceID(process.env.REACT_APP_DEFAULT_INSTANCE ? process.env.REACT_APP_DEFAULT_INSTANCE : 'default'));
-  }, [])
+    dispatch(appConfig.updateInstanceID(props.instanceID ? props.instanceID : 'default'));
+  }, [props.instanceID])
 
   useEffect(() => {
     if (props.appConfig) {

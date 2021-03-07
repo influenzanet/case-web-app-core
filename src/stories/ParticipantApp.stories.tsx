@@ -8,7 +8,7 @@ import navbarConfig from '../../exampleContent/configs/navbar.json'
 
 import { Provider } from 'react-redux';
 import store from '../store/store';
-import '../i18n';
+import { initI18n } from '../i18n';
 
 import 'localStyles';
 import { FooterConfig } from "../types/footerConfig";
@@ -18,6 +18,12 @@ import { HeaderConfig } from "../types/headerConfig";
 import { AppConfig } from "../types/appConfig";
 import { NavbarConfig } from "../types/navbarConfig";
 import { PagesConfig } from "../types/pagesConfig";
+
+initI18n(
+  process.env.REACT_APP_DEFAULT_LANGUAGE,
+  process.env.REACT_APP_FALLBACK_LANGUAGE,
+  process.env.REACT_APP_CONTENT_URL + '/locales',
+)
 
 const stories = storiesOf('Participant App', module)
 stories.addDecorator(StoryRouter())
@@ -31,6 +37,7 @@ const Template = (args) => (
 );
 
 stories.add('Example1', () => Template({
+  instanceID: process.env.REACT_APP_DEFAULT_INSTANCE,
   appConfig: appConfig as AppConfig,
   headerConfig: headerConfig as HeaderConfig,
   navbarConfig: navbarConfig as NavbarConfig,
