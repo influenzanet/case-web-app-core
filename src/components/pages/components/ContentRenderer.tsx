@@ -78,8 +78,8 @@ const ContentRenderer: React.FC<ContentRendererProps> = (props) => {
           image={item.config.image}
           textBox={item.config.textBox ? {
             className: item.config.textBox.className,
-            title: item.config.textBox.titleKey ? t(`${item.itemKey}.${item.config.textBox.titleKey}`) : undefined,
-            content: item.config.textBox.contentKey ? t(`${item.itemKey}.${item.config.textBox.contentKey}`) : undefined,
+            title: t(`${item.itemKey}.title`),
+            content: t(`${item.itemKey}.content`),
           } : undefined}
         />
       case 'imageCard':
@@ -161,8 +161,8 @@ const ContentRenderer: React.FC<ContentRendererProps> = (props) => {
         return <SimpleCard
           key={item.itemKey}
           className={item.className}
-          title={item.config.titleKey ? t(`${item.config.titleKey}`) : undefined}
-          content={t(`${item.config.contentKey}`)}
+          title={t(`${item.itemKey}.title`)}
+          content={t(`${item.itemKey}.content`)}
           variant={item.config.variant}
         />
       case 'systemInfo':

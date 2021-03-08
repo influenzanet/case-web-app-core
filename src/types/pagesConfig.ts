@@ -77,8 +77,6 @@ export interface TeaserImageConfig {
   }
   textBox?: {
     className?: string;
-    titleKey?: string;
-    contentKey?: string;
   }
 }
 
@@ -105,8 +103,6 @@ export interface AccordionListConfig {
 
 export interface SimpleCard {
   type: 'simpleCard';
-  titleKey?: string;
-  contentKey: string;
   variant?: 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 }
 

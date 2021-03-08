@@ -8,6 +8,7 @@ import LinkResolver, { linkResolverRootUrl } from './components/LinkResolver/Lin
 import { DefaultRoutes } from '../../types/routing';
 import SurveyPage from './components/SurveyPage';
 import { LoadingPlaceholder, containerClassName } from 'case-web-ui';
+import clsx from 'clsx';
 
 
 interface PagesProps {
@@ -20,7 +21,7 @@ const Pages: React.FC<PagesProps> = (props) => {
 
   if (!props.config) {
     // Loading page:
-    return <div className={containerClassName}>
+    return <div className={clsx(containerClassName, 'my-3')}>
       <LoadingPlaceholder color='secondary' minHeight='60vh' />
     </div>
   }
