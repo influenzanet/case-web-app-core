@@ -9,6 +9,7 @@ import { RootState } from '../../store/rootReducer';
 
 interface CommunicationSettingsProps {
   itemKey: string;
+  hideLanguageSelector?: boolean
 }
 
 const CommunicationSettings: React.FC<CommunicationSettingsProps> = (props) => {
@@ -43,17 +44,19 @@ const CommunicationSettings: React.FC<CommunicationSettingsProps> = (props) => {
       </EditBtn>
 
       {/** language*/}
-      <h4 className="fw-bold mt-2">
-        {t(`${props.itemKey}.defaultLanguage.title`)}
-      </h4>
-      <p className="mb-1 text-grey-7">
-        {t(`${props.itemKey}.defaultLanguage.info`)}
-      </p>
-      <EditBtn
-        onClick={() => dispatch(dialogActions.openDialogWithoutPayload('changeLanguage'))}
-      >
-        {t(`${props.itemKey}.defaultLanguage.languages.${userLanguage}`)}
-      </EditBtn>
+      {props.hideLanguageSelector ? null : <React.Fragment>
+        <h4 className="fw-bold mt-2">
+          {t(`${props.itemKey}.defaultLanguage.title`)}
+        </h4>
+        <p className="mb-1 text-grey-7">
+          {t(`${props.itemKey}.defaultLanguage.info`)}
+        </p>
+        <EditBtn
+          onClick={() => dispatch(dialogActions.openDialogWithoutPayload('changeLanguage'))}
+        >
+          {t(`${props.itemKey}.defaultLanguage.languages.${userLanguage}`)}
+        </EditBtn>
+      </React.Fragment>}
     </div>
   );
 };

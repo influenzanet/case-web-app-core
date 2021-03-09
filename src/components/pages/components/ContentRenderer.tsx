@@ -180,6 +180,7 @@ const ContentRenderer: React.FC<ContentRendererProps> = (props) => {
         return <CommunicationSettings
           key={item.itemKey}
           itemKey={item.itemKey}
+          hideLanguageSelector={item.config.hideLanguageSelector}
         />
       case 'deleteAccount':
         return <DeleteAccount

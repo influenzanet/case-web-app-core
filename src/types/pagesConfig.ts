@@ -127,10 +127,7 @@ export interface AccountSettingsConfig {
 
 export interface CommunicationSettingsConfig {
   type: 'communicationSettings';
-  languages?: Array<{
-    code: string;
-    itemKey: string;
-  }>;
+  hideLanguageSelector?: boolean;
 }
 
 export interface DeleteAccountConfig {
