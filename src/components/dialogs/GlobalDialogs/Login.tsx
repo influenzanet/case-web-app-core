@@ -157,7 +157,7 @@ const LoginForm: React.FC<LoginFormProps> = (props) => {
           value={loginData.password}
           required={true}
           disabled={false}
-          autoComplete="off"
+          autoComplete="current-password"
           onChange={(event) => {
             const value = event.target.value;
             setLoginData(prev => { return { ...prev, password: value } })

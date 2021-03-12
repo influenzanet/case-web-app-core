@@ -37,7 +37,6 @@ const Template = (args) => (
 );
 
 stories.add('Example1', () => Template({
-  instanceID: process.env.REACT_APP_DEFAULT_INSTANCE,
   appConfig: appConfig as AppConfig,
   headerConfig: headerConfig as HeaderConfig,
   navbarConfig: navbarConfig as NavbarConfig,

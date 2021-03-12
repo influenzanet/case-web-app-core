@@ -158,7 +158,8 @@ const SignupForm: React.FC<SignupFormProps> = (props) => {
           label={passwordInputLabel}
           placeholder={passwordInputPlaceholder}
           type="password"
-          name="password"
+          name="new-password"
+          autoComplete="new-password"
           className={marginBottomClass}
           value={signupData.password}
           required={true}

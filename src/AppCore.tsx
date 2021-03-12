@@ -19,7 +19,6 @@ import { RootState } from './store/rootReducer';
 import { setDefaultAccessTokenHeader } from './api/instances/authenticatedApi';
 
 interface AppCoreProps {
-  instanceID?: string;
   appConfig?: AppConfig;
   headerConfig?: HeaderConfig;
   navbarConfig?: NavbarConfig;
@@ -43,8 +42,8 @@ const AppCore: React.FC<AppCoreProps> = (props) => {
   }, []);
 
   useEffect(() => {
-    dispatch(appConfig.updateInstanceID(props.instanceID ? props.instanceID : 'default'));
-  }, [props.instanceID])
+    dispatch(appConfig.updateInstanceID(props.appConfig?.instanceId ? props.appConfig?.instanceId : 'default'));
+  }, [props.appConfig?.instanceId])
 
   useEffect(() => {
     if (props.appConfig) {

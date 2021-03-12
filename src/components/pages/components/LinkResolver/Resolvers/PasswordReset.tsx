@@ -211,7 +211,8 @@ const PasswordReset: React.FC<PasswordResetProps> = (props) => {
         type="password"
         className="mb-2"
         required
-        name="password"
+        name="new-password"
+        autoComplete="new-password"
         label={t(`${translationRootKey}.content.newPasswordLabel`)}
         placeholder={t(`${translationRootKey}.content.newPasswordPlaceholder`)}
         value={password}

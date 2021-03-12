@@ -109,12 +109,12 @@ const ChangePassword: React.FC<ChangePasswordProps> = (props) => {
       )}>
         <form onSubmit={changePassword}>
           <TextField
-            id="oldPassword"
+            id="current-password"
             label={t('dialogs:changePassword.currentPasswordInputLabel')}
             placeholder={t('dialogs:changePassword.currentPasswordInputPlaceholder')}
             type="password"
-            name="oldPassword"
-            autoComplete="off"
+            name="current-password"
+            autoComplete="current-password"
             className="mb-2"
             value={formData.oldPassword}
             required={true}
@@ -130,7 +130,8 @@ const ChangePassword: React.FC<ChangePasswordProps> = (props) => {
             label={t('changePassword.newPasswordInputLabel')}
             placeholder={t('changePassword.newPasswordInputPlaceholder')}
             type="password"
-            name="password"
+            name="new-password"
+            autoComplete="new-password"
             className="mb-2"
             value={formData.newPassword}
             required={true}

@@ -218,6 +218,7 @@ const Invitation: React.FC<InvitationProps> = (props) => {
         className="mb-2"
         required
         name="password"
+        autoComplete="new-password"
         label={t(`${translationRootKey}.content.newPasswordLabel`)}
         placeholder={t(`${translationRootKey}.content.newPasswordPlaceholder`)}
         value={password}
