@@ -6,9 +6,8 @@ import { enterStudyReq, getAllAssignedSurveysReq, getAllAvailableStudiesReq, get
 import { AssignedSurvey, StudyInfoForUser, StudyInfos, SurveyInfo } from '../../api/types/studyAPI';
 import { RootState } from '../../store/rootReducer';
 import { DefaultRoutes } from '../../types/routing';
-import { SurveyCardProps } from 'case-web-ui/build/components/cards/SurveyCard';
-import OptionalSurveys from './OptionalSurveys';
-import RequiredSurveys from './RequiredSurveys';
+import { LoadingPlaceholder, SurveyList as SurveyListRenderer } from 'case-web-ui';
+import { SurveyCardDetails } from 'case-web-ui/build/components/cards/SurveyCard';
 
 interface SurveyListProps {
   pageKey: string;
@@ -116,7 +115,7 @@ const SurveyList: React.FC<SurveyListProps> = (props) => {
     return true;
   });
 
-  const cardInfos: SurveyCardProps[] = [];
+  const cardInfos: SurveyCardDetails[] = [];
   for (const s of activeSurveys) {
     // const ind = cardInfos.findIndex(ci => ci.surveyKey === s.surveyKey && ci.studyKey === s.studyKey && ci.category === s.category);
     const ind = -1; // separate card for every profile
@@ -135,11 +134,9 @@ const SurveyList: React.FC<SurveyListProps> = (props) => {
     } else {
       cardInfos.push({
         ...s,
-        avatars: avatars,
         profiles: [
           profile
         ],
-        selectedLanguage: i18n.language,
         surveyInfos: currentSurveyInfo,
       })
     }
@@ -155,31 +152,32 @@ const SurveyList: React.FC<SurveyListProps> = (props) => {
   }
 
   const renderContent = () => <div className={props.className}>
-    <RequiredSurveys
-      title={t(`${props.itemKey}.requiredSurveys.title`)}
-      successMessage={t(`${props.itemKey}.requiredSurveys.successMsg`)}
-      info={t(`${props.itemKey}.requiredSurveys.info`)}
-      surveys={requiredSurveys}
+    <SurveyListRenderer
+      requiredSurveys={requiredSurveys}
+      optionalSurveys={optionalSurveys}
       openSurvey={openSurvey}
-    />
-    <OptionalSurveys
-      title={t(`${props.itemKey}.optionalSurveys.title`)}
-      info={t(`${props.itemKey}.optionalSurveys.info`)}
-      hideBtn={t(`${props.itemKey}.optionalSurveys.hideBtn`)}
-      showBtn={t(`${props.itemKey}.optionalSurveys.showBtn`)}
-      surveys={optionalSurveys}
-      openSurvey={openSurvey}
+      avatars={avatars}
+      selectedLanguage={i18n.language}
+      texts={{
+        requiredSurveys: {
+          title: t(`${props.itemKey}.requiredSurveys.title`),
+          successMsg: t(`${props.itemKey}.requiredSurveys.successMsg`),
+          info: t(`${props.itemKey}.requiredSurveys.info`),
+        },
+        optionalSurveys: {
+          title: t(`${props.itemKey}.optionalSurveys.title`),
+          hideBtn: t(`${props.itemKey}.optionalSurveys.hideBtn`),
+          showBtn: t(`${props.itemKey}.optionalSurveys.showBtn`),
+          info: t(`${props.itemKey}.optionalSurveys.info`),
+        }
+      }}
     />
   </div>
 
-  const loadingContent = () => <div
-    className="d-flex align-items-center bg-secondary justify-content-center h-100"
-    style={{ minHeight: 300 }}>
-    <div className="spinner-border text-primary" style={{ width: '3rem', height: '3rem' }} role="status">
-      <span className="visually-hidden">Loading...</span>
-    </div>
-  </div>
-
+  const loadingContent = () => <LoadingPlaceholder
+    color="secondary"
+    minHeight={300}
+  />
 
   return (
     <React.Fragment>

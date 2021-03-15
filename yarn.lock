@@ -4001,10 +4001,10 @@ case-sensitive-paths-webpack-plugin@^2.2.0:
   resolved "https://registry.yarnpkg.com/case-sensitive-paths-webpack-plugin/-/case-sensitive-paths-webpack-plugin-2.4.0.tgz#db64066c6422eed2e08cc14b986ca43796dbc6d4"
   integrity sha512-roIFONhcxog0JSSWbvVAh3OocukmSgpqOH6YpMkCvav/ySIV3JKg4Dc8vYtQjYi/UxpNE36r/9v+VqTQqgkYmw==
 
-case-web-ui@^1.0.16:
-  version "1.0.16"
-  resolved "https://registry.yarnpkg.com/case-web-ui/-/case-web-ui-1.0.16.tgz#03bfe8807f610f1a88bb4e5991711d12dffbad77"
-  integrity sha512-a8lU80fNogmKpMzvVt4ZWJrcyJzk/Tt4NNzlGv2mlPO6BA2BpK3YW6FwYux0V3CHbe8PXKn0d8Ln5RytIRzoCA==
+case-web-ui@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/case-web-ui/-/case-web-ui-1.1.1.tgz#79ee0ade3c829527ab2b58ddaa2cd872d80c8a59"
+  integrity sha512-VTOtSj2eq3Tr+0IrcDRT90ysu/GutGU743tKFCS8zat6NauVLCDUNy2aiZiIJo619WU8x/BXo6IkJzR2FJmGjA==
   dependencies:
     "@fortawesome/fontawesome-free" "^5.15.2"
 
@@ -10183,10 +10183,10 @@ react-hotkeys@2.0.0:
   dependencies:
     prop-types "^15.6.1"
 
-react-i18next@^11.8.9:
-  version "11.8.9"
-  resolved "https://registry.yarnpkg.com/react-i18next/-/react-i18next-11.8.9.tgz#188039708f99a6114b4437f0e620bf99a6c3c7dd"
-  integrity sha512-HVW4/KtBvXcnzkYeS32IqdGBJJ1fksvqVDnnspsyruO99fhHQaAw1vTSrRpcNE5D8vrOu7B9c6sawfmQJ6OWRg==
+react-i18next@^11.8.10:
+  version "11.8.10"
+  resolved "https://registry.yarnpkg.com/react-i18next/-/react-i18next-11.8.10.tgz#aa64bc20410ee8f660a5b918d53f4e41271edf00"
+  integrity sha512-ckjNzMjYkmx4fQ8zzuaYTosYN3Co6ebrgCQJzuZCcGFYSR/kGHZzSu0xw9VhtnbjJVKx0gEMV3DLRvzi4xDZUw==
   dependencies:
     "@babel/runtime" "^7.13.6"
     html-parse-stringify2 "^2.0.1"
@@ -10772,10 +10772,10 @@ rollup-pluginutils@^2.5.0, rollup-pluginutils@^2.8.2:
   dependencies:
     estree-walker "^0.6.1"
 
-rollup@^2.41.0:
-  version "2.41.0"
-  resolved "https://registry.yarnpkg.com/rollup/-/rollup-2.41.0.tgz#b2a398bbabbf227738dedaef099e494aed468982"
-  integrity sha512-Gk76XHTggulWPH95q8V62bw6uqDH6UGvbD6LOa3QUyhuMF3eOuaeDHR7SLm1T9faitkpNrqzUAVYx47klcMnlA==
+rollup@^2.41.2:
+  version "2.41.2"
+  resolved "https://registry.yarnpkg.com/rollup/-/rollup-2.41.2.tgz#b7db5cb7c21c2d524e8b26ef39c7e9808a290c7e"
+  integrity sha512-6u8fJJXJx6fmvKrAC9DHYZgONvSkz8S9b/VFBjoQ6dkKdHyPpPbpqiNl2Bao9XBzDHpq672X6sGZ9G1ZBqAHMg==
   optionalDependencies:
     fsevents "~2.3.1"
 
@@ -11631,10 +11631,10 @@ supports-hyperlinks@^2.0.0:
     has-flag "^4.0.0"
     supports-color "^7.0.0"
 
-survey-engine@^0.9.3:
-  version "0.9.3"
-  resolved "https://registry.yarnpkg.com/survey-engine/-/survey-engine-0.9.3.tgz#7657b2653bc84d17633f3e102d347223f721600b"
-  integrity sha512-b1O9wHefh2Yoc1KtQfQ3cJQN8cBL2bYdG1jQJlCjV529xC+FELyyRpTqihx2BU0/45XOEI749/5GjW5vyCIcbg==
+survey-engine@^0.9.4:
+  version "0.9.4"
+  resolved "https://registry.yarnpkg.com/survey-engine/-/survey-engine-0.9.4.tgz#eaf133bead5ab0d692e39e7c183827dbf0cce683"
+  integrity sha512-U7a6Vi0Jt0Yyut8dkt9phwdr3lYKiAk9KPwpXa5YVTn5cZ2oxM2cR4mxZUQTozf7q8+rbTrAXbGnvMppE0sX+A==
   dependencies:
     moment "2.24.0"
 
