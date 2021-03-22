@@ -108,12 +108,13 @@ const SurveyPage: React.FC<SurveyPageProps> = (props) => {
     }
   }
 
-  const onSurveySubmit = async (responses: SurveySingleItemResponse[]) => {
+  const onSurveySubmit = async (responses: SurveySingleItemResponse[], versionId: string) => {
     console.log(process.env.REACT_APP_SURVEY_ENGINE_VERSION);
     const now = Math.round(new Date().getTime() / 1000);
     const surveyResponse: SurveyResponse = {
       key: surveyKey,
       submittedAt: now,
+      versionId: versionId,
       responses: [...responses],
       context: {
         engineVersion: process.env.REACT_APP_SURVEY_ENGINE_VERSION,
