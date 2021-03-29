@@ -46,3 +46,18 @@ export const initI18n = (
       // store.dispatch(userActions.initializeLanguage(i18n.language));
     });
 }
+
+
+const languageKey = 'language';
+
+export const loadLastSelectedLanguage = (defaultLang: string): string => {
+  const language = localStorage.getItem(languageKey);
+  if (!language) {
+    return defaultLang;
+  }
+  return language;
+}
+
+export const saveLanguageSelection = (lang: string) => {
+  localStorage.setItem(languageKey, lang);
+}

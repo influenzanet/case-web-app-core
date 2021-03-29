@@ -17,6 +17,7 @@ import Pages from './components/pages/Pages';
 import { PagesConfig } from './types/pagesConfig';
 import { RootState } from './store/rootReducer';
 import { setDefaultAccessTokenHeader } from './api/instances/authenticatedApi';
+import { loadLastSelectedLanguage, saveLanguageSelection } from './i18n';
 
 interface AppCoreProps {
   appConfig?: AppConfig;
@@ -39,7 +40,13 @@ const AppCore: React.FC<AppCoreProps> = (props) => {
     if (accessToken) {
       setDefaultAccessTokenHeader(accessToken);
     }
+    const language = loadLastSelectedLanguage(process.env.REACT_APP_DEFAULT_LANGUAGE ? process.env.REACT_APP_DEFAULT_LANGUAGE : 'en');
+    i18n.changeLanguage(language);
   }, []);
+
+  useEffect(() => {
+    saveLanguageSelection(i18n.language);
+  }, [i18n.language]);
 
   useEffect(() => {
     dispatch(appConfig.updateInstanceID(props.appConfig?.instanceId ? props.appConfig?.instanceId : 'default'));
