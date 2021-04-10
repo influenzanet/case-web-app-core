@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.15]
+
+### Changed
+
+- Updated project dependecies
+
 ## [1.0.14]
 
 ### Added
