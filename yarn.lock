@@ -4151,10 +4151,10 @@ case-sensitive-paths-webpack-plugin@^2.3.0:
   resolved "https://registry.yarnpkg.com/case-sensitive-paths-webpack-plugin/-/case-sensitive-paths-webpack-plugin-2.4.0.tgz#db64066c6422eed2e08cc14b986ca43796dbc6d4"
   integrity sha512-roIFONhcxog0JSSWbvVAh3OocukmSgpqOH6YpMkCvav/ySIV3JKg4Dc8vYtQjYi/UxpNE36r/9v+VqTQqgkYmw==
 
-case-web-ui@^1.1.15:
-  version "1.1.15"
-  resolved "https://registry.yarnpkg.com/case-web-ui/-/case-web-ui-1.1.15.tgz#49836b13baca58be8581adfc2985d0f48f260b98"
-  integrity sha512-IN4BwVleJ/Wrzhrn32oGm0x4cUhrX9S91FLEduNxQYz91ejaDCNbLarfHX8biJrpDFNboZLzEMK85qZak2u3Zw==
+case-web-ui@^1.1.16:
+  version "1.1.16"
+  resolved "https://registry.yarnpkg.com/case-web-ui/-/case-web-ui-1.1.16.tgz#1901d883fda76cf54fd816649c04087f16bd68da"
+  integrity sha512-0gZbP4Zon/vCYh5E0G9ZOPe92LhsVIeGUupYoEXwLyBEQkJUREB1jFRGUSsEwIvzkmHniP3ttjGT6fzgghEZyA==
   dependencies:
     "@fortawesome/fontawesome-free" "^5.15.3"
 

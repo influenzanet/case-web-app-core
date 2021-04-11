@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.16]
+
+### Changed
+
+- Parse survey's validFrom and validUntil properties correctly. (gRPC sends them as strings, needs conversion)
+
+- Updated case-web-ui dependency to deal with missing options in the single or multiple choice survey components more gracefully.
+
 ## [1.0.15]
 
 ### Changed

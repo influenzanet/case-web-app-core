@@ -8,6 +8,7 @@ import { RootState } from '../../store/rootReducer';
 import { DefaultRoutes } from '../../types/routing';
 import { LoadingPlaceholder, SurveyList as SurveyListRenderer } from 'case-web-ui';
 import { SurveyCardDetails } from 'case-web-ui/build/components/cards/SurveyCard';
+import { parseGRPCTimestamp } from '../../utils/parseGRPCTimestamp';
 
 interface SurveyListProps {
   pageKey: string;
@@ -91,12 +92,21 @@ const SurveyList: React.FC<SurveyListProps> = (props) => {
     return counter > 0;
   }
 
+
+
   const fetchAllAssignedSurveys = async () => {
     if (loading) { return; }
     setLoading(true);
     try {
       const response = (await getAllAssignedSurveysReq()).data;
-      setAssigndSurveys(response.surveys.slice());
+      const surveys = response.surveys.map(s => {
+        return {
+          ...s,
+          validFrom: parseGRPCTimestamp(s.validFrom),
+          validUntil: parseGRPCTimestamp(s.validUntil),
+        }
+      });
+      setAssigndSurveys(surveys);
       setSurveyInfos(response.surveyInfos.slice())
     } catch (e) {
       console.error(e.response);
@@ -145,7 +155,6 @@ const SurveyList: React.FC<SurveyListProps> = (props) => {
   const sortedCardInfos = cardInfos.sort((a, b) => a.profiles[0].id.localeCompare(b.profiles[0].id));
   const optionalSurveys = sortedCardInfos.filter(s => s.category === 'optional');
   const requiredSurveys = sortedCardInfos.filter(s => s.category !== 'optional');
-
 
   const openSurvey = (studyKey: string, surveyKey: string, profileId: string) => {
     history.push(props.defaultRoutes.surveyPage + `/${studyKey}/${surveyKey}?pid=${profileId}`);
