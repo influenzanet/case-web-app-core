@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.0.17]
+
+## Added
+
+- New environment variable `REACT_APP_DISABLE_SIGNUP`. If defined as "true", nav-link from the navbar and from the login dialog is removed. If not defined or has any other value, it won't have any effect.
+
+## Changed
+
+- *BREAKING*: at signup request sent to the backend, it will send the instanceID as http header. This requires a participant-api (api-gateway) with v0.13.0 or later. This header field was included for providing the instanceID for reCaptcha validation.
+- Updating project dependencies (case-web-ui), with minor improvements.
+
 ## [1.0.16]
 
 ### Changed

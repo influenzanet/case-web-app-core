@@ -5,7 +5,8 @@ import apiInstance from './instances/defaultApi';
 // Auth API
 export const signupWithEmailRequest = (creds: SignupMsg, recaptchaToken?: string) => apiInstance.post<TokenResponse>('/v1/auth/signup-with-email', creds, recaptchaToken ? {
   headers: {
-    'Recaptcha-Token': recaptchaToken
+    'Recaptcha-Token': recaptchaToken,
+    'Instance-Id': creds.instanceId,
   }
 } : undefined);
 export const loginWithEmailRequest = (creds: LoginMsg) => apiInstance.post<LoginResponse>('/v1/auth/login-with-email', creds);

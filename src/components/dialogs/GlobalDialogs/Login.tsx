@@ -23,8 +23,11 @@ import { getErrorMsg } from '../../../api/utils';
 import { useLogout } from '../../../hooks/useLogout';
 
 const marginBottomClass = "mb-2";
+const marginTopClass = "mt-2";
 const loginFormI18nPrefix = 'login.credentials';
 const verificationFormI18nPrefix = 'login.verificationCode';
+
+const signupDisabled = process.env.REACT_APP_DISABLE_SIGNUP === 'true';
 
 
 interface LoginProps {
@@ -173,7 +176,7 @@ const LoginForm: React.FC<LoginFormProps> = (props) => {
             loadingLabel={t('loadingMsg')}
           />
         </div>
-        <div className={marginBottomClass}>
+        <div>
           <button
             type="button"
             className="btn btn-link p-0 text-decoration-none text-start text-uppercase"
@@ -183,16 +186,20 @@ const LoginForm: React.FC<LoginFormProps> = (props) => {
             }}
           >{passwordForgottenBtn}</button>
         </div>
-        <div>
-          <button
-            type="button"
-            className="btn btn-link p-0 text-decoration-none text-start text-uppercase"
-            onClick={(event) => {
-              event.preventDefault();
-              props.onOpenDialog('signup');
-            }}
-          >{signupBtn}</button>
-        </div>
+        {
+          !signupDisabled ?
+            <div className={marginTopClass}>
+              <button
+                type="button"
+                className="btn btn-link p-0 text-decoration-none text-start text-uppercase"
+                onClick={(event) => {
+                  event.preventDefault();
+                  props.onOpenDialog('signup');
+                }}
+              >{signupBtn}</button>
+            </div>
+            : null
+        }
       </form>
     </React.Fragment>
   )

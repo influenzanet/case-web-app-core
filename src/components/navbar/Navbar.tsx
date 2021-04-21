@@ -23,6 +23,8 @@ interface NavbarProps {
   onOpenExternalPage: (url: string) => void;
 }
 
+const signupDisabled = process.env.REACT_APP_DISABLE_SIGNUP === 'true';
+
 const Navbar: React.FC<NavbarProps> = (props) => {
   const { t } = useTranslation(['navbar']);
   const history = useHistory();
@@ -138,8 +140,8 @@ const Navbar: React.FC<NavbarProps> = (props) => {
               dispatch(dialogActions.openDialogWithoutPayload("signupSuccess"))
             }}
           >
-              {t('rightMenu.verified')}
-            </button>
+            {t('rightMenu.verified')}
+          </button>
           }
           <button
             className="dropdown-item"
@@ -155,9 +157,13 @@ const Navbar: React.FC<NavbarProps> = (props) => {
         <li className="nav-item">
           <button className="nav-link nav-link-height btn btn-primary" onClick={() => dispatch(dialogActions.openDialogWithoutPayload("login"))} >{t(`${'login'}`)}</button>
         </li>
-        <li className="nav-item">
-          <button className="nav-link nav-link-height btn btn-primary " onClick={() => dispatch(dialogActions.openDialogWithoutPayload("signup"))} >{t(`${'signup'}`)}</button>
-        </li>
+
+        {!signupDisabled ?
+          <li className="nav-item">
+            <button className="nav-link nav-link-height btn btn-primary " onClick={() => dispatch(dialogActions.openDialogWithoutPayload("signup"))} >{t(`${'signup'}`)}</button>
+          </li>
+          : null}
+
       </ul>
     </div>
   }
