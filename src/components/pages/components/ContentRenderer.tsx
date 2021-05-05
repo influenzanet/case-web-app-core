@@ -175,6 +175,7 @@ const ContentRenderer: React.FC<ContentRendererProps> = (props) => {
         return <AccountSettings
           key={item.itemKey}
           itemKey={item.itemKey}
+          hideProfileSettings={item.config.hideProfileSettings}
         />
       case 'communicationSettings':
         return <CommunicationSettings

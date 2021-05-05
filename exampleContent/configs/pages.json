@@ -520,7 +520,8 @@
                   "itemKey": "account",
                   "className": "",
                   "config": {
-                    "type": "accountSettings"
+                    "type": "accountSettings",
+                    "hideProfileSettings": false
                   }
                 },
                 {

@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.18]
+
+## Changed
+
+- `AccountSettings` component: attribute renamed (and connected) for hiding the profile settings button. Attribute name is called now: `hideProfileSettings`. It is an optional attribute accepting boolean values.
+- Updating dependecies.
+
 ## [1.0.17]
 
 ## Added

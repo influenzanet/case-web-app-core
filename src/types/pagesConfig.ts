@@ -122,7 +122,7 @@ export interface SystemInfoConfig {
 
 export interface AccountSettingsConfig {
   type: 'accountSettings';
-  allowProfileSettings: boolean;
+  hideProfileSettings?: boolean;
 }
 
 export interface CommunicationSettingsConfig {

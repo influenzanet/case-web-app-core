@@ -11,6 +11,7 @@ import { useIsAuthenticated } from '../../hooks/useIsAuthenticated';
 
 interface AccountSettingsProps {
   itemKey: string;
+  hideProfileSettings?: boolean;
 }
 
 const AccountSettings: React.FC<AccountSettingsProps> = (props) => {
@@ -23,6 +24,26 @@ const AccountSettings: React.FC<AccountSettingsProps> = (props) => {
     return <div className="bg-warning-light p-3">
       {'authentication needed'}
     </div>
+  }
+
+  const renderProfileSettings = () => {
+    if (props.hideProfileSettings === true) {
+      return null;
+    }
+
+    return <React.Fragment>
+      <h4 className="fw-bold mt-2">
+        {t(`${props.itemKey}.profiles.title`)}
+      </h4>
+      <p className="mb-1 text-grey-7">
+        {t(`${props.itemKey}.profiles.info`)}
+      </p>
+      <EditBtn
+        onClick={() => dispatch(dialogActions.openDialogWithoutPayload('manageProfiles'))}
+      >
+        {t(`${props.itemKey}.profiles.btn`, { count: currentUser.profiles.length })}
+      </EditBtn>
+    </React.Fragment>
   }
 
   return (
@@ -57,18 +78,7 @@ const AccountSettings: React.FC<AccountSettingsProps> = (props) => {
         {"••••••••••••••"}
       </EditBtn>
 
-      {/** profiles */}
-      <h4 className="fw-bold mt-2">
-        {t(`${props.itemKey}.profiles.title`)}
-      </h4>
-      <p className="mb-1 text-grey-7">
-        {t(`${props.itemKey}.profiles.info`)}
-      </p>
-      <EditBtn
-        onClick={() => dispatch(dialogActions.openDialogWithoutPayload('manageProfiles'))}
-      >
-        {t(`${props.itemKey}.profiles.btn`, { count: currentUser.profiles.length })}
-      </EditBtn>
+      {renderProfileSettings()}
     </div>
   );
 };
