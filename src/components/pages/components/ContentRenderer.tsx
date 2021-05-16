@@ -119,6 +119,7 @@ const ContentRenderer: React.FC<ContentRendererProps> = (props) => {
               type: vs.type,
             }
           })}
+          tracks={item.config.tracks}
           fallbackText={item.config.fallbackTextKey ? t(`${item.itemKey}.${item.config.fallbackTextKey}`) : undefined}
         />
       case 'loginCard':

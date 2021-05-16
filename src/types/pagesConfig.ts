@@ -64,6 +64,13 @@ export interface VideoConfig {
     urlKey: string;
     type: string;
   }>;
+  tracks?: Array<{
+    src: string;
+    default?: boolean;
+    srcLang: string;
+    label: string;
+    kind: string;
+  }>;
   fallbackTextKey?: string;
 }
 

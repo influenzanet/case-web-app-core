@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.19]
+
+## Changed
+
+- Support `VideoPlayer`'s track propetry to define subtitles
+- Updating dependencies. Using stable bootstrap version.
+
+
 ## [1.0.18]
 
 ## Changed
