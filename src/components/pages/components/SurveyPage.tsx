@@ -118,6 +118,7 @@ const SurveyPage: React.FC<SurveyPageProps> = (props) => {
       responses: [...responses],
       context: {
         engineVersion: process.env.REACT_APP_SURVEY_ENGINE_VERSION,
+        language: i18n.language,
       }
     }
     setLoading(true);

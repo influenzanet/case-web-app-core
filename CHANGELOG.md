@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.1.0] - 2021-07-08
+
+## Added
+
+- send selected language code with survey response object in the context
+
+## Changed
+
+- [BREAKING-CHANGE]: updated dependencies - react markdown renderer needs new format. See documentation here:
+https://github.com/coneno/case-web-ui/blob/master/CHANGELOG.md#breaking-changes
+
+
 ## [1.0.19]
 
 ## Changed
