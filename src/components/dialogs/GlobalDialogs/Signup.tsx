@@ -29,6 +29,8 @@ import { getErrorMsg } from '../../../api/utils';
 
 const marginBottomClass = "mb-2";
 
+
+
 interface SignupFormData {
   email: string;
   password: string;
@@ -43,6 +45,12 @@ interface SignupFormProps {
   onOpenDialog: (dialog: 'login') => void;
   error?: string;
   clearError: () => void;
+}
+
+const emailFormatRegexp = new RegExp(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/);
+
+const checkEmailFormat = (email: string): boolean => {
+  return emailFormatRegexp.test(email);
 }
 
 const SignupForm: React.FC<SignupFormProps> = (props) => {
@@ -62,6 +70,7 @@ const SignupForm: React.FC<SignupFormProps> = (props) => {
   const [acceptedPrivacyPolicy, setAcceptedPrivacyPolicy] = useState(false);
   const [reCaptchaAccepted, setReCaptchaAccepted] = useState(false);
 
+  const [showEmailError, setShowEmailError] = useState(false);
   const [showPasswordError, setShowPasswordError] = useState(false);
   const [showConfirmPasswordError, setShowConfirmPasswordError] = useState(false);
 
@@ -83,8 +92,9 @@ const SignupForm: React.FC<SignupFormProps> = (props) => {
   }
 
   const isDisabled = (): boolean => {
+    const emailOk = checkEmailFormat(signupData.email);
     const passwordRuleOk = checkPasswordRules(signupData.password);
-    return !(!props.isLoading && (!useRecaptcha || reCaptchaAccepted) && acceptedPrivacyPolicy && signupData.email.length > 4 && passwordRuleOk && passwordsMatch());
+    return !(!props.isLoading && (!useRecaptcha || reCaptchaAccepted) && acceptedPrivacyPolicy && emailOk && passwordRuleOk && passwordsMatch());
   }
 
   const submit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -148,6 +158,11 @@ const SignupForm: React.FC<SignupFormProps> = (props) => {
           className={marginBottomClass}
           value={signupData.email}
           required={true}
+          hasError={!checkEmailFormat(signupData.email) && showEmailError}
+          errorMsg={t("dialogs:signup.errors.emailRules")}
+          onBlur={() => {
+            setShowEmailError(true)
+          }}
           onChange={(event) => {
             const value = event.target.value;
             setSignupData(prev => { return { ...prev, email: value } })

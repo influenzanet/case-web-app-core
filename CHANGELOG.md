@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.3.0 -
+
+### Added
+
+- Email address at signup will be validation with stronger rules to prevent entering invalid email address. To set language specific error message, you can use the translation object's value of `signup.errors.emailRules`.
+
 ## [1.2.0] - 2021-10-19
 
 ### Added
