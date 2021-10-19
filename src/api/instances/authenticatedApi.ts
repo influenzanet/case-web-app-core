@@ -48,10 +48,10 @@ authApiInstance.interceptors.request.use(
     }
     try {
       const newAccessToken = await renewTokenIfNecessary();
-      if (newAccessToken && newAccessToken.length) {
+      if (newAccessToken && newAccessToken.length && config.headers) {
         config.headers.Authorization = "Bearer " + newAccessToken;
       }
-    } catch (e) {
+    } catch (e: any) {
       resetApiAuth();
       if (e.response) {
         console.error(e.response);
@@ -69,7 +69,7 @@ authApiInstance.interceptors.request.use(
 );
 
 export const setDefaultAccessTokenHeader = (token: string) => {
-  authApiInstance.defaults.headers.Authorization = "Bearer " + token;
+  authApiInstance.defaults.headers.common['Authorization'] = "Bearer " + token;
 };
 
 export const resetApiAuth = () => {
