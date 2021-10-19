@@ -22,6 +22,7 @@ import {
   MapWithTimeSliderLoader,
   ComposedLineAndScatterChartLoader,
   containerClassName,
+  LoadingPlaceholder,
 } from 'case-web-ui';
 
 import SystemInfo from '../../settings/SystemInfo';
@@ -239,6 +240,18 @@ const ContentRenderer: React.FC<ContentRendererProps> = (props) => {
           itemKey={item.itemKey}
           defaultRoutes={props.defaultRoutes}
         />
+      case 'placeholder':
+        return <div
+          key={item.itemKey}
+          className={clsx(
+            "d-flex justify-content-center align-items-center bg-grey-4",
+            item.className)}
+          style={{
+            height: item.config.height ? item.config.height : undefined
+          }}
+        >
+          <h1 className="fs-1 text-center text-white text-uppercase m-0 p-2">{item.config.label}</h1>
+        </div>
       case 'router':
         return <p
           key={item.itemKey}

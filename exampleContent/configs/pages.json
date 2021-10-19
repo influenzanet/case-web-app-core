@@ -11,6 +11,23 @@
       "pageKey": "landing",
       "rows": [
         {
+          "key": "test",
+          "columns": [
+            {
+              "key": "test",
+              "items": [
+                {
+                  "itemKey": "placeholder",
+                  "config": {
+                    "type": "placeholder",
+                    "label": "test placeholder with longer text in it"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
           "key": "content",
           "fullWidth": false,
           "hideWhen": "auth",
