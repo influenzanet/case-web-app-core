@@ -1,10 +1,10 @@
 import React from 'react';
-import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
-import { isIOS, isMobile } from 'react-device-detect';
 import { NavbarItemConfig } from '../../../types/navbarConfig';
 import { useTranslation } from 'react-i18next';
 import { NavLink } from 'react-router-dom';
 import clsx from 'clsx';
+
+import { Offcanvas } from 'react-bootstrap';
 
 interface DrawerProps {
   isAuth?: boolean;
@@ -17,16 +17,11 @@ const Drawer: React.FC<DrawerProps> = (props) => {
   const { t } = useTranslation(['navbar']);
 
   return (
-    <SwipeableDrawer
-      anchor={'left'}
-      open={props.open}
-      onOpen={() => { }}
-      onClose={props.onClose}
-      disableBackdropTransition={!isIOS && isMobile}
-      disableDiscovery={isIOS}
-      classes={{
-        paper: "bg-primary text-white py-2"
-      }}
+    <Offcanvas
+      className="py-2 bg-primary text-white"
+      show={props.open}
+      onHide={props.onClose}
+      style={{ maxWidth: '90%' }}
     >
       {props.items.map(item => {
         if (item.hideWhen === 'auth' && props.isAuth) {
@@ -65,7 +60,7 @@ const Drawer: React.FC<DrawerProps> = (props) => {
 
         }
       })}
-    </SwipeableDrawer>
+    </Offcanvas>
   );
 };
 

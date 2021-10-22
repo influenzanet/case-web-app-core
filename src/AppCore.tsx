@@ -88,7 +88,7 @@ const AppCore: React.FC<AppCoreProps> = (props) => {
         onOpenExternalPage={handleOpenExternalPage}
       />
 
-      { !props.hideDefaultFooter ? <FooterRenderer
+      {!props.hideDefaultFooter ? <FooterRenderer
         footerConfig={props.footerConfig}
         onChangeLanguage={handleLanguageChange}
         onOpenExternalPage={handleOpenExternalPage}
