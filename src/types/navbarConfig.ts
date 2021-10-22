@@ -8,6 +8,7 @@ export interface NavbarItemConfig {
   type: 'internal' | 'dropdown' | 'dialog';
   url: string;
   itemKey: string;
+  label?: string; // for already translated items
   hideWhen?: 'auth' | 'unauth';
   iconClass?: string;
   dropdownItems?: Array<NavbarItemConfig>;

@@ -14,8 +14,6 @@ interface DrawerProps {
 }
 
 const Drawer: React.FC<DrawerProps> = (props) => {
-  const { t } = useTranslation(['navbar']);
-
   return (
     <Offcanvas
       className="py-2 bg-primary text-white"
@@ -49,7 +47,7 @@ const Drawer: React.FC<DrawerProps> = (props) => {
               {item.iconClass ?
                 <i className={clsx(item.iconClass, 'me-1')}></i>
                 : null}
-              <span>{t(item.itemKey)}</span>
+              <span>{item.label}</span>
             </NavLink>
           case 'dialog':
             return <p key={item.itemKey}>todo: dialog opening</p>

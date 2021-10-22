@@ -2,9 +2,9 @@ import { containerClassName } from 'case-web-ui';
 import clsx from 'clsx';
 import React, { useState } from 'react';
 import { Nav, Navbar } from 'react-bootstrap';
-import Drawer from './NavbarComponents/Drawer';
+import Drawer from './Drawer';
 
-interface NavbarRendererProps {
+interface NormalNavbarProps {
   breakpoint?: "md" | "sm" | "lg" | "xl" | "xxl";
   toggleLabel: string;
   toggleAriaLabel?: string;
@@ -28,7 +28,7 @@ const NavbarToggle: React.FC<{
   )
 }
 
-const NavbarRenderer: React.FC<NavbarRendererProps> = (props) => {
+const NormalNavbar: React.FC<NormalNavbarProps> = (props) => {
   const breakpoint = props.breakpoint ? props.breakpoint : 'md';
 
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -105,4 +105,4 @@ const NavbarRenderer: React.FC<NavbarRendererProps> = (props) => {
   );*/
 };
 
-export default NavbarRenderer;
+export default NormalNavbar;

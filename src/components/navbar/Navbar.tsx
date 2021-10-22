@@ -15,6 +15,8 @@ import { Avatar, LoadingPlaceholder } from 'case-web-ui';
 import { useAuthTokenCheck } from '../../hooks/useAuthTokenCheck';
 import { containerClassName } from 'case-web-ui';
 import { dialogActions } from '../../store/dialogSlice';
+import SurveyModeNavbar from './NavbarComponents/SurveyModeNavbar';
+import NormalNavbar from './NavbarComponents/NormalNavbar';
 
 
 interface NavbarProps {
@@ -178,74 +180,35 @@ const Navbar: React.FC<NavbarProps> = (props) => {
     </div>
 
 
-  const surveyModeHeader = () => <div className="d-flex align-items-center w-100">
-    <ul className="nav nav-tabs ">
-      <li className="nav-item navlink-container">
-        <button
-          type="button"
-          className="btn nav-link d-flex align-items-center text-decoration-none ps-0 py-2"
-
-          onClick={() =>
-            history.replace('/')
-          }>
-          <span className="material-icons me-1">{'keyboard_backspace'}</span>
-          {t('exitSurveyMode')}
-        </button>
-      </li>
-    </ul>
-
-    <div className="flex-grow-1" ></div>
-
-    <div className={clsx("d-none d-sm-inline px-2 d-flex align-items-center text-white fs-btn",
-      //styles.navText
-    )}>
-      {t('selectedProfilePrefixInSurveyMode')}
-    </div>
-
-    <ul className="nav nav-tabs h-100  navlink-container">
-      <li className="nav-item navlink-container h-100">
-        <div
-          className="nav-link py-2 active border-2 border-secondary d-flex align-items-center text-decoration-none"
-        >
-
-          <Avatar
-            avatars={avatars}
-            avatarId={surveyMode.profile?.avatarId ? surveyMode.profile?.avatarId : 'default'}
-            //fontSize="1.8rem"
-            className="m-0 me-md-2"
+  /*<div className={`d-block d-${breakpoint}-none`}>
+          <Drawer
+            isAuth={isLoggedIn}
+            open={drawerOpen}
+            items={props.content.leftItems}
+            onClose={() => { setDrawerOpen(false) }}
           />
-
-          <span className="d-none d-md-inline-block text-truncate"
-            style={{ maxWidth: 200 }}
-          >
-            {surveyMode.profile?.alias}
-          </span>
         </div>
+        <nav className={`navbar navbar-expand-${breakpoint} bg-primary p-0`}>
+          <div className={containerClassName}>
 
-      </li>
-    </ul>
-
-
-
-  </div>
+          </div>
+        </nav>
+        */
 
   return (
     <React.Fragment>
-      <div className={`d-block d-${breakpoint}-none`}>
-        <Drawer
-          isAuth={isLoggedIn}
-          open={drawerOpen}
-          items={props.content.leftItems}
-          onClose={() => { setDrawerOpen(false) }}
-        />
-      </div>
-      <nav className={`navbar navbar-expand-${breakpoint} bg-primary p-0`}>
-        <div className={containerClassName}>
-          {surveyMode.active ? surveyModeHeader() : normalModeHeader()}
-        </div>
-      </nav>
-
-
+      {surveyMode.active ?
+        <SurveyModeNavbar
+          onExit={() => history.replace('/')}
+          avatars={avatars}
+          currentProfile={surveyMode.profile}
+          labels={{
+            exitSurveyModeBtn: t('exitSurveyMode'),
+            selectedProfilePrefix: t('selectedProfilePrefixInSurveyMode'),
+          }}
+        /> :
+        <NormalNavbar />
+      }
     </React.Fragment>
   );
 };
