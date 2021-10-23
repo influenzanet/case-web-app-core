@@ -8,7 +8,7 @@ import { useLogout } from '../../hooks/useLogout';
 import { useHistory } from 'react-router-dom';
 import { NavbarConfig } from '../../types/navbarConfig';
 import { Profile } from '../../api/types/user';
-import { Avatar, LoadingPlaceholder } from 'case-web-ui';
+import { LoadingPlaceholder } from 'case-web-ui';
 import { useAuthTokenCheck } from '../../hooks/useAuthTokenCheck';
 import { dialogActions } from '../../store/dialogSlice';
 import SurveyModeNavbar from './NavbarComponents/SurveyModeNavbar';
@@ -32,13 +32,10 @@ const Navbar: React.FC<NavbarProps> = (props) => {
   const isLoggedIn = useIsAuthenticated();
   const logout = useLogout();
 
-  const [drawerOpen, setDrawerOpen] = useState(false);
-
   const surveyMode = useSelector((state: RootState) => state.app.surveyMode);
   const profileList = useSelector((state: RootState) => state.user.currentUser.profiles);
   const avatars = useSelector((state: RootState) => state.config.avatars);
   const mainProfile: Profile | undefined = profileList.find((profile: Profile) => profile.mainProfile === true);
-
 
   const handleNavigation = (url: string) => {
     history.push(url);
@@ -52,13 +49,32 @@ const Navbar: React.FC<NavbarProps> = (props) => {
     if (!props.content) return;
     const config = { ...props.content };
 
+    // right items
     config.rightItems = config.rightItems.map(item => {
       return {
         ...item,
         label: t(`rightMenu.${item.itemKey}`)
       }
     })
-    // TODO: handle left items
+
+    // left items
+    config.leftItems = config.leftItems.map(item => {
+      const newItem = {
+        ...item,
+      }
+      if (item.type === 'dropdown') {
+        item.dropdownItems = item.dropdownItems?.map(dItem => {
+          return {
+            ...dItem,
+            label: t(`leftMenu.${item.itemKey}.${dItem.itemKey}`)
+          }
+        })
+        newItem.label = t(`leftMenu.${item.itemKey}.title`)
+      } else {
+        newItem.label = t(`leftMenu.${item.itemKey}`)
+      }
+      return newItem;
+    })
 
     return config;
   }
@@ -89,6 +105,7 @@ const Navbar: React.FC<NavbarProps> = (props) => {
             logoutBtn: t('rightMenu.logout'),
             openSingupSuccessDialogBtn: t('rightMenu.verified'),
           }}
+          disableSignup={signupDisabled}
           onOpenUrl={props.onOpenExternalPage}
           onNavigate={handleNavigation}
           onOpenDialog={(dialog) => dispatch(dialogActions.openDialogWithoutPayload(dialog))}
