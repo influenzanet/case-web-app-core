@@ -1,7 +1,10 @@
-import { containerClassName } from 'case-web-ui';
+import { Avatar, containerClassName } from 'case-web-ui';
+import { AvatarConfig } from 'case-web-ui/build/types/avatars';
+import { Profile } from 'case-web-ui/build/types/profile';
 import clsx from 'clsx';
 import React, { useState } from 'react';
-import { Nav, Navbar } from 'react-bootstrap';
+import { Dropdown, Nav, Navbar, NavItem } from 'react-bootstrap';
+import { NavbarConfig } from '../../../types/navbarConfig';
 import Drawer from './Drawer';
 
 interface NormalNavbarProps {
@@ -11,10 +14,19 @@ interface NormalNavbarProps {
     toggleBtnAriaLabel?: string;
     loginBtn: string;
     signupBtn: string;
+    logoutBtn: string;
+    openSingupSuccessDialogBtn: string;
   };
+  content?: NavbarConfig;
   isLoggedIn: boolean;
+  isNotVerifiedUser?: boolean;
   disableSignup?: boolean;
+  avatars: AvatarConfig[];
+  currentProfile?: Profile;
   onOpenDialog: (dialog: string) => void;
+  onOpenUrl: (url: string) => void;
+  onNavigate: (url: string) => void;
+  onLogout: () => void;
 }
 
 const NavbarToggle: React.FC<{
@@ -67,7 +79,7 @@ const NormalNavbar: React.FC<NormalNavbarProps> = (props) => {
       </ul>
 
       <Nav className="me-auto">
-        <Nav.Link href="#home">Home</Nav.Link>
+        <Nav.Link href="#home">TODO: left items</Nav.Link>
         <Nav.Link href="#features">Features</Nav.Link>
         <Nav.Link href="#pricing">Pricing</Nav.Link>
       </Nav>
@@ -104,7 +116,136 @@ const NormalNavbar: React.FC<NormalNavbarProps> = (props) => {
     </div>
   )
 
-  const navbarRight = () => props.isLoggedIn ? <p>todo</p> : navbarRightUnauth();
+  const navbarRightAuth = () => {
+    return (
+      <Dropdown
+        as={NavItem}
+        align="end"
+      >
+        <Dropdown.Toggle
+          className="fs-btn nav-link-height d-flex align-items-center"
+          id="nav-auth-menu"
+          style={{
+            outline: 'none',
+            boxShadow: 'none',
+            outlineWidth: 0,
+            border: 'none',
+          }}
+        >
+          {props.currentProfile ? <Avatar
+            avatars={props.avatars}
+            className="me-1"
+            avatarId={props.currentProfile.avatarId}
+          /> : null}
+          <span className="d-none d-sm-inline-block">
+            {props.currentProfile?.alias}
+          </span>
+        </Dropdown.Toggle>
+
+        <Dropdown.Menu
+          className="shadow border-0 dropdown-menu-end text-end bg-secondary"
+        >
+          <div className="d-block d-sm-none border-bottom-2 border-grey-2">
+            <span className="dropdown-item disabled">{props.currentProfile?.alias}</span>
+          </div>
+
+          {props.content?.rightItems.map(item =>
+            <Dropdown.Item
+              as="button"
+              aria-label={item.label}
+
+              key={item.itemKey}
+              className="dropdown-item"
+              type="button"
+              onClick={() => {
+                if (item.type === 'dialog') {
+                  props.onOpenDialog(item.url);
+                } else {
+                  props.onNavigate(item.url);
+                }
+              }}
+            >
+              {item.label}
+              <i className={clsx(item.iconClass, 'ms-1')}></i>
+            </Dropdown.Item>
+          )}
+
+          <Dropdown.Item
+            as="button"
+            aria-label={props.labels.logoutBtn}
+            onClick={props.onLogout}
+          >
+            {props.labels.logoutBtn}
+            <i className={clsx('fas fa-sign-out-alt', 'ms-1')}></i>
+          </Dropdown.Item>
+        </Dropdown.Menu>
+      </Dropdown>
+    )
+  }
+
+  const navbarRightNotVerified = () => {
+    return (
+      <Dropdown
+        as={NavItem}
+        align="end"
+      >
+        <Dropdown.Toggle
+          className="fs-btn nav-link-height d-flex align-items-center"
+          id="nav-auth-menu"
+          style={{
+            outline: 'none',
+            boxShadow: 'none',
+            outlineWidth: 0,
+            border: 'none',
+          }}
+        >
+          {props.currentProfile ? <Avatar
+            avatars={props.avatars}
+            className="me-1"
+            avatarId={props.currentProfile.avatarId}
+          /> : null}
+          <span className="d-none d-sm-inline-block">
+            {props.currentProfile?.alias}
+          </span>
+        </Dropdown.Toggle>
+
+        <Dropdown.Menu
+          className="shadow border-0 dropdown-menu-end text-end bg-secondary"
+        >
+          <div className="d-block d-sm-none border-bottom-2 border-grey-2">
+            <span className="dropdown-item disabled">{props.currentProfile?.alias}</span>
+          </div>
+
+          <Dropdown.Item
+            as="button"
+            aria-label={props.labels.openSingupSuccessDialogBtn}
+            onClick={() => props.onOpenDialog('signupSuccess')}
+          >
+            {props.labels.openSingupSuccessDialogBtn}
+          </Dropdown.Item>
+
+          <Dropdown.Item
+            as="button"
+            aria-label={props.labels.logoutBtn}
+            onClick={props.onLogout}
+          >
+            {props.labels.logoutBtn}
+            <i className={clsx('fas fa-sign-out-alt', 'ms-1')}></i>
+          </Dropdown.Item>
+        </Dropdown.Menu>
+      </Dropdown>
+    )
+  }
+
+  const navbarRight = () => {
+    if (props.isLoggedIn) {
+      return navbarRightAuth();
+    }
+    if (props.isNotVerifiedUser) {
+      return navbarRightNotVerified();
+    }
+    return navbarRightUnauth();
+  }
 
   return (
     <React.Fragment>
@@ -133,138 +274,6 @@ const NormalNavbar: React.FC<NormalNavbarProps> = (props) => {
     </React.Fragment>
 
   )
-
-  /*
-  <Container>
-        <Navbar.Brand href="#home">Navbar</Navbar.Brand>
-        <Nav className="me-auto">
-          <Nav.Link href="#home">Home</Nav.Link>
-          <Nav.Link href="#features">Features</Nav.Link>
-          <Nav.Link href="#pricing">Pricing</Nav.Link>
-        </Nav>
-      </Container>
-      */
-  //const breakpoint = props.content.breakpoint ? props.content.breakpoint : 'md';
-  /*
-  TODO:
-  - get list of items to be rendered
-  - render items
-  - add callbacks
-  */
-  /*return (
-    <React.Fragment>
-      <div className={`d-block d-${breakpoint}-none`}>
-        <Drawer
-          isAuth={isLoggedIn}
-          open={drawerOpen}
-          items={props.content.leftItems}
-          onClose={() => { setDrawerOpen(false) }}
-        />
-      </div>
-      <nav className={`navbar navbar-expand-${breakpoint} bg-primary p-0`}>
-        <div className={containerClassName}>
-          {surveyMode.active ? surveyModeHeader() : normalModeHeader()}
-        </div>
-      </nav>
-
-
-    </React.Fragment>
-  );*/
 };
 
 export default NormalNavbar;
-
-
-/*
-
-  const navbarLeft = () => {
-    if (!props.content) { return null; }
-
-    return <React.Fragment>
-      <div className={clsx("nav nav-tabs", `d-block d-${breakpoint}-none`)}>
-
-        <button className="btn btn-primary fs-btn nav-link nav-link-height text-nowrap" onClick={() => setDrawerOpen(true)}>
-          <i className="fas fa-bars" ></i>
-          <span className="navbar-text ps-1 text-white ">Menu</span>
-        </button>
-
-      </div>
-      <div className="collapse navbar-collapse bg-primary no-transition" id="navbarSupportedContent" >
-
-      </div>
-    </React.Fragment>
-  }
-
-  const navbarRight = () => {
-    if (hasAuthTokens) {
-      return <div className="dropdown nav-tabs d-flex align-items-center">
-        <button
-          className="btn btn-primary dropdown-toggle fs-btn nav-link-height d-flex align-items-center"
-          type="button"
-          id="DropMenu"
-          data-bs-toggle="dropdown"
-          style={{
-            outline: 'none',
-            boxShadow: 'none',
-            outlineWidth: 0,
-            border: 'none',
-          }}
-          aria-expanded="false" >
-          {currentProfile ? <Avatar
-            avatars={avatars}
-            className="me-1"
-            avatarId={currentProfile.avatarId}
-          /> : null}
-          <span className="d-none d-sm-inline-block">
-            {currentProfile?.alias}
-          </span>
-        </button >
-
-        <div className="dropdown-menu shadow border-0 dropdown-menu-end text-end bg-secondary">
-          <div className="d-block d-sm-none border-bottom-2 border-secondary">
-            <span className="dropdown-item disabled">{currentProfile?.alias}</span>
-          </div>
-          {isLoggedIn ? <React.Fragment>
-            {
-              props.content?.rightItems.map(item =>
-                <button
-                  key={item.itemKey}
-                  className="dropdown-item"
-                  type="button"
-                  onClick={() => {
-                    if (item.type === 'dialog') {
-                      dispatch(dialogActions.openDialogWithoutPayload(item.url))
-                    } else {
-                      history.push(item.url);
-                    }
-                  }}
-                >
-                  {t(`rightMenu.${item.itemKey}`)}
-                  <i className={clsx(item.iconClass, 'ms-1')}></i>
-                </button>
-              )
-            }
-          </React.Fragment> : <button
-            className="dropdown-item" type="button"
-            onClick={() => {
-              dispatch(dialogActions.openDialogWithoutPayload("signupSuccess"))
-            }}
-          >
-            {t('rightMenu.verified')}
-          </button>
-          }
-          <button
-            className="dropdown-item"
-            onClick={() => logout()} >
-            {t(`rightMenu.logout`)}
-            <i className={clsx('fas fa-sign-out-alt', 'ms-1')}></i>
-          </button>
-        </div>
-      </div>
-    }
-    return
-  }
-
-  const normalModeHeader = () =>
-
-*/
