@@ -17,8 +17,10 @@ export const Example = () =>
     minHeight="100vh"
   />}>
     <NormalNavbar
-      toggleLabel={'Menu'}
-      toggleAriaLabel={'Menu'}
+      labels={{
+        toggleBtn: 'Menu',
+        toggleBtnAriaLabel: 'Menu',
+      }}
     //content={{}}
     //breakpoint=''
     //onOpenExternalPage={onOpenExternalPage}
