@@ -9,7 +9,12 @@ interface NormalNavbarProps {
   labels: {
     toggleBtn: string;
     toggleBtnAriaLabel?: string;
-  }
+    loginBtn: string;
+    signupBtn: string;
+  };
+  isLoggedIn: boolean;
+  disableSignup?: boolean;
+  onOpenDialog: (dialog: string) => void;
 }
 
 const NavbarToggle: React.FC<{
@@ -35,11 +40,77 @@ const NormalNavbar: React.FC<NormalNavbarProps> = (props) => {
 
   const [drawerOpen, setDrawerOpen] = useState(false);
 
+
+  const navbarLeft = () => <React.Fragment>
+    <NavbarToggle
+      label={props.labels.toggleBtn}
+      ariaLabel={props.labels.toggleBtnAriaLabel}
+      hideFromBreakpoint={breakpoint}
+      onClick={() => setDrawerOpen(true)}
+    />
+    <Navbar.Collapse id="normal-mode-navbar-nav">
+
+      <ul className="nav nav-tabs" >
+        {/*props.content.leftItems.map(
+          item =>
+            <NavbarItem
+              key={item.itemKey}
+              itemkey={item.itemKey}
+              title={t(`${item.itemKey}`)}
+              iconClass={item.iconClass}
+              url={item.url}
+              onNavigate={handleNavigation}
+              hideWhen={item.hideWhen}
+              type={item.type}
+              dropdownItems={item.dropdownItems}
+        />)*/}
+      </ul>
+
+      <Nav className="me-auto">
+        <Nav.Link href="#home">Home</Nav.Link>
+        <Nav.Link href="#features">Features</Nav.Link>
+        <Nav.Link href="#pricing">Pricing</Nav.Link>
+      </Nav>
+
+
+
+    </Navbar.Collapse>
+  </React.Fragment>
+
+  const navbarRightUnauth = () => (
+    <div className="row">
+      <ul className="nav nav-tabs justify-content-end">
+        <li className="nav-item">
+          <button
+            aria-label={props.labels.loginBtn}
+            className="nav-link nav-link-height btn btn-primary"
+            onClick={() => props.onOpenDialog("login")}
+          >
+            {props.labels.loginBtn}
+          </button>
+        </li>
+
+        {!props.disableSignup ?
+          <li className="nav-item">
+            <button
+              aria-label={props.labels.signupBtn}
+              className="nav-link nav-link-height btn btn-primary "
+              onClick={() => props.onOpenDialog("signup")} >
+              {props.labels.signupBtn}
+            </button>
+          </li>
+          : null}
+      </ul>
+    </div>
+  )
+
+  const navbarRight = () => props.isLoggedIn ? <p>todo</p> : navbarRightUnauth();
+
   return (
     <React.Fragment>
       <div className={`d-block d-${breakpoint}-none`}>
         <Drawer
-          isAuth={false}
+          isAuth={props.isLoggedIn}
           open={drawerOpen}
           items={[]}
           onClose={() => {
@@ -51,24 +122,12 @@ const NormalNavbar: React.FC<NormalNavbarProps> = (props) => {
         collapseOnSelect expand={breakpoint}
       >
         <div className={containerClassName}>
-          <NavbarToggle
-            label={props.labels.toggleBtn}
-            ariaLabel={props.labels.toggleBtnAriaLabel}
-            hideFromBreakpoint={breakpoint}
-            onClick={() => setDrawerOpen(true)}
-          />
-          <Navbar.Collapse id="normal-mode-navbar-nav">
-
-
-            <Nav className="me-auto">
-              <Nav.Link href="#home">Home</Nav.Link>
-              <Nav.Link href="#features">Features</Nav.Link>
-              <Nav.Link href="#pricing">Pricing</Nav.Link>
-            </Nav>
-
-
-
-          </Navbar.Collapse>
+          <div className="d-flex align-items-end w-100">
+            <div className="flex-grow-1">
+              {navbarLeft()}
+            </div>
+            {navbarRight()}
+          </div>
         </div>
       </Navbar >
     </React.Fragment>
@@ -131,21 +190,7 @@ export default NormalNavbar;
 
       </div>
       <div className="collapse navbar-collapse bg-primary no-transition" id="navbarSupportedContent" >
-        <ul className="nav nav-tabs" >
-          {props.content.leftItems.map(
-            item =>
-              <NavbarItem
-                key={item.itemKey}
-                itemkey={item.itemKey}
-                title={t(`${item.itemKey}`)}
-                iconClass={item.iconClass}
-                url={item.url}
-                onNavigate={handleNavigation}
-                hideWhen={item.hideWhen}
-                type={item.type}
-                dropdownItems={item.dropdownItems}
-              />)}
-        </ul>
+
       </div>
     </React.Fragment>
   }
@@ -217,28 +262,9 @@ export default NormalNavbar;
         </div>
       </div>
     }
-    return <div className="row">
-      <ul className="nav nav-tabs justify-content-end">
-        <li className="nav-item">
-          <button className="nav-link nav-link-height btn btn-primary" onClick={() => dispatch(dialogActions.openDialogWithoutPayload("login"))} >{t(`${'login'}`)}</button>
-        </li>
-
-        {!signupDisabled ?
-          <li className="nav-item">
-            <button className="nav-link nav-link-height btn btn-primary " onClick={() => dispatch(dialogActions.openDialogWithoutPayload("signup"))} >{t(`${'signup'}`)}</button>
-          </li>
-          : null}
-
-      </ul>
-    </div>
+    return
   }
 
   const normalModeHeader = () =>
-    <div className="d-flex align-items-end w-100">
-      <div className="flex-grow-1">
-        {navbarLeft()}
-      </div>
 
-      {navbarRight()}
-    </div>
 */

@@ -20,7 +20,52 @@ export const Example = () =>
       labels={{
         toggleBtn: 'Menu',
         toggleBtnAriaLabel: 'Menu',
+        loginBtn: 'Login',
+        signupBtn: 'Signup'
       }}
+      isLoggedIn={false}
+      onOpenDialog={(d: string) => alert(`Would open ${d} dialog.`)}
+    //content={{}}
+    //breakpoint=''
+    //onOpenExternalPage={onOpenExternalPage}
+    />
+  </Suspense>
+
+export const DisabledSignup = () =>
+  <Suspense fallback={() => <LoadingPlaceholder
+    color="white"
+    minHeight="100vh"
+  />}>
+    <NormalNavbar
+      labels={{
+        toggleBtn: 'Menu',
+        toggleBtnAriaLabel: 'Menu',
+        loginBtn: 'Login',
+        signupBtn: 'Signup'
+      }}
+      isLoggedIn={false}
+      onOpenDialog={(d: string) => alert(`Would open ${d} dialog.`)}
+      disableSignup={true}
+    //content={{}}
+    //breakpoint=''
+    //onOpenExternalPage={onOpenExternalPage}
+    />
+  </Suspense>
+
+export const LoggedIn = () =>
+  <Suspense fallback={() => <LoadingPlaceholder
+    color="white"
+    minHeight="100vh"
+  />}>
+    <NormalNavbar
+      labels={{
+        toggleBtn: 'Menu',
+        toggleBtnAriaLabel: 'Menu',
+        loginBtn: 'Login',
+        signupBtn: 'Signup'
+      }}
+      isLoggedIn={true}
+      onOpenDialog={(d: string) => alert(`Would open ${d} dialog.`)}
     //content={{}}
     //breakpoint=''
     //onOpenExternalPage={onOpenExternalPage}

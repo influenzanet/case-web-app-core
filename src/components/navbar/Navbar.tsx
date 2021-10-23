@@ -48,21 +48,6 @@ const Navbar: React.FC<NavbarProps> = (props) => {
     return <LoadingPlaceholder color="primary" minHeight={44} iconSize="1rem" />
   }
 
-  /*<div className={`d-block d-${breakpoint}-none`}>
-          <Drawer
-            isAuth={isLoggedIn}
-            open={drawerOpen}
-            items={props.content.leftItems}
-            onClose={() => { setDrawerOpen(false) }}
-          />
-        </div>
-        <nav className={`navbar navbar-expand-${breakpoint} bg-primary p-0`}>
-          <div className={containerClassName}>
-
-          </div>
-        </nav>
-        */
-
   return (
     <React.Fragment>
       {surveyMode.active ?
@@ -76,11 +61,14 @@ const Navbar: React.FC<NavbarProps> = (props) => {
           }}
         /> :
         <NormalNavbar
-
+          isLoggedIn={isLoggedIn}
           labels={{
             toggleBtn: t('toggleBtn'),
             toggleBtnAriaLabel: t('toggleBtnAriaLabel'),
+            loginBtn: t(`${'login'}`),
+            signupBtn: t(`${'signup'}`),
           }}
+          onOpenDialog={(dialog) => dispatch(dialogActions.openDialogWithoutPayload(dialog))}
         />
       }
     </React.Fragment>
