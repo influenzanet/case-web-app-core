@@ -12,7 +12,7 @@ import { LoadingPlaceholder } from 'case-web-ui';
 import { useAuthTokenCheck } from '../../hooks/useAuthTokenCheck';
 import { dialogActions } from '../../store/dialogSlice';
 import SurveyModeNavbar from './NavbarComponents/SurveyModeNavbar';
-import NormalNavbar from './NavbarComponents/NormalNavbar';
+import NormalNavbar, { NavbarBreakpoints } from './NavbarComponents/NormalNavbar';
 
 
 interface NavbarProps {
@@ -66,12 +66,12 @@ const Navbar: React.FC<NavbarProps> = (props) => {
         item.dropdownItems = item.dropdownItems?.map(dItem => {
           return {
             ...dItem,
-            label: t(`leftMenu.${item.itemKey}.${dItem.itemKey}`)
+            label: t(`${item.itemKey}.${dItem.itemKey}`)
           }
         })
-        newItem.label = t(`leftMenu.${item.itemKey}.title`)
+        newItem.label = t(`${item.itemKey}.title`)
       } else {
-        newItem.label = t(`leftMenu.${item.itemKey}`)
+        newItem.label = t(`${item.itemKey}`)
       }
       return newItem;
     })
@@ -105,6 +105,7 @@ const Navbar: React.FC<NavbarProps> = (props) => {
             logoutBtn: t('rightMenu.logout'),
             openSingupSuccessDialogBtn: t('rightMenu.verified'),
           }}
+          breakpoint={props.content?.breakpoint as NavbarBreakpoints}
           disableSignup={signupDisabled}
           onOpenUrl={props.onOpenExternalPage}
           onNavigate={handleNavigation}

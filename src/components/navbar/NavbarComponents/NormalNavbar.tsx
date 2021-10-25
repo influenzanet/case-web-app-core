@@ -3,12 +3,15 @@ import { AvatarConfig } from 'case-web-ui/build/types/avatars';
 import { Profile } from 'case-web-ui/build/types/profile';
 import clsx from 'clsx';
 import React, { useState } from 'react';
-import { Dropdown, Nav, Navbar, NavItem } from 'react-bootstrap';
-import { NavbarConfig } from '../../../types/navbarConfig';
+import { Dropdown, Navbar, NavItem } from 'react-bootstrap';
+import { NavbarConfig, NavbarItemConfig } from '../../../types/navbarConfig';
 import Drawer from './Drawer';
+import NavbarItem from './NavbarItem';
+
+export type NavbarBreakpoints = "md" | "sm" | "lg" | "xl" | "xxl";
 
 interface NormalNavbarProps {
-  breakpoint?: "md" | "sm" | "lg" | "xl" | "xxl";
+  breakpoint?: NavbarBreakpoints;
   labels: {
     toggleBtn: string;
     toggleBtnAriaLabel?: string;
@@ -52,6 +55,15 @@ const NormalNavbar: React.FC<NormalNavbarProps> = (props) => {
 
   const [drawerOpen, setDrawerOpen] = useState(false);
 
+  const shouldHideItem = (item: NavbarItemConfig): boolean => {
+    if (props.isLoggedIn === false && item.hideWhen === 'unauth') {
+      return true;
+    }
+    if (props.isLoggedIn === true && item.hideWhen === 'auth') {
+      return true;
+    }
+    return false;
+  }
 
   const navbarLeft = () => <React.Fragment>
     <NavbarToggle
@@ -61,31 +73,21 @@ const NormalNavbar: React.FC<NormalNavbarProps> = (props) => {
       onClick={() => setDrawerOpen(true)}
     />
     <Navbar.Collapse id="normal-mode-navbar-nav">
-
       <ul className="nav nav-tabs" >
-        {/*props.content.leftItems.map(
-          item =>
-            <NavbarItem
+        {props.content?.leftItems.map(
+          item => {
+            if (shouldHideItem(item)) {
+              return null;
+            }
+            return <NavbarItem
               key={item.itemKey}
-              itemkey={item.itemKey}
-              title={t(`${item.itemKey}`)}
-              iconClass={item.iconClass}
-              url={item.url}
-              onNavigate={handleNavigation}
-              hideWhen={item.hideWhen}
-              type={item.type}
-              dropdownItems={item.dropdownItems}
-        />)*/}
+              item={item}
+              onNavigate={props.onNavigate}
+              onOpenUrl={props.onOpenUrl}
+              onOpenDialog={props.onOpenDialog}
+            />
+          })}
       </ul>
-
-      <Nav className="me-auto">
-        <Nav.Link href="#home">TODO: left items</Nav.Link>
-        <Nav.Link href="#features">Features</Nav.Link>
-        <Nav.Link href="#pricing">Pricing</Nav.Link>
-      </Nav>
-
-
-
     </Navbar.Collapse>
   </React.Fragment>
 
@@ -153,11 +155,14 @@ const NormalNavbar: React.FC<NormalNavbarProps> = (props) => {
             <Dropdown.Item
               as="button"
               aria-label={item.label}
-
               key={item.itemKey}
               className="dropdown-item"
               type="button"
               onClick={() => {
+                if (!item.url) {
+                  console.warn('Navigation item did not contain a url attribute. Website creator should check the config.');
+                  return
+                }
                 if (item.type === 'dialog') {
                   props.onOpenDialog(item.url);
                 } else {

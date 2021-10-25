@@ -33,7 +33,7 @@ const Drawer: React.FC<DrawerProps> = (props) => {
             return <NavLink
               key={item.itemKey}
               className="nav-link px-3 py-1a"
-              to={item.url}
+              to={item.url ? item.url : ''}
               onClick={() => props.onClose()}
               activeClassName="bg-secondary"
               activeStyle={{

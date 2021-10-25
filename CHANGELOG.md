@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.4.0 - ???
+
+### BREAKING CHANGES
+
+- `@material-ui/core` is no longer a dependency of this library.
+- Navbar:
+  - translation files for the navbar (`locales/<languageCode>/navbar.json`) should include `toggleBtn` and `toggleBtnAriaLabel` to localise the text behind the navigation toggle on small screens.
+
+### Added
+
+- Navbar now supports dropdown menu item to implement nested navigation / menus with more content.
+
+### Changed
+
+- Changed implementation of the Navbar and the Drawer for small screens.
+
+
 ## 1.3.0 - 2021-10-20
 
 ### Added

@@ -6,10 +6,11 @@ export interface NavbarConfig {
 
 export interface NavbarItemConfig {
   type: 'internal' | 'dropdown' | 'dialog';
-  url: string;
+  url?: string;
   itemKey: string;
   label?: string; // for already translated items
   hideWhen?: 'auth' | 'unauth';
   iconClass?: string;
+  className?: string;
   dropdownItems?: Array<NavbarItemConfig>;
 }

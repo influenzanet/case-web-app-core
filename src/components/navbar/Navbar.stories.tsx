@@ -4,6 +4,7 @@ import 'localStyles';
 import NormalNavbar from "./NavbarComponents/NormalNavbar";
 import { LoadingPlaceholder } from "case-web-ui";
 import SurveyModeNavbar from "./NavbarComponents/SurveyModeNavbar";
+import { BrowserRouter } from "react-router-dom";
 
 export default {
   title: "Navbars"
@@ -36,20 +37,19 @@ export const Example = () =>
     color="white"
     minHeight="100vh"
   />}>
-    <NormalNavbar
-      labels={exampleLabels}
-      avatars={[
-        { avatarId: 'default', url: '/images/placeholder_image.png' }
-      ]}
-      isLoggedIn={false}
-      onOpenDialog={onOpenDialog}
-      onNavigate={onNavigate}
-      onOpenUrl={onOpenExternalPage}
-      onLogout={() => alert('This would perform the logout.')}
-    //content={{}}
-    //breakpoint=''
-    //onOpenExternalPage={onOpenExternalPage}
-    />
+    <BrowserRouter>
+      <NormalNavbar
+        labels={exampleLabels}
+        avatars={[
+          { avatarId: 'default', url: '/images/placeholder_image.png' }
+        ]}
+        isLoggedIn={false}
+        onOpenDialog={onOpenDialog}
+        onNavigate={onNavigate}
+        onOpenUrl={onOpenExternalPage}
+        onLogout={() => alert('This would perform the logout.')}
+      />
+    </BrowserRouter>
   </Suspense>
 
 export const DisabledSignup = () =>
@@ -57,21 +57,20 @@ export const DisabledSignup = () =>
     color="white"
     minHeight="100vh"
   />}>
-    <NormalNavbar
-      labels={exampleLabels}
-      avatars={[
-        { avatarId: 'default', url: '/images/placeholder_image.png' }
-      ]}
-      isLoggedIn={false}
-      onOpenDialog={onOpenDialog}
-      onNavigate={onNavigate}
-      onOpenUrl={onOpenExternalPage}
-      onLogout={() => alert('This would perform the logout.')}
-      disableSignup={true}
-    //content={{}}
-    //breakpoint=''
-    //onOpenExternalPage={onOpenExternalPage}
-    />
+    <BrowserRouter>
+      <NormalNavbar
+        labels={exampleLabels}
+        avatars={[
+          { avatarId: 'default', url: '/images/placeholder_image.png' }
+        ]}
+        isLoggedIn={false}
+        onOpenDialog={onOpenDialog}
+        onNavigate={onNavigate}
+        onOpenUrl={onOpenExternalPage}
+        onLogout={() => alert('This would perform the logout.')}
+        disableSignup={true}
+      />
+    </BrowserRouter>
   </Suspense>
 
 export const LoggedIn = () =>
@@ -79,25 +78,37 @@ export const LoggedIn = () =>
     color="white"
     minHeight="100vh"
   />}>
-    <NormalNavbar
-      labels={exampleLabels}
-      avatars={[
-        { avatarId: 'default', url: '/images/placeholder_image.png' }
-      ]}
-      currentProfile={exampleProfile}
-      isLoggedIn={true}
-      onOpenDialog={onOpenDialog}
-      onNavigate={onNavigate}
-      onOpenUrl={onOpenExternalPage}
-      onLogout={() => alert('This would perform the logout.')}
-      content={{
-        leftItems: [],
-        rightItems: [
-          { itemKey: 'settings', label: 'Settings', type: 'internal', url: '/settings' },
-          { itemKey: 'profiles', label: 'Profiles', type: 'dialog', url: 'manageProfiles' },
-        ]
-      }}
-    />
+    <BrowserRouter>
+      <NormalNavbar
+        labels={exampleLabels}
+        avatars={[
+          { avatarId: 'default', url: '/images/placeholder_image.png' }
+        ]}
+        currentProfile={exampleProfile}
+        isLoggedIn={true}
+        onOpenDialog={onOpenDialog}
+        onNavigate={onNavigate}
+        onOpenUrl={onOpenExternalPage}
+        onLogout={() => alert('This would perform the logout.')}
+        content={{
+          leftItems: [
+            { itemKey: 'home', label: 'Home', type: 'internal', url: '/home' },
+            {
+              itemKey: 'faq', label: 'FAQ', type: 'dropdown', url: '/faq', dropdownItems: [
+                { itemKey: 'a', label: 'Aspect A', type: 'internal', url: '/faq', },
+                { itemKey: 'b', label: 'Aspect B (dialog)', type: 'dialog', url: 'login', },
+                { itemKey: 'c', label: 'Aspect C', type: 'internal', url: '/faq/subroute', },
+              ]
+            },
+            { itemKey: 'other', label: 'Other route', type: 'internal', url: '/other', className: 'text-decoration-underline' },
+          ],
+          rightItems: [
+            { itemKey: 'settings', label: 'Settings', type: 'internal', url: '/settings' },
+            { itemKey: 'profiles', label: 'Profiles', type: 'dialog', url: 'manageProfiles' },
+          ]
+        }}
+      />
+    </BrowserRouter>
   </Suspense>
 
 export const NotVerifiedUser = () =>
@@ -105,22 +116,21 @@ export const NotVerifiedUser = () =>
     color="white"
     minHeight="100vh"
   />}>
-    <NormalNavbar
-      labels={exampleLabels}
-      avatars={[
-        { avatarId: 'default', url: '/images/placeholder_image.png' }
-      ]}
-      currentProfile={exampleProfile}
-      isLoggedIn={false}
-      isNotVerifiedUser={true}
-      onOpenDialog={onOpenDialog}
-      onNavigate={onNavigate}
-      onOpenUrl={onOpenExternalPage}
-      onLogout={() => alert('This would perform the logout.')}
-    //content={{}}
-    //breakpoint=''
-    //onOpenExternalPage={onOpenExternalPage}
-    />
+    <BrowserRouter>
+      <NormalNavbar
+        labels={exampleLabels}
+        avatars={[
+          { avatarId: 'default', url: '/images/placeholder_image.png' }
+        ]}
+        currentProfile={exampleProfile}
+        isLoggedIn={false}
+        isNotVerifiedUser={true}
+        onOpenDialog={onOpenDialog}
+        onNavigate={onNavigate}
+        onOpenUrl={onOpenExternalPage}
+        onLogout={() => alert('This would perform the logout.')}
+      />
+    </BrowserRouter>
   </Suspense>
 
 
