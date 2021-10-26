@@ -43,42 +43,29 @@ const NavbarItem: React.FC<NavbarItemProps> = (props) => {
 
 export default NavbarItem;
 /*
-const collapseOnlyMobile = window.outerWidth < 992;
-  const history = useHistory();
-  const { t } = useTranslation(['navbar']);
-  const isLoggedIn = useIsAuthenticated();
-  const handleNavigation = (url: string) => {
-    history.push(url)
-  }
-{(isLoggedIn === false && props.hideWhen === 'unauth') || (isLoggedIn === true && props.hideWhen === 'auth') ?
-        null
-        :
-        (props.type === 'internal') ?
-
-          :
-          <li className="dropdown nav-item">
-            <button
-              className="customDropDown btn btn-primary dropdown-toggle text-lightest fs-btn "
-              type="button"
-              id="DropMenu"
-              data-bs-toggle="dropdown"
-              aria-expanded="false">
-              {props.iconClass ?
-                <i className={clsx(props.iconClass, 'me-1')}></i>
-                : null}
-              {t(`${props.itemkey}.title`)}
-            </button>
-            <div className="dropdown-menu dropdown-menu-end ">
-              {props.dropdownItems!.slice(0).map(
-                item =>
-                  <DropdownItem
-                    key={item.itemKey}
-                    title={t(`${props.itemkey}.${item.itemKey}`)}
-                    itemkey={item.itemKey}
-                    iconClass={item.iconClass}
-                    url={item.url}
-                    onNavigate={handleNavigation}
-                  />)}
-            </div>
-          </li>
-      }*/
+<li className="dropdown nav-item">
+  <button
+    className="customDropDown btn btn-primary dropdown-toggle text-lightest fs-btn "
+    type="button"
+    id="DropMenu"
+    data-bs-toggle="dropdown"
+    aria-expanded="false">
+    {props.iconClass ?
+      <i className={clsx(props.iconClass, 'me-1')}></i>
+      : null}
+    {t(`${props.itemkey}.title`)}
+  </button>
+  <div className="dropdown-menu dropdown-menu-end ">
+    {props.dropdownItems!.slice(0).map(
+      item =>
+        <DropdownItem
+          key={item.itemKey}
+          title={t(`${props.itemkey}.${item.itemKey}`)}
+          itemkey={item.itemKey}
+          iconClass={item.iconClass}
+          url={item.url}
+          onNavigate={handleNavigation}
+        />)}
+  </div>
+</li>
+}*/

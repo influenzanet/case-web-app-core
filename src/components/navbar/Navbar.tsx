@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store/rootReducer'
@@ -24,7 +24,7 @@ interface NavbarProps {
 const signupDisabled = process.env.REACT_APP_DISABLE_SIGNUP === 'true';
 
 const Navbar: React.FC<NavbarProps> = (props) => {
-  const { t } = useTranslation(['navbar']);
+  const { t, i18n } = useTranslation(['navbar']);
   const history = useHistory();
   const dispatch = useDispatch();
 
@@ -37,20 +37,13 @@ const Navbar: React.FC<NavbarProps> = (props) => {
   const avatars = useSelector((state: RootState) => state.config.avatars);
   const mainProfile: Profile | undefined = profileList.find((profile: Profile) => profile.mainProfile === true);
 
-  const handleNavigation = (url: string) => {
-    history.push(url);
-  }
+  const [localisedContent, setLocalisedContent] = useState<NavbarConfig | undefined>(props.content);
 
-  if (props.loading || !props.content) {
-    return <LoadingPlaceholder color="primary" minHeight={44} iconSize="1rem" />
-  }
-
-  const getLocalizedConfig = () => {
+  useEffect(() => {
     if (!props.content) return;
-    const config = { ...props.content };
 
     // right items
-    config.rightItems = config.rightItems.map(item => {
+    const newRightItems = props.content.rightItems.map(item => {
       return {
         ...item,
         label: t(`rightMenu.${item.itemKey}`)
@@ -58,12 +51,12 @@ const Navbar: React.FC<NavbarProps> = (props) => {
     })
 
     // left items
-    config.leftItems = config.leftItems.map(item => {
+    const newLeftItems = props.content.leftItems.map(item => {
       const newItem = {
         ...item,
       }
       if (item.type === 'dropdown') {
-        item.dropdownItems = item.dropdownItems?.map(dItem => {
+        newItem.dropdownItems = item.dropdownItems?.map(dItem => {
           return {
             ...dItem,
             label: t(`${item.itemKey}.${dItem.itemKey}`)
@@ -73,10 +66,22 @@ const Navbar: React.FC<NavbarProps> = (props) => {
       } else {
         newItem.label = t(`${item.itemKey}`)
       }
-      return newItem;
+      return { ...newItem };
     })
 
-    return config;
+    setLocalisedContent({
+      breakpoint: props.content.breakpoint,
+      leftItems: newLeftItems.slice(),
+      rightItems: newRightItems,
+    });
+  }, [i18n.language])
+
+  const handleNavigation = (url: string) => {
+    history.push(url);
+  }
+
+  if (props.loading || !props.content) {
+    return <LoadingPlaceholder color="primary" minHeight={44} iconSize="1rem" />
   }
 
   return (
@@ -92,7 +97,7 @@ const Navbar: React.FC<NavbarProps> = (props) => {
           }}
         /> :
         <NormalNavbar
-          content={getLocalizedConfig()}
+          content={localisedContent}
           isLoggedIn={isLoggedIn}
           isNotVerifiedUser={hasAuthTokens && !isLoggedIn}
           avatars={avatars}

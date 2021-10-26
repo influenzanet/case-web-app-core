@@ -16,16 +16,22 @@
       "iconClass": "fas fa-home"
     },
     {
-      "type": "internal",
+      "type": "dropdown",
       "url": "/about",
       "itemKey": "about",
-      "hideWhen": ""
-    },
-    {
-      "type": "internal",
-      "url": "/faq",
-      "itemKey": "faq",
-      "hideWhen": ""
+      "hideWhen": "",
+      "dropdownItems": [
+        {
+          "type": "internal",
+          "itemKey": "about",
+          "url": "/about"
+        },
+        {
+          "type": "internal",
+          "itemKey": "faq",
+          "url": "/faq"
+        }
+      ]
     },
     {
       "type": "internal",

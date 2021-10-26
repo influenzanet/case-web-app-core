@@ -2,8 +2,11 @@
   "home": "Welkom",
   "authhome": "Mijn Infectieradar",
   "results": "Actuele resultaten",
-  "about": "Over Infectieradar",
-  "faq": "Vraag en antwoord",
+  "about": {
+    "title": "Over Infectieradar",
+    "about": "Over Infectieradar",
+    "faq": "Vraag en antwoord"
+  },
   "login": "Inloggen",
   "signup": "Aanmelden",
   "rightMenu": {

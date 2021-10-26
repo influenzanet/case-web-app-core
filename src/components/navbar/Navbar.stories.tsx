@@ -98,7 +98,7 @@ export const LoggedIn = () =>
                 { itemKey: 'a', label: 'Aspect A', type: 'internal', url: '/faq', },
                 { itemKey: 'b', label: 'Aspect B (dialog)', type: 'dialog', url: 'login', },
                 { itemKey: 'c', label: 'Aspect C', type: 'internal', url: '/faq/subroute', },
-              ]
+              ], dropdownAlign: 'start'
             },
             { itemKey: 'other', label: 'Other route', type: 'internal', url: '/other', className: 'text-decoration-underline' },
           ],

@@ -2,8 +2,11 @@
   "home": "Home",
   "authhome": "My Influenzanet",
   "results": "Current Results",
-  "about": "About Infectieradar",
-  "faq": "FAQ",
+  "about": {
+    "title": "About Infectieradar",
+    "about": "About Infectieradar",
+    "faq": "FAQ"
+  },
   "login": "Login",
   "signup": "Sign up",
   "rightMenu": {

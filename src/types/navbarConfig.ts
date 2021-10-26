@@ -13,4 +13,5 @@ export interface NavbarItemConfig {
   iconClass?: string;
   className?: string;
   dropdownItems?: Array<NavbarItemConfig>;
+  dropdownAlign?: 'start' | 'end';
 }

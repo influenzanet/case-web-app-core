@@ -2,8 +2,11 @@
   "home": "Accueil",
   "authhome": "Mon Infectieradar.be",
   "results": "Les résultats actuels",
-  "about": "À propos d'Infectieradar.be",
-  "faq": "Question et réponse",
+  "about": {
+    "title": "À propos d'Infectieradar.be",
+    "about": "À propos d'Infectieradar.be",
+    "faq": "Question et réponse"
+  },
   "login": "Se connecter",
   "signup": "Enregistrez-vous",
   "rightMenu": {
