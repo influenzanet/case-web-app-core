@@ -23,18 +23,18 @@ const NavbarDropdownItem: React.FC<NavbarDropdownItemProps> = (props) => {
     >
       <Dropdown.Toggle
         className={clsx(
-          "fs-btn nav-link-height d-flex align-items-center",
+          "fs-btn nav-link nav-link-height d-flex align-items-center",
           {
-            ' fw-bold  btn-secondary text-body': match !== null
+            'fw-bold active text-body': match !== null
           }
         )}
-        id={props.item.itemKey + '-menu'}
         style={{
           outline: 'none',
           boxShadow: 'none',
           outlineWidth: 0,
           border: 'none',
         }}
+        id={props.item.itemKey + '-menu'}
       >
         {props.item.iconClass ?
           <i className={clsx(props.item.iconClass, 'me-1')}></i>

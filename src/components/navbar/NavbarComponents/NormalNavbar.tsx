@@ -258,10 +258,13 @@ const NormalNavbar: React.FC<NormalNavbarProps> = (props) => {
         <Drawer
           isAuth={props.isLoggedIn}
           open={drawerOpen}
-          items={[]}
+          items={props.content?.leftItems}
           onClose={() => {
             setDrawerOpen(false)
           }}
+          onNavigate={props.onNavigate}
+          onOpenUrl={props.onOpenUrl}
+          onOpenDialog={props.onOpenDialog}
         />
       </div>
       <Navbar bg="primary" className="p-0"
