@@ -200,7 +200,7 @@ const SurveyPage: React.FC<SurveyPageProps> = (props) => {
           <div className="col-12 col-lg-8 offset-lg-2"
             style={{ minHeight: '60vh' }}
           >
-            {loading ? <LoadingPlaceholder color="secondary" minHeight="400" /> :
+            {loading ? <LoadingPlaceholder color="white" minHeight="400" /> :
               renderContent()}
           </div>
         </div>
