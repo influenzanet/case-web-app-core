@@ -240,6 +240,96 @@
       ]
     },
     {
+      "path": "/router",
+      "pageKey": "router",
+      "hideTitleBar": true,
+      "rows": [
+        {
+          "key": "content",
+          "fullWidth": true,
+          "className": "p-0",
+          "columns": [
+            {
+              "key": "mainCol",
+              "className": "w-100",
+              "items": [
+                {
+                  "itemKey": "p1",
+                  "config": {
+                    "type": "placeholder",
+                    "label": "This is a page with subroutes"
+                  }
+                },
+                {
+                  "itemKey": "router1",
+                  "className": "",
+                  "config": {
+                    "type": "router",
+                    "pagesConfig": {
+                      "pages": [
+                        {
+                          "path": "/router/route1",
+                          "pageKey": "route1",
+                          "rows": [
+                            {
+                              "key": "content",
+                              "fullWidth": true,
+                              "className": "my-3",
+                              "columns": [
+                                {
+                                  "key": "mainCol",
+                                  "className": "w-100",
+                                  "items": [
+                                    {
+                                      "itemKey": "p1",
+                                      "config": {
+                                        "type": "placeholder",
+                                        "label": "Subroute 1"
+                                      }
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "path": "/router/route2",
+                          "pageKey": "route2",
+                          "rows": [
+                            {
+                              "key": "content",
+                              "fullWidth": true,
+                              "className": "my-3",
+                              "columns": [
+                                {
+                                  "key": "mainCol",
+                                  "className": "w-100",
+                                  "items": [
+                                    {
+                                      "itemKey": "p1",
+                                      "config": {
+                                        "type": "placeholder",
+                                        "label": "Subroute 2"
+                                      }
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
       "path": "/faq",
       "pageKey": "faq",
       "rows": [

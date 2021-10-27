@@ -10,6 +10,7 @@
 
 ### Added
 
+- Subrouter component implemented
 - Navbar now supports dropdown menu item to implement nested navigation / menus with more content.
 
 ### Changed

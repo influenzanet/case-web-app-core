@@ -10,6 +10,7 @@ export interface PageConfig {
   pageKey: string;
   hideWhen?: 'auth' | 'unauth';
   rows: Array<PageRow>;
+  hideTitleBar?: boolean;
 }
 
 export interface PageRow {
@@ -179,4 +180,5 @@ export interface PlaceholderComponentConfig {
 
 export interface RouterComponentConfig {
   type: 'router';
+  pagesConfig: PagesConfig;
 }

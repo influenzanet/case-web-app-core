@@ -34,6 +34,23 @@
       ]
     },
     {
+      "type": "dropdown",
+      "itemKey": "router",
+      "hideWhen": "",
+      "dropdownItems": [
+        {
+          "type": "internal",
+          "itemKey": "route1",
+          "url": "/router/route1"
+        },
+        {
+          "type": "internal",
+          "itemKey": "route2",
+          "url": "/router/route2"
+        }
+      ]
+    },
+    {
       "type": "internal",
       "url": "/results",
       "itemKey": "results",

@@ -34,6 +34,7 @@ const RouteToLayout: React.FC<RouteToLayoutProps> = (props) => {
       render={routeProps =>
         <ContentRenderer
           isAuthenticated={isAuthenticated}
+          hideTitleBar={props.pageConfig.hideTitleBar}
           pageKey={props.pageConfig.pageKey}
           rows={props.pageConfig.rows}
           defaultRoutes={props.defaultRoutes}

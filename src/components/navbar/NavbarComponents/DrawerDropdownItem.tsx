@@ -14,7 +14,7 @@ interface DrawerDropdownItemProps {
 
 const DrawerDropdownItem: React.FC<DrawerDropdownItemProps> = (props) => {
   const match = useRouteMatch([
-    props.item.url ? props.item.url : '',
+    props.item.url ? props.item.url : 'not defined',
     ...(props.item && props.item.dropdownItems ? props.item.dropdownItems.map(item => item.url ? item.url : '') : [])
   ]);
 

@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux'
-import { useHistory } from 'react-router-dom';
+import { Switch, useHistory } from 'react-router-dom';
 import { dialogActions } from '../../../store/dialogSlice';
 
 import { PageColumn, PageItem, PageRow } from '../../../types/pagesConfig';
@@ -22,7 +22,6 @@ import {
   MapWithTimeSliderLoader,
   ComposedLineAndScatterChartLoader,
   containerClassName,
-  LoadingPlaceholder,
 } from 'case-web-ui';
 
 import SystemInfo from '../../settings/SystemInfo';
@@ -35,9 +34,11 @@ import { DefaultRoutes } from '../../../types/routing';
 import { setPersistState } from '../../../store/appSlice';
 import { RootState } from '../../../store/rootReducer';
 import { getTranslatedMarkdownPath } from '../../../hooks/useTranslatedMarkdown';
+import RouteToLayout from './RouteToLayout';
 
 
 interface ContentRendererProps {
+  hideTitleBar?: boolean;
   isAuthenticated: boolean;
   rows: Array<PageRow>;
   pageKey: string;
@@ -253,9 +254,22 @@ const ContentRenderer: React.FC<ContentRendererProps> = (props) => {
           <h1 className="fs-1 text-center text-white text-uppercase m-0 p-2">{item.config.label}</h1>
         </div>
       case 'router':
-        return <p
-          key={item.itemKey}
-        >todo</p>
+        const dRoutes = item.config.pagesConfig.defaultRoutes ? item.config.pagesConfig.defaultRoutes : {
+          auth: '/home',
+          unauth: '/home',
+          studyPage: '/home',
+          surveyPage: '/surveys',
+        }
+        return <Switch key={item.itemKey}>{
+          item.config.pagesConfig.pages.map(pageConfig => {
+            return <RouteToLayout
+              key={pageConfig.path}
+              path={pageConfig.path}
+              pageConfig={pageConfig}
+              defaultRoutes={dRoutes}
+            />
+          })
+        }</Switch>
     }
     return <div
       key={item.itemKey}
@@ -277,9 +291,11 @@ const ContentRenderer: React.FC<ContentRendererProps> = (props) => {
 
   return (
     <React.Fragment>
-      <TitleBar
-        content={t('title')}
-      />
+      {props.hideTitleBar ? null :
+        <TitleBar
+          content={t('title')}
+        />
+      }
       {props.rows.map(row => {
         if (shouldHide(row.hideWhen, props.isAuthenticated)) {
           return null;
