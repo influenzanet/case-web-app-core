@@ -211,11 +211,11 @@ const VerificationCodeForm: React.FC<VerificationCodeFormProps> = (props) => {
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    props.onSubmit(verificationCode);
+    props.onSubmit(verificationCode.replace('-', ''));
   }
 
   const submitButtonEnabled = () => {
-    return !props.isLoading && verificationCode.length === 6;
+    return !props.isLoading && verificationCode.replace('-', '').length === 6;
   }
 
   const submitBtnLabel = t(`${verificationFormI18nPrefix}.submitBtn`)

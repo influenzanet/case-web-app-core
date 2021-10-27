@@ -16,7 +16,7 @@
 ### Changed
 
 - Changed implementation of the Navbar and the Drawer for small screens.
-
+- Verification Code input form will ignore '-' charaters (does not matter for validation or matching if you use hyphens or not). This way, we can send better formatted emails, using a hyphen in the email body to make code more readable.
 
 ## 1.3.0 - 2021-10-20
 
