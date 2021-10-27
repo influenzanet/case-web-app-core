@@ -52,7 +52,7 @@ const NavbarDropdownItem: React.FC<NavbarDropdownItemProps> = (props) => {
             className={clsx(
               "dropdown-item",
               {
-                "bg-primary text-white": match !== null && match.path === item.url
+                "fw-bold": match !== null && match.path === item.url
               }
             )}
             type="button"
