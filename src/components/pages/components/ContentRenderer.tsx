@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Switch, useHistory } from 'react-router-dom';
 import { dialogActions } from '../../../store/dialogSlice';
 
-import { PageColumn, PageItem, PageRow } from '../../../types/pagesConfig';
+import { PageColumn, PagesConfig, PageItem, PageRow } from '../../../types/pagesConfig';
 import {
   handleOpenExternalPage,
   ImageCard,
@@ -41,6 +41,7 @@ interface ContentRendererProps {
   hideTitleBar?: boolean;
   isAuthenticated: boolean;
   rows: Array<PageRow>;
+  subPages?: PagesConfig;
   pageKey: string;
   defaultRoutes: DefaultRoutes;
 }
@@ -315,6 +316,17 @@ const ContentRenderer: React.FC<ContentRendererProps> = (props) => {
         </div>
       }
       )}
+      {props.subPages ?
+        <Switch key={props.pageKey}>{
+          props.subPages.pages.map(pageConfig => {
+            return <RouteToLayout
+              key={pageConfig.path}
+              path={pageConfig.path}
+              pageConfig={pageConfig}
+              defaultRoutes={props.subPages?.defaultRoutes ? props.subPages?.defaultRoutes : props.defaultRoutes}
+            />
+          })
+        }</Switch> : null}
     </React.Fragment>
   );
 };

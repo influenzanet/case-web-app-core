@@ -10,6 +10,7 @@ export interface PageConfig {
   pageKey: string;
   hideWhen?: 'auth' | 'unauth';
   rows: Array<PageRow>;
+  subPages?: PagesConfig; // to use for sub-router components without wrapper
   hideTitleBar?: boolean;
 }
 

@@ -37,6 +37,7 @@ const RouteToLayout: React.FC<RouteToLayoutProps> = (props) => {
           hideTitleBar={props.pageConfig.hideTitleBar}
           pageKey={props.pageConfig.pageKey}
           rows={props.pageConfig.rows}
+          subPages={props.pageConfig.subPages}
           defaultRoutes={props.defaultRoutes}
         />
       }
