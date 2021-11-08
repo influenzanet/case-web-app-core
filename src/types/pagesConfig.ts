@@ -40,7 +40,7 @@ type PageItemConfig = TeaserImageConfig | RouterComponentConfig |
   MarkdownComponentConfig | ImageCardConfig | LoginCardConfig | VideoConfig | ImageConfig |
   AccordionListConfig | SimpleCard | SystemInfoConfig | AccountSettingsConfig |
   CommunicationSettingsConfig | DeleteAccountConfig | LogoCreditsConfig |
-  SurveyListConfig | LinkListConfig | MapDataSeriesConfig | LineWithScatterChartConfig | PlaceholderComponentConfig
+  SurveyListConfig | LinkListConfig | MapDataSeriesConfig | LineWithScatterChartConfig | ContainerConfig | PlaceholderComponentConfig
 
 
 export interface MarkdownComponentConfig {
@@ -171,6 +171,11 @@ export interface LineWithScatterChartConfig {
 
 export interface SurveyListConfig {
   type: 'surveyList';
+}
+
+export interface ContainerConfig {
+  type: 'container';
+  items: PageItem[];
 }
 
 export interface PlaceholderComponentConfig {

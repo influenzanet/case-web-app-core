@@ -209,6 +209,141 @@
               ]
             }
           ]
+        },
+        {
+          "key": "content3",
+          "fullWidth": false,
+          "className": "py-3",
+          "columns": [
+            {
+              "key": "mainCol",
+              "className": "col-8",
+              "items": [
+                {
+                  "itemKey": "cont",
+                  "className": "row",
+                  "config": {
+                    "type": "container",
+                    "items": [
+                      {
+                        "itemKey": "pl1",
+                        "className": "col-6",
+                        "config": {
+                          "type": "container",
+                          "items": [
+                            {
+                              "itemKey": "pl1",
+                              "className": "row",
+                              "config": {
+                                "type": "container",
+                                "items": [
+                                  {
+                                    "itemKey": "pl1",
+                                    "className": "col-6",
+                                    "config": {
+                                      "type": "placeholder",
+                                      "label": "COL-6"
+                                    }
+                                  },
+                                  {
+                                    "itemKey": "pl2",
+                                    "className": "col-6",
+                                    "config": {
+                                      "type": "placeholder",
+                                      "label": "COL-6"
+                                    }
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "itemKey": "pl2",
+                              "className": "row",
+                              "config": {
+                                "type": "container",
+                                "items": [
+                                  {
+                                    "itemKey": "pl1",
+                                    "className": "col-4",
+                                    "config": {
+                                      "type": "placeholder",
+                                      "label": "COL-4"
+                                    }
+                                  },
+                                  {
+                                    "itemKey": "pl2",
+                                    "className": "col-4",
+                                    "config": {
+                                      "type": "placeholder",
+                                      "label": "COL-4"
+                                    }
+                                  },
+                                  {
+                                    "itemKey": "pl3",
+                                    "className": "col-4",
+                                    "config": {
+                                      "type": "placeholder",
+                                      "label": "COL-4"
+                                    }
+                                  },
+                                  {
+                                    "itemKey": "pl4",
+                                    "className": "col-4",
+                                    "config": {
+                                      "type": "placeholder",
+                                      "label": "COL-4"
+                                    }
+                                  },
+                                  {
+                                    "itemKey": "pl5",
+                                    "className": "col-4",
+                                    "config": {
+                                      "type": "placeholder",
+                                      "label": "COL-4"
+                                    }
+                                  },
+                                  {
+                                    "itemKey": "pl6",
+                                    "className": "col-6",
+                                    "config": {
+                                      "type": "placeholder",
+                                      "label": "COL-6"
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "itemKey": "pl2",
+                        "className": "col-6",
+                        "config": {
+                          "type": "placeholder",
+                          "label": "COL-6"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "key": "sideCol",
+              "className": "col-4",
+              "items": [
+                {
+                  "itemKey": "pl4",
+                  "className": "",
+                  "config": {
+                    "type": "placeholder",
+                    "label": "COL-4"
+                  }
+                }
+              ]
+            }
+          ]
         }
       ]
     },

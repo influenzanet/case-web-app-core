@@ -242,6 +242,14 @@ const ContentRenderer: React.FC<ContentRendererProps> = (props) => {
           itemKey={item.itemKey}
           defaultRoutes={props.defaultRoutes}
         />
+      case 'container':
+        const subItems = item.config.items;
+        return <div
+          key={item.itemKey}
+          className={item.className}
+        >
+          {subItems.map(subItem => renderItem(subItem))}
+        </div>
       case 'placeholder':
         return <div
           key={item.itemKey}

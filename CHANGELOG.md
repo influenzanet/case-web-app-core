@@ -10,8 +10,11 @@
 
 ### Added
 
-- Subrouter component implemented
 - Navbar now supports dropdown menu item to implement nested navigation / menus with more content.
+- Page can contain `subPages` that are renderes as direct child routes. Rows (if any) are rendered on top first.
+- New item types for page content:
+  - Subrouter component implemented: type `router`.
+  - To wrap items with an html div: type `container`.
 
 ### Changed
 
