@@ -50,6 +50,24 @@ const Navbar: React.FC<NavbarProps> = (props) => {
       }
     })
 
+    const newUnauthRightItems = props.content.unauthRightItems?.map(item => {
+      const newItem = {
+        ...item,
+      }
+      if (item.type === 'dropdown') {
+        newItem.dropdownItems = item.dropdownItems?.map(dItem => {
+          return {
+            ...dItem,
+            label: t(`${item.itemKey}.${dItem.itemKey}`)
+          }
+        })
+        newItem.label = t(`${item.itemKey}.title`)
+      } else {
+        newItem.label = t(`${item.itemKey}`)
+      }
+      return { ...newItem };
+    })
+
     // left items
     const newLeftItems = props.content.leftItems.map(item => {
       const newItem = {
@@ -73,6 +91,7 @@ const Navbar: React.FC<NavbarProps> = (props) => {
       breakpoint: props.content.breakpoint,
       leftItems: newLeftItems.slice(),
       rightItems: newRightItems,
+      unauthRightItems: newUnauthRightItems,
     });
   }, [i18n.language])
 
