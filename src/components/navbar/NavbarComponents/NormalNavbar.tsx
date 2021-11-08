@@ -91,29 +91,46 @@ const NormalNavbar: React.FC<NormalNavbarProps> = (props) => {
     </Navbar.Collapse>
   </React.Fragment>
 
+  const defaultNavbarRight = <React.Fragment>
+    <li className="nav-item">
+      <button
+        aria-label={props.labels.loginBtn}
+        className="nav-link nav-link-height btn btn-primary"
+        onClick={() => props.onOpenDialog("login")}
+      >
+        {props.labels.loginBtn}
+      </button>
+    </li>
+
+    {
+      !props.disableSignup ?
+        <li className="nav-item">
+          <button
+            aria-label={props.labels.signupBtn}
+            className="nav-link nav-link-height btn btn-primary "
+            onClick={() => props.onOpenDialog("signup")} >
+            {props.labels.signupBtn}
+          </button>
+        </li>
+        : null
+    }</React.Fragment>;
+
   const navbarRightUnauth = () => (
     <div className="row">
       <ul className="nav nav-tabs justify-content-end">
-        <li className="nav-item">
-          <button
-            aria-label={props.labels.loginBtn}
-            className="nav-link nav-link-height btn btn-primary"
-            onClick={() => props.onOpenDialog("login")}
-          >
-            {props.labels.loginBtn}
-          </button>
-        </li>
+        {props.content?.unauthRightItems !== undefined ? props.content.unauthRightItems.map(item => {
 
-        {!props.disableSignup ?
-          <li className="nav-item">
-            <button
-              aria-label={props.labels.signupBtn}
-              className="nav-link nav-link-height btn btn-primary "
-              onClick={() => props.onOpenDialog("signup")} >
-              {props.labels.signupBtn}
-            </button>
-          </li>
-          : null}
+          if (shouldHideItem(item)) {
+            return null;
+          }
+          return <NavbarItem
+            key={item.itemKey}
+            item={item}
+            onNavigate={props.onNavigate}
+            onOpenUrl={props.onOpenUrl}
+            onOpenDialog={props.onOpenDialog}
+          />
+        }) : defaultNavbarRight}
       </ul>
     </div>
   )

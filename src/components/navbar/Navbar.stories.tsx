@@ -73,6 +73,40 @@ export const DisabledSignup = () =>
     </BrowserRouter>
   </Suspense>
 
+export const RightNavOverride = () =>
+  <Suspense fallback={() => <LoadingPlaceholder
+    color="white"
+    minHeight="100vh"
+  />}>
+    <BrowserRouter>
+      <NormalNavbar
+        labels={exampleLabels}
+        avatars={[
+          { avatarId: 'default', url: '/images/placeholder_image.png' }
+        ]}
+        isLoggedIn={false}
+        content={{
+          leftItems: [],
+          rightItems: [],
+          unauthRightItems: [
+            { itemKey: 'home', label: 'Participate', type: 'internal', url: '/home' },
+            {
+              itemKey: 'faq', label: 'FAQ', type: 'dropdown', url: '/faq', dropdownItems: [
+                { itemKey: 'a', label: 'Aspect A', type: 'internal', url: '/faq', },
+                { itemKey: 'b', label: 'Aspect B (dialog)', type: 'dialog', url: 'login', },
+                { itemKey: 'c', label: 'Aspect C', type: 'internal', url: '/faq/subroute', },
+              ], dropdownAlign: 'end'
+            },
+          ]
+        }}
+        onOpenDialog={onOpenDialog}
+        onNavigate={onNavigate}
+        onOpenUrl={onOpenExternalPage}
+        onLogout={() => alert('This would perform the logout.')}
+      />
+    </BrowserRouter>
+  </Suspense>
+
 export const LoggedIn = () =>
   <Suspense fallback={() => <LoadingPlaceholder
     color="white"
