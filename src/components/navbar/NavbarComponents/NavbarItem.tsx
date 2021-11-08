@@ -26,7 +26,18 @@ const NavbarItem: React.FC<NavbarItemProps> = (props) => {
       <NavLink
         className={clsx("nav-link nav-link-height", props.item.className)}
         to={itemURL}
-        onClick={() => props.onNavigate(itemURL)}
+        onClick={() => {
+          switch (props.item.type) {
+            case 'dialog':
+              props.onOpenDialog(itemURL);
+              break;
+            case 'internal':
+              props.onNavigate(itemURL);
+              break;
+            default:
+              console.error(`unknown navbar item type: ${props.item.type}`)
+          }
+        }}
         activeStyle={{
           fontWeight: "bold",
           color: "black"
@@ -42,30 +53,3 @@ const NavbarItem: React.FC<NavbarItemProps> = (props) => {
 };
 
 export default NavbarItem;
-/*
-<li className="dropdown nav-item">
-  <button
-    className="customDropDown btn btn-primary dropdown-toggle text-lightest fs-btn "
-    type="button"
-    id="DropMenu"
-    data-bs-toggle="dropdown"
-    aria-expanded="false">
-    {props.iconClass ?
-      <i className={clsx(props.iconClass, 'me-1')}></i>
-      : null}
-    {t(`${props.itemkey}.title`)}
-  </button>
-  <div className="dropdown-menu dropdown-menu-end ">
-    {props.dropdownItems!.slice(0).map(
-      item =>
-        <DropdownItem
-          key={item.itemKey}
-          title={t(`${props.itemkey}.${item.itemKey}`)}
-          itemkey={item.itemKey}
-          iconClass={item.iconClass}
-          url={item.url}
-          onNavigate={handleNavigation}
-        />)}
-  </div>
-</li>
-}*/
