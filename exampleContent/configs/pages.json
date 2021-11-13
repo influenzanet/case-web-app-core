@@ -28,6 +28,26 @@
           ]
         },
         {
+          "key": "extensionTest",
+          "columns": [
+            {
+              "key": "test",
+              "items": [
+                {
+                  "itemKey": "k1",
+                  "config": {
+                    "type": "extension",
+                    "config": {
+                      "type": "custom1",
+                      "label": "Test Extension"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
           "key": "content",
           "fullWidth": false,
           "hideWhen": "auth",

@@ -40,7 +40,7 @@ type PageItemConfig = TeaserImageConfig | RouterComponentConfig |
   MarkdownComponentConfig | ImageCardConfig | LoginCardConfig | VideoConfig | ImageConfig |
   AccordionListConfig | SimpleCard | SystemInfoConfig | AccountSettingsConfig |
   CommunicationSettingsConfig | DeleteAccountConfig | LogoCreditsConfig |
-  SurveyListConfig | LinkListConfig | MapDataSeriesConfig | LineWithScatterChartConfig | ContainerConfig | PlaceholderComponentConfig
+  SurveyListConfig | LinkListConfig | MapDataSeriesConfig | LineWithScatterChartConfig | ContainerConfig | PlaceholderComponentConfig | ExtensionComponent
 
 
 export interface MarkdownComponentConfig {
@@ -187,4 +187,9 @@ export interface PlaceholderComponentConfig {
 export interface RouterComponentConfig {
   type: 'router';
   pagesConfig: PagesConfig;
+}
+
+export interface ExtensionComponent {
+  type: 'extension';
+  config: any;
 }

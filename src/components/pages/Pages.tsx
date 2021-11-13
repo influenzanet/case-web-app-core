@@ -9,10 +9,12 @@ import { DefaultRoutes } from '../../types/routing';
 import SurveyPage from './components/SurveyPage';
 import { LoadingPlaceholder, containerClassName } from 'case-web-ui';
 import clsx from 'clsx';
+import { Extension } from '../../AppCore';
 
 
 interface PagesProps {
   config?: PagesConfig;
+  extensions?: Extension[];
   onOpenExternalPage: (url: string) => void;
 }
 
@@ -42,6 +44,7 @@ const Pages: React.FC<PagesProps> = (props) => {
             path={pageConfig.path}
             pageConfig={pageConfig}
             defaultRoutes={defaultRoutes}
+            extensions={props.extensions}
           />
         })}
         <Route path={defaultRoutes.surveyPage + '/:studyKey/:surveyKey'} render={() => <SurveyPage defaultRoutes={defaultRoutes} />} />

@@ -19,6 +19,11 @@ import { RootState } from './store/rootReducer';
 import { setDefaultAccessTokenHeader } from './api/instances/authenticatedApi';
 import { loadLastSelectedLanguage, saveLanguageSelection } from './i18n';
 
+export interface Extension {
+  name: string;
+  component: React.FunctionComponent<any>;
+}
+
 interface AppCoreProps {
   appConfig?: AppConfig;
   headerConfig?: HeaderConfig;
@@ -29,6 +34,7 @@ interface AppCoreProps {
   hideDefaultFooter?: boolean;
   customHeader?: React.ReactNode;
   customFooter?: React.ReactNode;
+  extensions?: Extension[];
 }
 
 const AppCore: React.FC<AppCoreProps> = (props) => {
@@ -86,6 +92,7 @@ const AppCore: React.FC<AppCoreProps> = (props) => {
       <Pages
         config={props.pagesConfig}
         onOpenExternalPage={handleOpenExternalPage}
+        extensions={props.extensions}
       />
 
       {!props.hideDefaultFooter ? <FooterRenderer

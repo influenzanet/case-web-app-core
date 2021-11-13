@@ -10,6 +10,7 @@
 
 ### Added
 
+- The app core component can receive a list of custom react components to extend the content renderer with custom components. Simply pass down an array of `{ name: <nameOfTheComponent>, component: <react functional component>}` items. In the page configuration, you can refer to the component with the `name`. The custom component is able to call the `props.renderGenericItemFunc(item)` method which allows you the nesting of generic and custom components.
 - Navbar now supports dropdown menu item to implement nested navigation / menus with more content.
 - Page can contain `subPages` that are renderes as direct child routes. Rows (if any) are rendered on top first.
 - New item types for page content:

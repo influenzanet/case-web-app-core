@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Switch, useHistory } from 'react-router-dom';
 import { dialogActions } from '../../../store/dialogSlice';
 
-import { PageColumn, PagesConfig, PageItem, PageRow } from '../../../types/pagesConfig';
+import { PageColumn, PagesConfig, PageItem, PageRow, ExtensionComponent } from '../../../types/pagesConfig';
 import {
   handleOpenExternalPage,
   ImageCard,
@@ -35,6 +35,7 @@ import { setPersistState } from '../../../store/appSlice';
 import { RootState } from '../../../store/rootReducer';
 import { getTranslatedMarkdownPath } from '../../../hooks/useTranslatedMarkdown';
 import RouteToLayout from './RouteToLayout';
+import { Extension } from '../../../AppCore';
 
 
 interface ContentRendererProps {
@@ -44,6 +45,7 @@ interface ContentRendererProps {
   subPages?: PagesConfig;
   pageKey: string;
   defaultRoutes: DefaultRoutes;
+  extensions?: Extension[];
 }
 
 const shouldHide = (hideWhen?: string, isAuth?: boolean): boolean => {
@@ -62,7 +64,37 @@ const ContentRenderer: React.FC<ContentRendererProps> = (props) => {
   const history = useHistory();
   const persistState = useSelector((state: RootState) => state.app.persistState);
 
-  const renderItem = (item: PageItem) => {
+  /**
+   * Method to render extension components
+   * @param item item's configuration
+   * @param renderGenericItemFunc reference to the function that renders generic items, to be able to call it recursively
+   * @returns
+   */
+  const handleExtensionRendering = (item: PageItem, renderGenericItemFunc: (item: PageItem) => React.ReactElement | null) => {
+    if (!props.extensions) {
+      console.warn(`No extension defined, so the following item is not rendered: ${JSON.stringify(item)}`);
+      return null;
+    }
+    const itemConfig = item.config as ExtensionComponent;
+
+    const currentExtensionComponent = props.extensions.filter(ext => ext.name === itemConfig.config.type);
+    if (!currentExtensionComponent || currentExtensionComponent.length < 1) {
+      return null;
+    }
+
+    const Component = currentExtensionComponent[0].component;
+    return <Component
+      key={item.itemKey}
+      renderGenericItemFunc={renderGenericItemFunc}
+      {...itemConfig.config} />
+  }
+
+  /**
+   * Method to render a page item
+   * @param item item's configuration
+   * @returns
+   */
+  const renderItem = (item: PageItem): React.ReactElement | null => {
     if (shouldHide(item.hideWhen, props.isAuthenticated)) {
       return null;
     }
@@ -262,6 +294,8 @@ const ContentRenderer: React.FC<ContentRendererProps> = (props) => {
         >
           <h1 className="fs-1 text-center text-white text-uppercase m-0 p-2">{item.config.label}</h1>
         </div>
+      case 'extension':
+        return handleExtensionRendering(item, renderItem);
       case 'router':
         const dRoutes = item.config.pagesConfig.defaultRoutes ? item.config.pagesConfig.defaultRoutes : {
           auth: '/home',
