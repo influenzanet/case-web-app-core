@@ -85,6 +85,7 @@ const ContentRenderer: React.FC<ContentRendererProps> = (props) => {
     const Component = currentExtensionComponent[0].component;
     return <Component
       key={item.itemKey}
+      pageKey={props.pageKey}
       renderGenericItemFunc={renderGenericItemFunc}
       {...itemConfig.config} />
   }
