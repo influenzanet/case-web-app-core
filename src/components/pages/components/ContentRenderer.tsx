@@ -86,6 +86,8 @@ const ContentRenderer: React.FC<ContentRendererProps> = (props) => {
     return <Component
       key={item.itemKey}
       pageKey={props.pageKey}
+      itemKey={item.itemKey}
+      className={item.className}
       renderGenericItemFunc={renderGenericItemFunc}
       {...itemConfig.config} />
   }
