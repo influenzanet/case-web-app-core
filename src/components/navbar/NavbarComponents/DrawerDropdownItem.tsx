@@ -18,13 +18,13 @@ const DrawerDropdownItem: React.FC<DrawerDropdownItemProps> = (props) => {
     ...(props.item && props.item.dropdownItems ? props.item.dropdownItems.map(item => item.url ? item.url : '') : [])
   ]);
 
-  const [open, setOpen] = useState(match !== null);
+  const [open, setOpen] = useState(true);
 
   return (
     <div className="w-100">
       <a
         key={props.item.itemKey}
-        type="button"
+        //type="button"
         className={clsx(
           "nav-link px-3 py-1a cursor-pointer",
           {
@@ -61,7 +61,6 @@ const DrawerDropdownItem: React.FC<DrawerDropdownItemProps> = (props) => {
                     "active text-body": activeRoute
                   }
                 )}
-                type="button"
                 onClick={() => {
                   if (!item.url) {
                     console.warn('Navigation item did not contain a url attribute. Website creator should check the config.');

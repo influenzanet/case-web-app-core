@@ -101,3 +101,4 @@ https://github.com/coneno/case-web-ui/blob/master/CHANGELOG.md#breaking-changes
 ### Changed
 
 - Updated dependencies - case-web-ui's new version with support for multiple choice subtitles and markdown survey component
+- NavLink items remove `type="button"` that causes wrong styling in Safari.

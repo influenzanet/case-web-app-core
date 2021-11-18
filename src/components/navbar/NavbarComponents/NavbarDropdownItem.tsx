@@ -55,7 +55,6 @@ const NavbarDropdownItem: React.FC<NavbarDropdownItemProps> = (props) => {
                 "fw-bold": match !== null && match.path === item.url
               }
             )}
-            type="button"
             onClick={() => {
               if (!item.url) {
                 console.warn('Navigation item did not contain a url attribute. Website creator should check the config.');
