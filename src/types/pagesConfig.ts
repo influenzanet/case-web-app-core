@@ -40,7 +40,8 @@ type PageItemConfig = TeaserImageConfig | RouterComponentConfig |
   MarkdownComponentConfig | ImageCardConfig | LoginCardConfig | VideoConfig | ImageConfig |
   AccordionListConfig | SimpleCard | SystemInfoConfig | AccountSettingsConfig |
   CommunicationSettingsConfig | DeleteAccountConfig | LogoCreditsConfig |
-  SurveyListConfig | LinkListConfig | MapDataSeriesConfig | LineWithScatterChartConfig | ContainerConfig | PlaceholderComponentConfig | ExtensionComponent
+  SurveyListConfig | LinkListConfig | MapDataSeriesConfig | LineWithScatterChartConfig | ContainerConfig | PlaceholderComponentConfig | ExtensionComponent |
+  ActionCardConfig
 
 
 export interface MarkdownComponentConfig {
@@ -98,6 +99,29 @@ export interface ImageCardConfig {
   imageSrc?: string;
   className?: string;
   showActionBtn?: boolean;
+}
+
+export interface ActionCardConfig {
+  type: 'actionCard';
+  action?: {
+    type: 'navigate' | 'openDialog';
+    value: string;
+  };
+  image?: {
+    url: string;
+    className?: string;
+    backgroundPosition?: string;
+    backgroundSize?: string;
+    placement: 'top' | 'left';
+    height?: string;
+    width?: string;
+    minWidth?: string | number;
+    maxWidth?: string | number;
+    minHeight?: string | number;
+    maxHeight?: string | number;
+  };
+  useFooterText?: boolean;
+  className?: string;
 }
 
 interface LoginCardConfig {

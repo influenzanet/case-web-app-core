@@ -22,6 +22,8 @@ import {
   MapWithTimeSliderLoader,
   ComposedLineAndScatterChartLoader,
   containerClassName,
+  ActionCard,
+  MarkdownRenderer,
 } from 'case-web-ui';
 
 import SystemInfo from '../../settings/SystemInfo';
@@ -145,6 +147,28 @@ const ContentRenderer: React.FC<ContentRendererProps> = (props) => {
             }
           }}
         />
+      case 'actionCard':
+        const actionCardAction = item.config.action;
+        return <ActionCard
+          key={item.itemKey}
+          className={item.className}
+          title={t(`${item.itemKey}.title`)}
+          actionBtnText={actionCardAction ? t(`${item.itemKey}.actionBtn`) : undefined}
+          footerText={item.config.useFooterText ? t(`${item.itemKey}.footer`) : undefined}
+          image={item.config.image}
+          onClick={() => {
+            if (!actionCardAction) { return; }
+            if (actionCardAction.type === 'openDialog') {
+              dispatch(dialogActions.openDialogWithoutPayload(actionCardAction.value))
+            } else if (actionCardAction.type === 'navigate') {
+              history.push(actionCardAction.value);
+            }
+          }}
+        >
+          <MarkdownRenderer markdown={
+            t(`${item.itemKey}.body`)
+          } />
+        </ActionCard>
       case 'image':
         return <ImageContainer
           key={item.itemKey}
