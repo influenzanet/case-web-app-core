@@ -399,6 +399,7 @@ const ContentRenderer: React.FC<ContentRendererProps> = (props) => {
               path={pageConfig.path}
               pageConfig={pageConfig}
               defaultRoutes={props.subPages?.defaultRoutes ? props.subPages?.defaultRoutes : props.defaultRoutes}
+              extensions={props.extensions}
             />
           })
         }</Switch> : null}

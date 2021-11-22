@@ -11,6 +11,10 @@
 
 - External extension components receive a method `onNavigate: (url: string) => void`, to handle internal page navigation.
 
+### Fixes
+
+- Sub-routes can also access extensions.
+
 ## 1.4.0 - 2021-11-19
 
 ### BREAKING CHANGES
