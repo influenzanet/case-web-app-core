@@ -59,7 +59,7 @@ const shouldHide = (hideWhen?: string, isAuth?: boolean): boolean => {
 }
 
 const ContentRenderer: React.FC<ContentRendererProps> = (props) => {
-  const { t, i18n } = useTranslation([props.pageKey]);
+  const { t, i18n } = useTranslation([props.pageKey, 'global']);
   const dispatch = useDispatch()
   const history = useHistory();
   const persistState = useSelector((state: RootState) => state.app.persistState);
