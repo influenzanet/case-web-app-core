@@ -6,6 +6,10 @@
 
 - Support for globally defined translations. Page item keys can incllude the namespace `global:itemKey`, so that the translation is not searched on the current page's json file, but in the `global.json`.
 
+### Changed
+
+- External extension components receive a method `onNavigate: (url: string) => void`, to handle internal page navigation.
+
 ## 1.4.0 - 2021-11-19
 
 ### BREAKING CHANGES

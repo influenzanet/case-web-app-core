@@ -68,9 +68,14 @@ const ContentRenderer: React.FC<ContentRendererProps> = (props) => {
    * Method to render extension components
    * @param item item's configuration
    * @param renderGenericItemFunc reference to the function that renders generic items, to be able to call it recursively
+   * @param onNavigate reference to a method to handle internal navigation
    * @returns
    */
-  const handleExtensionRendering = (item: PageItem, renderGenericItemFunc: (item: PageItem) => React.ReactElement | null) => {
+  const handleExtensionRendering = (
+    item: PageItem,
+    renderGenericItemFunc: (item: PageItem) => React.ReactElement | null,
+    onNavigate: (url: string) => void,
+  ) => {
     if (!props.extensions) {
       console.warn(`No extension defined, so the following item is not rendered: ${JSON.stringify(item)}`);
       return null;
@@ -89,6 +94,7 @@ const ContentRenderer: React.FC<ContentRendererProps> = (props) => {
       itemKey={item.itemKey}
       className={item.className}
       renderGenericItemFunc={renderGenericItemFunc}
+      onNavigate={onNavigate}
       {...itemConfig.config} />
   }
 
@@ -298,7 +304,7 @@ const ContentRenderer: React.FC<ContentRendererProps> = (props) => {
           <h1 className="fs-1 text-center text-white text-uppercase m-0 p-2">{item.config.label}</h1>
         </div>
       case 'extension':
-        return handleExtensionRendering(item, renderItem);
+        return handleExtensionRendering(item, renderItem, (url: string) => { history.push(url) });
       case 'router':
         const dRoutes = item.config.pagesConfig.defaultRoutes ? item.config.pagesConfig.defaultRoutes : {
           auth: '/home',
