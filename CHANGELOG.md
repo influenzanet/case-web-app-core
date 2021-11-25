@@ -14,6 +14,7 @@
 ### Changed
 
 - External extension components receive a method `onNavigate: (url: string) => void`, to handle internal page navigation.
+- Accordion list page item accepts className attribute to add a css class to container item.
 
 ### Fixes
 

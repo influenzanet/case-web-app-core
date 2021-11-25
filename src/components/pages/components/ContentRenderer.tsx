@@ -220,12 +220,14 @@ const ContentRenderer: React.FC<ContentRendererProps> = (props) => {
         />
       case 'accordionList':
         const items = t(`${item.itemKey}`, { returnObjects: true }) as Array<{ title: string; content: string; }>;
-        return <AccordionList
-          key={item.itemKey}
-          items={items}
-          openLabel={t(`${item.config.accordionCtrlsKey}.open`)}
-          closeLabel={t(`${item.config.accordionCtrlsKey}.close`)}
-        />
+        return <div key={item.itemKey} className={item.className}>
+          <AccordionList
+            itemKey={item.itemKey}
+            items={items}
+            openLabel={t(`${item.config.accordionCtrlsKey}.open`)}
+            closeLabel={t(`${item.config.accordionCtrlsKey}.close`)}
+          />
+        </div>
       case 'simpleCard':
         return <SimpleCard
           key={item.itemKey}
