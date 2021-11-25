@@ -2,6 +2,10 @@
 
 ## 1.5.0 - ???
 
+### BREAKING CHANGES
+
+- For page rows, `className` property is split up into `containerClassName` and `rowClassNameOverride` to be able to customize both the containers class and override the default "row" className of the div.
+
 ### Added
 
 - Support for globally defined translations. Page item keys can incllude the namespace `global:itemKey`, so that the translation is not searched on the current page's json file, but in the `global.json`.

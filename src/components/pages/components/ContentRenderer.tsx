@@ -383,9 +383,11 @@ const ContentRenderer: React.FC<ContentRendererProps> = (props) => {
               [containerClassName]: !row.fullWidth,
               "container-fluid": row.fullWidth
             },
-            row.className)}
+            row.containerClassName)}
         >
-          <div className="row">
+          <div className={clsx({
+            "row": row.rowClassNameOverride === undefined,
+          }, row.rowClassNameOverride)}>
             {row.columns.map((col, index) => renderColumn(col, index))}
           </div>
         </div>

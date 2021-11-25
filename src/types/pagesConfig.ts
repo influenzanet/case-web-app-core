@@ -16,7 +16,8 @@ export interface PageConfig {
 
 export interface PageRow {
   key: string;
-  className?: string;
+  containerClassName?: string;
+  rowClassNameOverride?: string;
   fullWidth?: boolean;
   hideWhen?: 'auth' | 'unauth';
   columns: Array<PageColumn>;
