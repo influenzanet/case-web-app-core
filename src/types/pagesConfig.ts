@@ -110,6 +110,8 @@ export interface ActionCardConfig {
   };
   image?: {
     url: string;
+    as?: 'div' | 'img'; // defaults to 'div'
+    alt?: string;
     className?: string;
     backgroundPosition?: string;
     backgroundSize?: string;

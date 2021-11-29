@@ -149,6 +149,9 @@ const ContentRenderer: React.FC<ContentRendererProps> = (props) => {
         />
       case 'actionCard':
         const actionCardAction = item.config.action;
+        if (item.config.image) {
+          item.config.image.alt = t(`${item.itemKey}.imgAlt`)
+        }
         return <ActionCard
           key={item.itemKey}
           className={item.className}

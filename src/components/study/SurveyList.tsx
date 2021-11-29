@@ -54,7 +54,7 @@ const SurveyList: React.FC<SurveyListProps> = (props) => {
       if (!subscribed) {
         subscribed = [];
       }
-    } catch (e) {
+    } catch (e: any) {
       console.error(e.response);
       return;
     }
@@ -85,7 +85,7 @@ const SurveyList: React.FC<SurveyListProps> = (props) => {
       try {
         await enterStudyReq(studyKey, p.id)
         counter += 1;
-      } catch (e) {
+      } catch (e: any) {
         console.log(e.response);
       }
     }
@@ -108,7 +108,7 @@ const SurveyList: React.FC<SurveyListProps> = (props) => {
       });
       setAssigndSurveys(surveys);
       setSurveyInfos(response.surveyInfos.slice())
-    } catch (e) {
+    } catch (e: any) {
       console.error(e.response);
     }
     setLoading(false);
