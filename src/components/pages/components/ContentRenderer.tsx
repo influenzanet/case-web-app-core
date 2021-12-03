@@ -159,6 +159,7 @@ const ContentRenderer: React.FC<ContentRendererProps> = (props) => {
           actionBtnText={actionCardAction ? t(`${item.itemKey}.actionBtn`) : undefined}
           footerText={item.config.useFooterText ? t(`${item.itemKey}.footer`) : undefined}
           image={item.config.image}
+          bodyBgImage={item.config.bodyBgImage}
           onClick={() => {
             if (!actionCardAction) { return; }
             if (actionCardAction.type === 'openDialog') {

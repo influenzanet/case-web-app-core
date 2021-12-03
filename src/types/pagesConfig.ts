@@ -123,6 +123,12 @@ export interface ActionCardConfig {
     minHeight?: string | number;
     maxHeight?: string | number;
   };
+  bodyBgImage?: {
+    url: string;
+    backgroundPosition?: string;
+    backgroundSize?: string;
+    overlayOpacity?: number;
+  };
   useFooterText?: boolean;
   className?: string;
 }
