@@ -11,6 +11,7 @@
 - Support for globally defined translations. Page item keys can incllude the namespace `global:itemKey`, so that the translation is not searched on the current page's json file, but in the `global.json`.
 - New page item type `actionCard` that utilises the ActionCard component from case-web-ui.
 - Added license file.
+- `AppCore` now accepts a list of custom survey response compoents to extend what response items a survey can use. Define the list through the prop `customSurveyResponseComponents`.
 
 ### Changed
 

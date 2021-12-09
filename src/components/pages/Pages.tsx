@@ -10,11 +10,12 @@ import SurveyPage from './components/SurveyPage';
 import { LoadingPlaceholder, containerClassName } from 'case-web-ui';
 import clsx from 'clsx';
 import { Extension } from '../../AppCore';
-
+import { CustomSurveyResponseComponent } from 'case-web-ui/build/components/survey/SurveySingleItemView/ResponseComponent/ResponseComponent';
 
 interface PagesProps {
   config?: PagesConfig;
   extensions?: Extension[];
+  customResponseComponents?: CustomSurveyResponseComponent[];
   onOpenExternalPage: (url: string) => void;
 }
 
@@ -47,7 +48,9 @@ const Pages: React.FC<PagesProps> = (props) => {
             extensions={props.extensions}
           />
         })}
-        <Route path={defaultRoutes.surveyPage + '/:studyKey/:surveyKey'} render={() => <SurveyPage defaultRoutes={defaultRoutes} />} />
+        <Route path={defaultRoutes.surveyPage + '/:studyKey/:surveyKey'} render={() => <SurveyPage
+          customResponseComponents={props.customResponseComponents}
+          defaultRoutes={defaultRoutes} />} />
         <Route path={linkResolverRootUrl} render={() => <LinkResolver defaultRoutes={defaultRoutes} />} />,
         <Redirect to={isAuth ? defaultRoutes.auth : defaultRoutes.unauth} />
       </Switch>

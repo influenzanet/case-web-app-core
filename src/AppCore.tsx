@@ -18,6 +18,7 @@ import { PagesConfig } from './types/pagesConfig';
 import { RootState } from './store/rootReducer';
 import { setDefaultAccessTokenHeader } from './api/instances/authenticatedApi';
 import { loadLastSelectedLanguage, saveLanguageSelection } from './i18n';
+import { CustomSurveyResponseComponent } from 'case-web-ui/build/components/survey/SurveySingleItemView/ResponseComponent/ResponseComponent';
 
 export interface Extension {
   name: string;
@@ -35,6 +36,7 @@ interface AppCoreProps {
   customHeader?: React.ReactNode;
   customFooter?: React.ReactNode;
   extensions?: Extension[];
+  customSurveyResponseComponents?: CustomSurveyResponseComponent[];
 }
 
 const AppCore: React.FC<AppCoreProps> = (props) => {
@@ -93,6 +95,7 @@ const AppCore: React.FC<AppCoreProps> = (props) => {
         config={props.pagesConfig}
         onOpenExternalPage={handleOpenExternalPage}
         extensions={props.extensions}
+        customResponseComponents={props.customSurveyResponseComponents}
       />
 
       {!props.hideDefaultFooter ? <FooterRenderer

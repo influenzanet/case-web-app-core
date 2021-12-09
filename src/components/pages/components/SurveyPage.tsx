@@ -22,11 +22,13 @@ import {
   LoadingPlaceholder,
   getLocalizedString,
 } from 'case-web-ui';
+import { CustomSurveyResponseComponent } from 'case-web-ui/build/components/survey/SurveySingleItemView/ResponseComponent/ResponseComponent';
 
 
 
 interface SurveyPageProps {
   defaultRoutes: DefaultRoutes;
+  customResponseComponents?: CustomSurveyResponseComponent[];
 }
 
 const SurveyPage: React.FC<SurveyPageProps> = (props) => {
@@ -175,12 +177,14 @@ const SurveyPage: React.FC<SurveyPageProps> = (props) => {
         loading={loading}
         survey={surveyAndContext.survey}
         context={surveyAndContext.context}
+        prefills={surveyAndContext.prefill?.responses}
         languageCode={i18n.language}
         onSubmit={onSurveySubmit}
         nextBtnText={t('nextBtn')}
         backBtnText={t('backBtn')}
         submitBtnText={t('submitBtn')}
         invalidResponseText={t('notValidQuestion')}
+        customResponseComponents={props.customResponseComponents}
       /> :
       <AlertBox type="danger"
         useIcon={true}
