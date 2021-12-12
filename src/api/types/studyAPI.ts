@@ -1,4 +1,4 @@
-import { SurveyResponse, Survey, SurveyContext, LocalizedString } from "survey-engine/lib/data_types";
+import { SurveyResponse, Survey, SurveyContext, LocalizedString } from "survey-engine/data_types";
 
 
 export interface SurveyReferenceReq {
