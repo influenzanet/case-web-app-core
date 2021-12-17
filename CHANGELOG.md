@@ -5,6 +5,7 @@
 ### BREAKING CHANGES
 
 - For page rows, `className` property is split up into `containerClassName` and `rowClassNameOverride` to be able to customize both the containers class and override the default "row" className of the div.
+- Updated to `survey-engine` v1 track that causes changes of the import path for these libs. Update for survey-engine lib is necessary.
 
 ### Added
 
@@ -12,11 +13,13 @@
 - New page item type `actionCard` that utilises the ActionCard component from case-web-ui.
 - Added license file.
 - `AppCore` now accepts a list of custom survey response compoents to extend what response items a survey can use. Define the list through the prop `customSurveyResponseComponents`.
+- New API methods to work with temporary participants.
 
 ### Changed
 
 - External extension components receive a method `onNavigate: (url: string) => void`, to handle internal page navigation.
 - Accordion list page item accepts className attribute to add a css class to container item.
+- Replaced `node-sass` with `sass` to allow using newer nodeJS versions.
 
 ### Fixes
 

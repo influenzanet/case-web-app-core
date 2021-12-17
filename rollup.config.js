@@ -24,7 +24,7 @@ const config = {
   ],
   plugins: [
     peerDepsExternal(),
-    resolve(),
+    resolve({ browser: true }),
     commonjs(),
     json(),
     typescript({
