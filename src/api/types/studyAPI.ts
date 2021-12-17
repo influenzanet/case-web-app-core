@@ -74,3 +74,10 @@ export interface SurveyInfo {
 export interface SurveyInfos {
   infos: SurveyInfo[];
 }
+
+export interface ConvertTempParticipantReq {
+  studyKey: string;
+  temporaryParticipantId: string;
+  timestamp: number;
+  profileId: string;
+}
