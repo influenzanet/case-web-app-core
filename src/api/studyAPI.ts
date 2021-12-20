@@ -32,6 +32,6 @@ export const getSurveyWithoutLoginReq = (params: {
   survey: string;
   pid?: string;
 }) => apiInstance.get(`/v1/temp-participant/survey`, { params: params });
-export const submitSurveyResponseForTempParticipantRequest = (payload: SurveyResponseReq) => apiInstance.post(`/v1/temp-participant/survey`, payload);
+export const submitSurveyResponseForTempParticipantRequest = (payload: SurveyResponseReq) => apiInstance.post(`/v1/temp-participant/submit-response`, payload);
 
 export const assumeTempParticipantReq = (payload: ConvertTempParticipantReq) => authApiInstance.post(`/v1/study/${payload.studyKey}/assume-temp-participant`, payload);
