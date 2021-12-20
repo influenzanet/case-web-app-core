@@ -10,7 +10,11 @@ export interface SurveyReferenceReq {
 export interface SurveyResponseReq {
   studyKey: string;
   response: SurveyResponse;
-  profileId: string;
+  profileId?: string;
+  // For temp participants:
+  instanceId?: string;
+  temporaryParticipantId?: string;
+  temporaryParticipantTimestamp?: number;
 }
 
 export interface SurveyAndContextMsg {
