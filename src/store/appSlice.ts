@@ -64,4 +64,6 @@ export const {
   openSurveyMode,
 } = appSlice.actions;
 
+export const appActions = appSlice.actions
+
 export default appSlice.reducer;
