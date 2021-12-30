@@ -381,7 +381,7 @@ const Login: React.FC<LoginProps> = (props) => {
         if (!response.user.account.accountConfirmedAt || response.user.account.accountConfirmedAt <= 0) {
           dispatch(dialogActions.openDialogWithoutPayload('signupSuccess'));
         }
-        if (history) {
+        if (history && !initialLoginData?.preventNavigateOnSuccess) {
           history.push('/');
         }
         handleClose();
