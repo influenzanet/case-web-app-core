@@ -26,9 +26,10 @@ const NavbarItem: React.FC<NavbarItemProps> = (props) => {
       <NavLink
         className={clsx("nav-link nav-link-height", props.item.className)}
         to={itemURL}
-        onClick={() => {
+        onClick={(e: any) => {
           switch (props.item.type) {
             case 'dialog':
+              e.preventDefault();
               props.onOpenDialog(itemURL);
               break;
             case 'internal':
