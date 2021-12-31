@@ -375,7 +375,7 @@ const Signup: React.FC = () => {
 
   const handleSignup = async (data: SignupFormData) => {
     if (loading) return;
-    logout();
+    logout(true);
     try {
       setLoading(true);
 

@@ -4,6 +4,7 @@ import store from './store/store';
 import * as studyAPI from './api/studyAPI';
 import { dialogActions } from './store/dialogSlice';
 import { appActions } from './store/appSlice';
+import { useAuthTokenCheck } from "./hooks/useAuthTokenCheck";
 
 const coreReduxActions = {
   appActions,
@@ -15,5 +16,6 @@ export {
   initI18n,
   store,
   studyAPI,
-  coreReduxActions
+  coreReduxActions,
+  useAuthTokenCheck,
 }
