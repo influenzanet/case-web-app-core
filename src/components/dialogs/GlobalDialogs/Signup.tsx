@@ -421,7 +421,7 @@ const Signup: React.FC = () => {
       dispatch(userActions.setFromTokenResponse(response.data));
       setLoading(false);
       closeWithSuccess();
-    } catch (e) {
+    } catch (e: any) {
       console.log(e.response);
       if (!e.response) {
         handleError('request failed');

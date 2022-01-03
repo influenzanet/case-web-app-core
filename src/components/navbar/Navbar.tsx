@@ -5,7 +5,7 @@ import { RootState } from '../../store/rootReducer'
 import { useTranslation } from 'react-i18next';
 import { useIsAuthenticated } from '../../hooks/useIsAuthenticated';
 import { useLogout } from '../../hooks/useLogout';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { NavbarConfig } from '../../types/navbarConfig';
 import { Profile } from '../../api/types/user';
 import { LoadingPlaceholder } from 'case-web-ui';
@@ -26,6 +26,7 @@ const signupDisabled = process.env.REACT_APP_DISABLE_SIGNUP === 'true';
 const Navbar: React.FC<NavbarProps> = (props) => {
   const { t, i18n } = useTranslation(['navbar']);
   const history = useHistory();
+  const location = useLocation();
   const dispatch = useDispatch();
 
   const hasAuthTokens = useAuthTokenCheck();
@@ -94,6 +95,12 @@ const Navbar: React.FC<NavbarProps> = (props) => {
       unauthRightItems: newUnauthRightItems,
     });
   }, [i18n.language])
+
+  useEffect(() => {
+    if (hasAuthTokens && !isLoggedIn) {
+      dispatch(dialogActions.openDialogWithoutPayload('signupSuccess'))
+    }
+  }, [location.pathname])
 
   const handleNavigation = (url: string) => {
     history.push(url);

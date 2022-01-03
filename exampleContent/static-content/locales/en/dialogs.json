@@ -65,9 +65,12 @@
     "title": "Welcome!",
     "successMsg": "You are almost signed up for Infectieradar.be! \n\n First confirm your email address by clicking on the link in the confirmation email that we have sent you \n If you can’t find the email, first check your spam folder. You can also request a new email below.",
     "emailSentMsg": "E-mail has been send",
+    "msgForVerifiedAccount": "If you have just verified your account, you can use the button below to reload this page.",
+    "reloadUser": "Check verification",
     "resendVerificationEmailBtn": "Resend confirmation email",
     "wrongEmailBtn": "Did you use the wrong email address? Then change it here.",
     "errors": {
+      "verifyEmailFirst": "You need to verify your email address first by clicking the link in the registration email. If you cannot find the email, use the button to send a new email.",
       "unknown": "Something has gone wrong."
     }
   },

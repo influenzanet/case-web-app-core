@@ -6,6 +6,11 @@
 
 - For page rows, `className` property is split up into `containerClassName` and `rowClassNameOverride` to be able to customize both the containers class and override the default "row" className of the div.
 - Updated to `survey-engine` v1 track that causes changes of the import path for these libs. Update for survey-engine lib is necessary.
+- Signup success dialog: the dialog supports now checking verification status (reloading the user) for the case the verification was successful on an other tab or device. This requires additional translations for the `signupSuccessDialog` in the `dialogs.json` translation file.
+  Following attributes are new: (with example)
+  - `"msgForVerifiedAccount": "If you have just verified your account, you can use the button below to reload this page."`
+  - `"reloadUser": "Check verification"`
+  - `"errors.verifyEmailFirst": "You need to verify your email address first by clicking the link in the registration email. If you cannot find the email, use the button to send a new email."`
 
 ### Added
 
@@ -20,10 +25,13 @@
 - External extension components receive a method `onNavigate: (url: string) => void`, to handle internal page navigation.
 - Accordion list page item accepts className attribute to add a css class to container item.
 - Replaced `node-sass` with `sass` to allow using newer nodeJS versions.
+- Storybook is using webpack 5 now.
+- Exporting studyAPI and reudx actions so these can be used from extension components.
 
 ### Fixes
 
 - Sub-routes can also access extensions.
+- Login and signup dialogs have improved behaviour regarding if the navigate away after successful action.
 
 ## 1.4.0 - 2021-11-19
 

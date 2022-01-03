@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
-import { resendVerificationEmailReq } from '../../../api/userAPI';
+import { getUserReq, resendVerificationEmailReq } from '../../../api/userAPI';
 import { getErrorMsg } from '../../../api/utils';
 import { dialogActions } from '../../../store/dialogSlice';
 import { RootState } from '../../../store/rootReducer';
@@ -12,6 +12,8 @@ import {
   defaultDialogPaddingXClass,
   Dialog,
 } from 'case-web-ui';
+import { userActions } from '../../../store/userSlice';
+import { renewToken } from '../../../api/instances/authenticatedApi';
 
 
 const SignupSuccess: React.FC = () => {
@@ -67,6 +69,26 @@ const SignupSuccess: React.FC = () => {
     resendActivation();
   }
 
+  const onReloadUser = async () => {
+    try {
+      setLoading(true)
+      const user = (await getUserReq()).data;
+      dispatch(userActions.setUser(user));
+      console.log(user)
+      if (user.account.accountConfirmedAt > 0) {
+        await renewToken();
+        handleClose();
+      } else {
+        setError(t('dialogs:signupSuccess.errors.verifyEmailFirst'));
+      }
+    } catch (e: any) {
+      console.error(e);
+    } finally {
+      setLoading(false)
+    }
+  }
+
+
   const handleClose = () => {
     setError('');
     setLoading(false);
@@ -115,6 +137,21 @@ const SignupSuccess: React.FC = () => {
           loading={loading}
           loadingLabel={t('loadingMsg')}
           onClick={onResendClicked}
+        />
+        <AlertBox
+          className="mt-2"
+          type="info"
+          useIcon={true}
+          content={t('signupSuccess.msgForVerifiedAccount')}
+        />
+        <DialogBtn
+          type="button"
+          className='d-block mt-2'
+          label={t('signupSuccess.reloadUser')}
+          disabled={loading}
+          loading={loading}
+          loadingLabel={t('loadingMsg')}
+          onClick={onReloadUser}
         />
       </div>
     </Dialog>
