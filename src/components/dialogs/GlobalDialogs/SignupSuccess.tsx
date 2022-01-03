@@ -29,6 +29,7 @@ const SignupSuccess: React.FC = () => {
   const [emailSent, setEmailSent] = useState(false);
   const [btnEnabled, setBtnEnabled] = useState(false);
   const [error, setError] = useState('');
+  const [error2, setError2] = useState('');
 
   useEffect(() => {
     if (!btnEnabled) {
@@ -79,7 +80,7 @@ const SignupSuccess: React.FC = () => {
         await renewToken();
         handleClose();
       } else {
-        setError(t('dialogs:signupSuccess.errors.verifyEmailFirst'));
+        setError2(t('dialogs:signupSuccess.errors.verifyEmailFirst'));
       }
     } catch (e: any) {
       console.error(e);
@@ -91,6 +92,7 @@ const SignupSuccess: React.FC = () => {
 
   const handleClose = () => {
     setError('');
+    setError2('');
     setLoading(false);
     dispatch(dialogActions.closeDialog());
   }
@@ -138,11 +140,20 @@ const SignupSuccess: React.FC = () => {
           loadingLabel={t('loadingMsg')}
           onClick={onResendClicked}
         />
+        <hr className='my-2' />
         <AlertBox
-          className="mt-2"
           type="info"
           useIcon={true}
           content={t('signupSuccess.msgForVerifiedAccount')}
+        />
+        <AlertBox
+          className="mt-2"
+          hide={!error2}
+          type="danger"
+          useIcon={true}
+          content={error2}
+          closable={true}
+          onClose={() => setError2('')}
         />
         <DialogBtn
           type="button"
