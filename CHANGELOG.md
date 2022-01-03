@@ -32,6 +32,7 @@
 
 - Sub-routes can also access extensions.
 - Login and signup dialogs have improved behaviour regarding if the navigate away after successful action.
+- Survey mode header handles undefined profile better.
 
 ## 1.4.0 - 2021-11-19
 
