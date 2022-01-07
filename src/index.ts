@@ -5,6 +5,7 @@ import * as studyAPI from './api/studyAPI';
 import { dialogActions } from './store/dialogSlice';
 import { appActions } from './store/appSlice';
 import { useAuthTokenCheck } from "./hooks/useAuthTokenCheck";
+import PreventAccidentalNavigationPrompt from './components/misc/PreventAccidentalNavigationPrompt';
 
 const coreReduxActions = {
   appActions,
@@ -18,4 +19,5 @@ export {
   studyAPI,
   coreReduxActions,
   useAuthTokenCheck,
+  PreventAccidentalNavigationPrompt,
 }

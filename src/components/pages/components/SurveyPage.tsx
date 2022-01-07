@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
-import { Prompt, useHistory, useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { getAssignedSurveyRequest, submitSurveyResponseRequest } from '../../../api/studyAPI';
 import { SurveyAndContextMsg } from '../../../api/types/studyAPI';
 import { Profile } from '../../../api/types/user';
@@ -23,6 +23,7 @@ import {
   getLocalizedString,
 } from 'case-web-ui';
 import { CustomSurveyResponseComponent } from 'case-web-ui/build/components/survey/SurveySingleItemView/ResponseComponent/ResponseComponent';
+import PreventAccidentalNavigationPrompt from '../../misc/PreventAccidentalNavigationPrompt';
 
 
 
@@ -147,12 +148,11 @@ const SurveyPage: React.FC<SurveyPageProps> = (props) => {
   }
 
   const renderContent = () => <React.Fragment>
-    <Prompt
-      when={protectRoute}
-      message={(location, action) => {
+    <PreventAccidentalNavigationPrompt
+      protectionActive={protectRoute}
+      onTriggered={(path: string) => {
         setOpenWarning(true);
-        setNavigateTo(location.pathname);
-        return false;
+        setNavigateTo(path);
       }}
     />
     {openWarning ? <ConfirmDialog
