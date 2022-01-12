@@ -11,6 +11,7 @@
   - `"msgForVerifiedAccount": "If you have just verified your account, you can use the button below to reload this page."`
   - `"reloadUser": "Check verification"`
   - `"errors.verifyEmailFirst": "You need to verify your email address first by clicking the link in the registration email. If you cannot find the email, use the button to send a new email."`
+- Newer version of `react-i18n` handling plurals differently than before. Instead of `_plural` suffix, use `_other`.
 
 ### Added
 
