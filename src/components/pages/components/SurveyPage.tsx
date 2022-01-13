@@ -102,6 +102,10 @@ const SurveyPage: React.FC<SurveyPageProps> = (props) => {
         studyKey: studyKey,
         profileId: profileID
       });
+      if (!response.data.context) {
+        response.data.context = {}
+      }
+      response.data.context.isLoggedIn = true;
       setSurveyAndContext(response.data);
     } catch (e) {
       const err = getErrorMsg(e);
