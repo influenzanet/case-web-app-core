@@ -37,6 +37,25 @@ export interface AssignedSurveys {
   surveyInfos: SurveyInfo[];
 }
 
+export interface Report {
+  studyKey: string;
+  profileId: string;
+  id: string;
+  key: string;
+  participantId: string;
+  responseId: string;
+  timestamp: number;
+  data: Array<{
+    key: string;
+    value: string;
+    dtype?: string;
+  }>;
+}
+
+export interface ReportHistory {
+  reports: Report[]
+}
+
 export interface StudyInfos {
   key: string;
   status: string;

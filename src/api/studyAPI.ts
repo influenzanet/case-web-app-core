@@ -1,12 +1,28 @@
 import authApiInstance from './instances/authenticatedApi';
 import apiInstance from './instances/defaultApi';
 
-import { SurveyReferenceReq, SurveyAndContextMsg, SurveyResponseReq, AssignedSurveys, Studies, SurveyInfos, StudiesForUser, ConvertTempParticipantReq } from './types/studyAPI';
+import { SurveyReferenceReq, SurveyAndContextMsg, SurveyResponseReq, AssignedSurveys, Studies, SurveyInfos, StudiesForUser, ConvertTempParticipantReq, ReportHistory } from './types/studyAPI';
 
 // Study API
 export const getStudiesForUserReq = () => authApiInstance.get<StudiesForUser>('/v1/studies/for-user-profiles');
 export const getAllAvailableStudiesReq = () => authApiInstance.get<Studies>('/v1/studies/active');
 export const getSurveyInfosForStudyReq = (studyKey: string) => authApiInstance.get<SurveyInfos>(`/v1/study/${studyKey}/survey-infos`);
+
+export const getReportsForUser = (
+  onlyForStudies?: string[],
+  onlyForProfiles?: string[],
+  reportKey?: string,
+  from?: number,
+  until?: number,
+) => authApiInstance.get<ReportHistory>('/v1/reports', {
+  params: {
+    studies: onlyForStudies ? onlyForStudies.join(',') : undefined,
+    profileIds: onlyForProfiles ? onlyForProfiles.join(',') : undefined,
+    reportKey: reportKey,
+    from: from,
+    until: until,
+  }
+});
 
 // Study flow
 export const enterStudyReq = (studyKey: string, profileId: string) => authApiInstance.post<AssignedSurveys>(`/v1/study/${studyKey}/enter`, { studyKey, profileId });
