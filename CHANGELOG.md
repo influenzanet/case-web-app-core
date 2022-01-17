@@ -29,7 +29,8 @@
 - Replaced `node-sass` with `sass` to allow using newer nodeJS versions.
 - Storybook is using webpack 5 now.
 - Exporting studyAPI and reudx actions so these can be used from extension components.
-- Survey component is using isLoggedIn attribute on survey contextya.
+- Survey component is using isLoggedIn attribute on survey context.
+- Email validation rule during signup has been replaced to allow characters that are supported by the standard (.e.g, 'x').
 
 ### Fixes
 
