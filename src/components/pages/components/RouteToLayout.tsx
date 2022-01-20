@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { Redirect, Route } from 'react-router-dom';
 import { Extension } from '../../../AppCore';
 import { useIsAuthenticated } from '../../../hooks/useIsAuthenticated';
+import { useUrlQuery } from '../../../hooks/useUrlQuery';
+import { dialogActions } from '../../../store/dialogSlice';
 import { PageConfig } from '../../../types/pagesConfig';
 import { DefaultRoutes } from '../../../types/routing';
 import ContentRenderer from './ContentRenderer';
@@ -17,6 +20,21 @@ interface RouteToLayoutProps {
 const RouteToLayout: React.FC<RouteToLayoutProps> = (props) => {
   // const { t } = useTranslation([props.pageConfig.pageKey]);
   const isAuthenticated = useIsAuthenticated();
+  const dispatch = useDispatch();
+
+  const query = useUrlQuery();
+
+  useEffect(() => {
+    const openAction = query.get("action");
+    console.log(openAction);
+    if (openAction !== undefined) {
+      switch (openAction) {
+        case 'openSignupDialog':
+          dispatch(dialogActions.openDialogWithoutPayload('signup'))
+          break;
+      }
+    }
+  }, [])
 
   if (
     (props.pageConfig.hideWhen === 'auth' && isAuthenticated) ||

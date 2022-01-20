@@ -20,6 +20,7 @@ import { setDefaultAccessTokenHeader } from './api/instances/authenticatedApi';
 import { loadLastSelectedLanguage, saveLanguageSelection } from './i18n';
 import { CustomSurveyResponseComponent } from 'case-web-ui/build/components/survey/SurveySingleItemView/ResponseComponent/ResponseComponent';
 
+
 export interface Extension {
   name: string;
   component: React.FunctionComponent<any>;
@@ -38,6 +39,7 @@ interface AppCoreProps {
   extensions?: Extension[];
   customSurveyResponseComponents?: CustomSurveyResponseComponent[];
 }
+
 
 const AppCore: React.FC<AppCoreProps> = (props) => {
   const dispatch = useDispatch();
