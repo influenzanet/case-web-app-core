@@ -21,6 +21,7 @@
 - `AppCore` now accepts a list of custom survey response compoents to extend what response items a survey can use. Define the list through the prop `customSurveyResponseComponents`.
 - New API methods to work with temporary participants.
 - New exported component to prevent that can be used to prevent accidental navigation: `PreventAccidentalNavigationPrompt`.
+- New study api call for downloading user reports
 
 ### Changed
 
