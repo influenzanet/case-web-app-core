@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.4.1 - 2022-01-20
+
+### Added
+- Can trigger dialog opening with url query param ?action=openSignupDialog
+
+
 ## 1.4.0 - 2021-11-19
 
 ### BREAKING CHANGES

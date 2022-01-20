@@ -18,6 +18,8 @@ import { PagesConfig } from './types/pagesConfig';
 import { RootState } from './store/rootReducer';
 import { setDefaultAccessTokenHeader } from './api/instances/authenticatedApi';
 import { loadLastSelectedLanguage, saveLanguageSelection } from './i18n';
+import { useUrlQuery } from './hooks/useUrlQuery';
+import { dialogActions } from './store/dialogSlice';
 
 export interface Extension {
   name: string;
@@ -37,10 +39,12 @@ interface AppCoreProps {
   extensions?: Extension[];
 }
 
+
 const AppCore: React.FC<AppCoreProps> = (props) => {
   const dispatch = useDispatch();
   const { i18n } = useTranslation();
   const accessToken = useSelector((state: RootState) => state.app.auth?.accessToken);
+  const query = useUrlQuery();
 
   useEffect(() => {
     if (accessToken) {
@@ -48,6 +52,14 @@ const AppCore: React.FC<AppCoreProps> = (props) => {
     }
     const language = loadLastSelectedLanguage(process.env.REACT_APP_DEFAULT_LANGUAGE ? process.env.REACT_APP_DEFAULT_LANGUAGE : 'en');
     i18n.changeLanguage(language);
+    const openAction = query.get("action");
+    if (openAction !== undefined) {
+      switch (openAction) {
+        case 'openSignupDialog':
+          dispatch(dialogActions.openDialogWithoutPayload('signup'))
+          break;
+      }
+    }
   }, []);
 
   useEffect(() => {
