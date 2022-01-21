@@ -47,6 +47,7 @@ const Pages: React.FC<PagesProps> = (props) => {
             pageConfig={pageConfig}
             defaultRoutes={defaultRoutes}
             extensions={props.extensions}
+            dateLocales={props.dateLocales}
           />
         })}
         <Route path={defaultRoutes.surveyPage + '/:studyKey/:surveyKey'} render={() => <SurveyPage

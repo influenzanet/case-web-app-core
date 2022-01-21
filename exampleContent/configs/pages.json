@@ -171,6 +171,13 @@
                   "config": {
                     "type": "surveyList"
                   }
+                },
+                {
+                  "itemKey": "reportList",
+                  "className": "my-3",
+                  "config": {
+                    "type": "reportList"
+                  }
                 }
               ]
             },

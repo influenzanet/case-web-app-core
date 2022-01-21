@@ -42,7 +42,7 @@ type PageItemConfig = TeaserImageConfig | RouterComponentConfig |
   AccordionListConfig | SimpleCard | SystemInfoConfig | AccountSettingsConfig |
   CommunicationSettingsConfig | DeleteAccountConfig | LogoCreditsConfig |
   SurveyListConfig | LinkListConfig | MapDataSeriesConfig | LineWithScatterChartConfig | ContainerConfig | PlaceholderComponentConfig | ExtensionComponent |
-  ActionCardConfig
+  ActionCardConfig | ReportListConfig
 
 
 export interface MarkdownComponentConfig {
@@ -204,6 +204,13 @@ export interface LineWithScatterChartConfig {
 
 export interface SurveyListConfig {
   type: 'surveyList';
+}
+
+export interface ReportListConfig {
+  type: 'reportList';
+  studyKeys?: string[];
+  reportKey: string;
+  // dateLimit?
 }
 
 export interface ContainerConfig {

@@ -15,6 +15,7 @@ interface RouteToLayoutProps {
   pageConfig: PageConfig;
   defaultRoutes: DefaultRoutes;
   extensions?: Extension[];
+  dateLocales?: Array<{ code: string, locale: any, format: string }>;
 }
 
 const RouteToLayout: React.FC<RouteToLayoutProps> = (props) => {
@@ -59,6 +60,7 @@ const RouteToLayout: React.FC<RouteToLayoutProps> = (props) => {
           subPages={props.pageConfig.subPages}
           defaultRoutes={props.defaultRoutes}
           extensions={props.extensions}
+          dateLocales={props.dateLocales}
         />
       }
     />

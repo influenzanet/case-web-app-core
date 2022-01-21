@@ -38,6 +38,7 @@ import { RootState } from '../../../store/rootReducer';
 import { getTranslatedMarkdownPath } from '../../../hooks/useTranslatedMarkdown';
 import RouteToLayout from './RouteToLayout';
 import { Extension } from '../../../AppCore';
+import ReportList from '../../study/ReportList';
 
 
 interface ContentRendererProps {
@@ -48,6 +49,7 @@ interface ContentRendererProps {
   pageKey: string;
   defaultRoutes: DefaultRoutes;
   extensions?: Extension[];
+  dateLocales?: Array<{ code: string, locale: any, format: string }>;
 }
 
 const shouldHide = (hideWhen?: string, isAuth?: boolean): boolean => {
@@ -312,6 +314,16 @@ const ContentRenderer: React.FC<ContentRendererProps> = (props) => {
           pageKey={props.pageKey}
           itemKey={item.itemKey}
           defaultRoutes={props.defaultRoutes}
+        />
+      case 'reportList':
+        return <ReportList
+          key={item.itemKey}
+          pageKey={props.pageKey}
+          itemKey={item.itemKey}
+          className={item.className}
+          studyKeys={item.config.studyKeys}
+          reportKey={item.config.reportKey}
+          dateLocales={props.dateLocales}
         />
       case 'container':
         const subItems = item.config.items;

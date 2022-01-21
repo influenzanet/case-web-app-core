@@ -65,5 +65,16 @@
       "hideBtn": "Hide",
       "showBtn": "Has your background information changed?"
     }
+  },
+  "reportList": {
+    "title": "Reports",
+    "subtitle": "",
+    "cardActionBtn": "Show details",
+    "detailDialog": {
+      "title": "Report details",
+      "closeBtn": "Close"
+    },
+    "infoParagraph": "You have created the following reports previously:",
+    "emptyList": "There are no reports yet."
   }
 }

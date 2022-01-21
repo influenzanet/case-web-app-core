@@ -1,0 +1,16 @@
+{
+  "studyNames": {
+    "default": "Default Tekenradar"
+  },
+  "icons": {
+    "icon1": "/images/..."
+  },
+  "test1": {
+    "title": "Tick bite report",
+    "key1": {
+      "label": "Attribute label",
+      "value1": "Different values",
+      "value2": "can be translated"
+    }
+  }
+}
