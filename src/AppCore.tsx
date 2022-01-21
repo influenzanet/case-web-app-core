@@ -38,6 +38,7 @@ interface AppCoreProps {
   customFooter?: React.ReactNode;
   extensions?: Extension[];
   customSurveyResponseComponents?: CustomSurveyResponseComponent[];
+  dateLocales?: Array<{ code: string, locale: any, format: string }>;
 }
 
 
@@ -98,6 +99,7 @@ const AppCore: React.FC<AppCoreProps> = (props) => {
         onOpenExternalPage={handleOpenExternalPage}
         extensions={props.extensions}
         customResponseComponents={props.customSurveyResponseComponents}
+        dateLocales={props.dateLocales}
       />
 
       {!props.hideDefaultFooter ? <FooterRenderer

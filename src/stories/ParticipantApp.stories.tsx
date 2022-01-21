@@ -18,6 +18,16 @@ import { HeaderConfig } from "../types/headerConfig";
 import { AppConfig } from "../types/appConfig";
 import { NavbarConfig } from "../types/navbarConfig";
 import { PagesConfig } from "../types/pagesConfig";
+import { nl, nlBE, fr, de, it } from 'date-fns/locale';
+
+const dateLocales = [
+  { code: 'nl', locale: nl, format: 'dd-MM-yyyy' },
+  { code: 'nl-be', locale: nlBE, format: 'dd.MM.yyyy' },
+  { code: 'fr-be', locale: fr, format: 'dd.MM.yyyy' },
+  { code: 'de-be', locale: de, format: 'dd.MM.yyyy' },
+  { code: 'it', locale: it, format: 'dd/MM/yyyy' },
+];
+
 
 initI18n(
   process.env.REACT_APP_DEFAULT_LANGUAGE,
@@ -42,6 +52,7 @@ stories.add('Example1', () => Template({
   navbarConfig: navbarConfig as NavbarConfig,
   pagesConfig: pagesConfig as PagesConfig,
   footerConfig: footerConfig as FooterConfig,
+  dateLocales: dateLocales,
 }))
 
 stories.add('With Custom', () => Template({
@@ -51,5 +62,6 @@ stories.add('With Custom', () => Template({
   footerConfig: undefined,
   hideDefaultFooter: true,
   customHeader: (<div className="bg-secondary p-3"> Custom Header</div>),
-  customFooter: (<div className="bg-secondary p-3"> Custom Footer</div>)
+  customFooter: (<div className="bg-secondary p-3"> Custom Footer</div>),
+  dateLocales: dateLocales,
 }))

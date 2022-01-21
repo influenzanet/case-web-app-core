@@ -30,6 +30,7 @@ import PreventAccidentalNavigationPrompt from '../../misc/PreventAccidentalNavig
 interface SurveyPageProps {
   defaultRoutes: DefaultRoutes;
   customResponseComponents?: CustomSurveyResponseComponent[];
+  dateLocales?: Array<{ code: string, locale: any, format: string }>;
 }
 
 const SurveyPage: React.FC<SurveyPageProps> = (props) => {
@@ -189,6 +190,7 @@ const SurveyPage: React.FC<SurveyPageProps> = (props) => {
         submitBtnText={t('submitBtn')}
         invalidResponseText={t('notValidQuestion')}
         customResponseComponents={props.customResponseComponents}
+        dateLocales={props.dateLocales}
       /> :
       <AlertBox type="danger"
         useIcon={true}

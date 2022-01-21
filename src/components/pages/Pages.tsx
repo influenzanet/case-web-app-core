@@ -16,6 +16,7 @@ interface PagesProps {
   config?: PagesConfig;
   extensions?: Extension[];
   customResponseComponents?: CustomSurveyResponseComponent[];
+  dateLocales?: Array<{ code: string, locale: any, format: string }>;
   onOpenExternalPage: (url: string) => void;
 }
 
@@ -50,6 +51,7 @@ const Pages: React.FC<PagesProps> = (props) => {
         })}
         <Route path={defaultRoutes.surveyPage + '/:studyKey/:surveyKey'} render={() => <SurveyPage
           customResponseComponents={props.customResponseComponents}
+          dateLocales={props.dateLocales}
           defaultRoutes={defaultRoutes} />} />
         <Route path={linkResolverRootUrl} render={() => <LinkResolver defaultRoutes={defaultRoutes} />} />,
         <Redirect to={isAuth ? defaultRoutes.auth : defaultRoutes.unauth} />

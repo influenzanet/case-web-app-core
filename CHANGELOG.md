@@ -4,6 +4,7 @@
 
 ### BREAKING CHANGES
 
+- List of supported date locales from date-fns needs to be now explicitly passed down as an attribute for AppCore. (`dateLocales?: Array<{ code: string, locale: any, format: string }>;`). For an example, see `ParticipantApp.stories.tsx`. The passed down locales, will be registered for react-datepicker in the DateInput response component, when it's first initialized.
 - For page rows, `className` property is split up into `containerClassName` and `rowClassNameOverride` to be able to customize both the containers class and override the default "row" className of the div.
 - Updated to `survey-engine` v1 track that causes changes of the import path for these libs. Update for survey-engine lib is necessary.
 - Signup success dialog: the dialog supports now checking verification status (reloading the user) for the case the verification was successful on an other tab or device. This requires additional translations for the `signupSuccessDialog` in the `dialogs.json` translation file.

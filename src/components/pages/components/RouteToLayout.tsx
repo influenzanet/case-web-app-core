@@ -26,7 +26,6 @@ const RouteToLayout: React.FC<RouteToLayoutProps> = (props) => {
 
   useEffect(() => {
     const openAction = query.get("action");
-    console.log(openAction);
     if (openAction !== undefined) {
       switch (openAction) {
         case 'openSignupDialog':

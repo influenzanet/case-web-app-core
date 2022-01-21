@@ -19,6 +19,16 @@ import { AppConfig } from "../types/appConfig";
 import { NavbarConfig } from "../types/navbarConfig";
 import { PageItem, PagesConfig } from "../types/pagesConfig";
 
+import { nl, nlBE, fr, de, it } from 'date-fns/locale';
+
+const dateLocales = [
+  { code: 'nl', locale: nl, format: 'dd-MM-yyyy' },
+  { code: 'nl-be', locale: nlBE, format: 'dd.MM.yyyy' },
+  { code: 'fr-be', locale: fr, format: 'dd.MM.yyyy' },
+  { code: 'de-be', locale: de, format: 'dd.MM.yyyy' },
+  { code: 'it', locale: it, format: 'dd/MM/yyyy' },
+];
+
 initI18n(
   process.env.REACT_APP_DEFAULT_LANGUAGE,
   process.env.REACT_APP_FALLBACK_LANGUAGE,
@@ -73,6 +83,7 @@ stories.add('ExampleExtension', () => Template({
   navbarConfig: navbarConfig as NavbarConfig,
   pagesConfig: pagesConfig as PagesConfig,
   footerConfig: footerConfig as FooterConfig,
+  dateLocales: dateLocales,
 }))
 
 
