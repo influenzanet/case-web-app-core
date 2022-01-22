@@ -209,7 +209,7 @@ export interface SurveyListConfig {
 export interface ReportListConfig {
   type: 'reportList';
   studyKeys?: string[];
-  reportKey: string;
+  reportKey?: string;
   // dateLimit?
 }
 
