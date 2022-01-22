@@ -15,6 +15,7 @@ interface ReportListProps {
   reportKey?: string;
   className?: string;
   dateLocales?: Array<{ code: string, locale: any, format: string }>;
+  cardBgOverride?: string;
 }
 
 interface ReportDisplayProps {
@@ -169,6 +170,7 @@ const ReportList: React.FC<ReportListProps> = (props) => {
       }}
       reports={reportCardInfos}
       avatars={avatars}
+      cardBgOverride={props.cardBgOverride}
     />
   </div>
 

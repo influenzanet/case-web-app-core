@@ -210,6 +210,7 @@ export interface ReportListConfig {
   type: 'reportList';
   studyKeys?: string[];
   reportKey?: string;
+  cardBgOverride?: string;
   // dateLimit?
 }
 
