@@ -100,7 +100,7 @@ const Invitation: React.FC<InvitationProps> = (props) => {
     if (!token) return;
     try {
       await verifyContactReq(token);
-    } catch (e) {
+    } catch (e: any) {
       if (e && e.response) {
         console.error(e.response);
       }
@@ -157,7 +157,7 @@ const Invitation: React.FC<InvitationProps> = (props) => {
         setConfirmPassword("");
         validateToken(token);
       }
-    } catch (e) {
+    } catch (e: any) {
       const err = getErrorMsg(e);
       console.error(err);
       handleError(e);

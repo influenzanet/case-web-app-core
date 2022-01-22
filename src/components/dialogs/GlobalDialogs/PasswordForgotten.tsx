@@ -46,7 +46,7 @@ const PasswordForgotten: React.FC = () => {
         setSuccess(true);
 
       }
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
       if (e.response && e.response.data && e.response.data.error && e.response.data.error === 'invalid account id') {
         setError(t("dialogs:passwordForgotten.errors.invalidId"));

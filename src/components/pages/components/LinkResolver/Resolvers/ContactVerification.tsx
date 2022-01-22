@@ -77,7 +77,7 @@ const ContactVerification: React.FC<ContactVerificationProps> = (props) => {
         }
       }
       setLoading(false);
-    } catch (e) {
+    } catch (e: any) {
       console.error(e.response);
       handleError(e.response.data.error);
       if (isLoggedIn) {

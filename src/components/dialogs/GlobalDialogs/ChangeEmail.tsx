@@ -73,7 +73,7 @@ const ChangeEmail: React.FC<ChangeEmailProps> = (props) => {
           }
         }))
       }
-    } catch (e) {
+    } catch (e: any) {
       console.error(e.response);
       handleError(e.response.data.error);
     } finally {

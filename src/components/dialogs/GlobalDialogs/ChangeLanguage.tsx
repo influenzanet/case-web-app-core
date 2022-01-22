@@ -47,7 +47,7 @@ const ChangeLanguage: React.FC<ChangeLanguageProps> = (props) => {
       const user = (await getUserReq()).data;
       dispatch(userActions.setUser(user));
       setLoading(false);
-    } catch (e) {
+    } catch (e: any) {
       console.log(e.respomse);
       setLoading(false);
     }

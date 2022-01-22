@@ -17,7 +17,7 @@ import {
   TitleBar,
   LoginCard,
 } from 'case-web-ui';
-import appSlice, { setPersistState } from '../../../../../store/appSlice';
+import { setPersistState } from '../../../../../store/appSlice';
 
 
 interface StudyLoginProps {

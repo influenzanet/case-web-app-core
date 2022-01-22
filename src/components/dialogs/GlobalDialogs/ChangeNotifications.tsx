@@ -54,7 +54,7 @@ const ChangeNotifications: React.FC<ChangeNotificationsProps> = (props) => {
       const user = (await getUserReq()).data;
       dispatch(userActions.setUser(user));
       setLoading(false);
-    } catch (e) {
+    } catch (e: any) {
       console.log(e.respomse);
       setLoading(false);
     }
@@ -89,7 +89,7 @@ const ChangeNotifications: React.FC<ChangeNotificationsProps> = (props) => {
           btn: t('changeNotifications.successDialog.btn'),
         }
       }))
-    } catch (e) {
+    } catch (e: any) {
       setLoading(false);
       console.error(e.response);
     }

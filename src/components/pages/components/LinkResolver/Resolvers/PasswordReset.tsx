@@ -125,7 +125,7 @@ const PasswordReset: React.FC<PasswordResetProps> = (props) => {
         setConfirmPassword("");
         validateToken(token);
       }
-    } catch (e) {
+    } catch (e: any) {
       const err = getErrorMsg(e);
       console.error(err);
       handleError(e);
