@@ -16,6 +16,7 @@ interface ReportListProps {
   className?: string;
   dateLocales?: Array<{ code: string, locale: any, format: string }>;
   cardBgOverride?: string;
+  hideStudyKey?: boolean;
 }
 
 interface ReportDisplayProps {
@@ -82,7 +83,7 @@ const ReportList: React.FC<ReportListProps> = (props) => {
       return {
         timestamp: report.timestamp,
         reportName: t(`reports:${report.key}.title`),
-        studyName: t(`reports:studyNames.${report.studyKey}`),
+        studyName: !props.hideStudyKey ? t(`reports:studyNames.${report.studyKey}`) : undefined,
         cardIcon: icon ? getExternalOrLocalContentURL(t(`reports:icons.${icon}`)) : undefined,
         subtitle: formatDate(new Date(report.timestamp * 1000), 'Pp', { locale: props.dateLocales?.find(dl => dl.code === i18n.language)?.locale }),
         profile: currentUser.profiles.find(p => p.id === report.profileId),
