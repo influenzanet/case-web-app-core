@@ -111,7 +111,7 @@ const ManageProfiles: React.FC<ManageProfilesProps> = (props) => {
           {p.alias}
         </span>
         {p.mainProfile ?
-          <span className="text-muted ms-1 fw-normal">
+          <span className="text-grey-7 ms-1 fw-normal">
             {`(${t('dialogs:manageProfiles.mainProfileLabel')})`}
           </span>
           : null}

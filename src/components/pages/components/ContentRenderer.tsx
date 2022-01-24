@@ -325,6 +325,7 @@ const ContentRenderer: React.FC<ContentRendererProps> = (props) => {
           reportKey={item.config.reportKey}
           dateLocales={props.dateLocales}
           cardBgOverride={item.config.cardBgOverride}
+          hideStudyKey={item.config.hideStudyKey}
         />
       case 'container':
         const subItems = item.config.items;
