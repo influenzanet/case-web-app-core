@@ -113,6 +113,7 @@ export interface ActionCardConfig {
     as?: 'div' | 'img'; // defaults to 'div'
     alt?: string;
     className?: string;
+    copyrightNotice?: string;
     backgroundPosition?: string;
     backgroundSize?: string;
     placement: 'top' | 'left';
