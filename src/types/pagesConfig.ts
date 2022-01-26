@@ -114,6 +114,7 @@ export interface ActionCardConfig {
     alt?: string;
     className?: string;
     copyrightNotice?: string;
+    copyrightNoticeXAlignment?: 'start' | 'end';
     backgroundPosition?: string;
     backgroundSize?: string;
     placement: 'top' | 'left';
