@@ -51,7 +51,7 @@ const ReportList: React.FC<ReportListProps> = (props) => {
 
 
   useEffect(() => {
-    if (!reportHistory) {
+    if (!reportHistory || !reportHistory.reports) {
       setReportCardInfos([]);
       return
     }
