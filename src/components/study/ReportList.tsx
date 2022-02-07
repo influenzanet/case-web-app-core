@@ -69,11 +69,11 @@ const ReportList: React.FC<ReportListProps> = (props) => {
     const sortedReports = reports.sort((a, b) => b.timestamp - a.timestamp);
     const reportCards = sortedReports.map((report): ReportDisplayProps => {
 
-      const icon = report.data.find(d => d.key === 'icon');
-      const summary = report.data.find(d => d.key === 'summary');
-
       const details: DataDisplay[] = []
-      report.data.forEach(d => {
+      const icon = report.data?.find(d => d.key === 'icon');
+      const summary = report.data?.find(d => d.key === 'summary');
+
+      report.data?.forEach(d => {
         if (d.key === 'icon' || d.key === 'summary') {
           return;
         }
