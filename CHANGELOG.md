@@ -23,6 +23,7 @@
 - New API methods to work with temporary participants.
 - New exported component to prevent that can be used to prevent accidental navigation: `PreventAccidentalNavigationPrompt`.
 - New study api call for downloading user reports
+- Add new exported component `InternalNavigator`, to use internal react-router instance to navigate in custom components.
 
 ### Changed
 
