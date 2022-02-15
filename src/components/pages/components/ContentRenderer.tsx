@@ -226,6 +226,9 @@ const ContentRenderer: React.FC<ContentRendererProps> = (props) => {
         />
       case 'accordionList':
         const items = t(`${item.itemKey}`, { returnObjects: true }) as Array<{ title: string; content: string; }>;
+        if (items === undefined || !Array.isArray(items)) {
+          return <span>Accordion items not found for: {item.itemKey}</span>
+        }
         return <div key={item.itemKey} className={item.className}>
           <AccordionList
             itemKey={item.itemKey}
