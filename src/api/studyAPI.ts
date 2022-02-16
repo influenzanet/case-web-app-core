@@ -30,6 +30,15 @@ export const leaveStudyRequest = (studyKey: string, profileId: string) => authAp
 export const getAllAssignedSurveysReq = () => authApiInstance.get<AssignedSurveys>('/v1/studies/all-assigned-surveys');
 export const getAssignedSurveyRequest = (payload: SurveyReferenceReq) => authApiInstance.get<SurveyAndContextMsg>(`/v1/study/${payload.studyKey}/survey/${payload.surveyKey}?pid=${payload.profileId}`);
 export const submitSurveyResponseRequest = (payload: SurveyResponseReq) => authApiInstance.post(`/v1/study/${payload.studyKey}/submit-response`, payload);
+export const uploadParticipantFileRequest = (studyKey: string, payload: File) => {
+  const formdata = new FormData();
+  formdata.append('file', payload);
+  return authApiInstance.post(`/v1/study/${studyKey}/file-upload`, payload, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  })
+};
 
 
 // Temporary participants:
