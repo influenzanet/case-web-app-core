@@ -33,7 +33,11 @@ export const submitSurveyResponseRequest = (payload: SurveyResponseReq) => authA
 export const uploadParticipantFileRequest = (studyKey: string, payload: File) => {
   const formdata = new FormData();
   formdata.append('file', payload);
-  return authApiInstance.post(`/v1/study/${studyKey}/file-upload`, payload)
+  return authApiInstance.post(`/v1/study/${studyKey}/file-upload`, formdata, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  })
 };
 
 
