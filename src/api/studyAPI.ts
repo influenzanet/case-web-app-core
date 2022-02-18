@@ -39,7 +39,7 @@ export const uploadParticipantFileRequest = (studyKey: string, payload: File) =>
     }
   })
 };
-export const deleteParticipantFilesRequest = (studyKey: string, fileIds: string[]) => authApiInstance.post(`/v1/study/${studyKey}/delelte-files`, { fileIds: fileIds });
+export const deleteParticipantFilesRequest = (studyKey: string, fileIds: string[]) => authApiInstance.post(`/v1/study/${studyKey}/delete-files`, { fileIds: fileIds });
 
 // Temporary participants:
 export const registerTempParticipantReq = (params: {
