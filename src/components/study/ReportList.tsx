@@ -70,7 +70,7 @@ const ReportList: React.FC<ReportListProps> = (props) => {
     const reportCards = sortedReports.map((report): ReportDisplayProps => {
 
       const details: DataDisplay[] = []
-      const icon = report.data?.find(d => d.key === 'icon');
+      const icon = report.data?.find(d => d.key === 'icon')?.value;
       const summary = report.data?.find(d => d.key === 'summary');
 
       report.data?.forEach(d => {
