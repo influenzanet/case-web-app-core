@@ -121,6 +121,10 @@ const ReportList: React.FC<ReportListProps> = (props) => {
       case 'string':
         displayData.value = data.value
         break;
+      case 'keyList':
+        const keys = data.value.split(';');
+        displayData.value = keys.map(k => t(`reports:${reportKey}.${data.key}.${k}`)).join(', ')
+        break;
       default:
         displayData.value = t(`reports:${reportKey}.${data.key}.${data.value}`)
         break;
