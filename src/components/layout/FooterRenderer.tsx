@@ -36,6 +36,7 @@ const FooterRenderer: React.FC<FooterRendererProps> = (props) => {
         return {
           columnKey: column.columnKey,
           columnTitle: t(`${column.columnKey}.title`),
+          classNameOverride: column.classNameOverride,
           items: column.items.map(item => {
             return {
               ...item,
