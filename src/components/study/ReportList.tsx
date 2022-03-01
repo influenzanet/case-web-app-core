@@ -6,17 +6,19 @@ import { useSelector } from 'react-redux';
 import { getReportsForUser } from '../../api/studyAPI';
 import { ReportHistory } from '../../api/types/studyAPI';
 import { RootState } from '../../store/rootReducer';
-import { format as formatDate, isDate } from "date-fns";
+import { format as formatDate } from "date-fns";
 
 interface ReportListProps {
   pageKey: string;
   itemKey: string;
   studyKeys?: string[];
   reportKey?: string;
+  ignoreReports?: string[];
   className?: string;
   dateLocales?: Array<{ code: string, locale: any, format: string }>;
   cardBgOverride?: string;
   hideStudyKey?: boolean;
+  maxReportAgeInSeconds?: number;
 }
 
 interface ReportDisplayProps {
@@ -140,8 +142,9 @@ const ReportList: React.FC<ReportListProps> = (props) => {
         props.studyKeys,
         undefined,
         props.reportKey,
+        props.maxReportAgeInSeconds ? Math.floor(Date.now() / 1000) - props.maxReportAgeInSeconds : undefined,
         undefined,
-        undefined
+        props.ignoreReports
       );
       setReportHistory(resp.data);
     } catch (e: any) {

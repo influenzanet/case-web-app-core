@@ -214,6 +214,8 @@ export interface ReportListConfig {
   reportKey?: string;
   cardBgOverride?: string;
   hideStudyKey?: boolean;
+  ignoreReports?: string[];
+  maxReportAgeInSeconds?: number;
   // dateLimit?
 }
 

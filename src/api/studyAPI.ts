@@ -14,6 +14,7 @@ export const getReportsForUser = (
   reportKey?: string,
   from?: number,
   until?: number,
+  ignoreReports?: string[],
 ) => authApiInstance.get<ReportHistory>('/v1/reports', {
   params: {
     studies: onlyForStudies ? onlyForStudies.join(',') : undefined,
@@ -21,6 +22,7 @@ export const getReportsForUser = (
     reportKey: reportKey,
     from: from,
     until: until,
+    ignoreReports: ignoreReports ? ignoreReports.join(',') : undefined,
   }
 });
 
