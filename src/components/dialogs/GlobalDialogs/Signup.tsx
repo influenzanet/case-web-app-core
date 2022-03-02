@@ -369,8 +369,12 @@ const Signup: React.FC = () => {
   const closeWithSuccess = () => {
     setError('')
     setLoading(false)
-    if (dialogState.config?.origin !== 'surveyFlow')
+    if (dialogState.config?.origin !== 'surveyFlow') {
       dispatch(dialogActions.openDialogWithoutPayload({ type: 'signupSuccess', origin: dialogState.config?.origin }));
+    } else {
+      dispatch(dialogActions.closeDialog())
+    }
+
   }
 
 
