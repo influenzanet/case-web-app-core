@@ -309,7 +309,7 @@ const Invitation: React.FC<InvitationProps> = (props) => {
     />
     <button className="btn btn-primary"
       onClick={() => {
-        dispatch(dialogActions.openDialogWithoutPayload('passwordForgotten'))
+        dispatch(dialogActions.openDialogWithoutPayload({ type: 'passwordForgotten' }))
       }}
     >
       {t(`${translationRootKey}.content.restartBtn`)}

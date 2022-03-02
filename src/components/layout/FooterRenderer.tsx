@@ -26,7 +26,7 @@ const FooterRenderer: React.FC<FooterRendererProps> = (props) => {
   }
 
   const handleDialogOpening = (dialog: string) => {
-    dispatch(dialogActions.openDialogWithoutPayload(dialog));
+    dispatch(dialogActions.openDialogWithoutPayload({ type: dialog }));
   }
 
   const getLocalizedConfig = (config?: FooterConfig) => {

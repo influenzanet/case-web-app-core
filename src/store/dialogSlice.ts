@@ -1,22 +1,27 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
+export type DialogOrigin = 'surveyFlow'
+
 interface DialogWithoutPayload {
   type: string;
+  origin?: DialogOrigin;
+
 }
 
 export interface LoginDialog {
   type: 'login'
+  origin?: DialogOrigin;
   payload: {
     email: string
     password: string
     rememberMe: boolean
     verificationCode?: string
-    preventNavigateOnSuccess?: boolean
   }
 }
 
 export interface AlertDialog {
   type: 'alertDialog'
+  origin?: DialogOrigin;
   payload: {
     color: 'danger' | 'warning' | 'success'
     title: string
@@ -44,9 +49,10 @@ const dialogSlice = createSlice({
     closeDialog(state) {
       state.config = undefined
     },
-    openDialogWithoutPayload(state, action: PayloadAction<string>) {
+    openDialogWithoutPayload(state, action: PayloadAction<{ type: string; origin?: DialogOrigin }>) {
       state.config = {
-        type: action.payload,
+        type: action.payload.type,
+        origin: action.payload.origin,
       }
     },
     openLoginDialog(state, action: PayloadAction<LoginDialog>) {

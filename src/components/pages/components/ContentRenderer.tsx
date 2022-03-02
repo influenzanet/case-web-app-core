@@ -143,7 +143,7 @@ const ContentRenderer: React.FC<ContentRendererProps> = (props) => {
           onClick={() => {
             if (!action) { return; }
             if (action.type === 'openDialog') {
-              dispatch(dialogActions.openDialogWithoutPayload(action.value))
+              dispatch(dialogActions.openDialogWithoutPayload({ type: action.value }))
             } else if (action.type === 'navigate') {
               history.push(action.value);
             }
@@ -165,7 +165,7 @@ const ContentRenderer: React.FC<ContentRendererProps> = (props) => {
           onClick={() => {
             if (!actionCardAction) { return; }
             if (actionCardAction.type === 'openDialog') {
-              dispatch(dialogActions.openDialogWithoutPayload(actionCardAction.value))
+              dispatch(dialogActions.openDialogWithoutPayload({ type: actionCardAction.value }))
             } else if (actionCardAction.type === 'navigate') {
               history.push(actionCardAction.value);
             }
@@ -222,7 +222,7 @@ const ContentRenderer: React.FC<ContentRendererProps> = (props) => {
               }
             }))
           }}
-          onOpenDialog={(dialog) => dispatch(dialogActions.openDialogWithoutPayload(dialog))}
+          onOpenDialog={(dialog) => dispatch(dialogActions.openDialogWithoutPayload({ type: dialog }))}
         />
       case 'accordionList':
         const items = t(`${item.itemKey}`, { returnObjects: true }) as Array<{ title: string; content: string; }>;
@@ -296,7 +296,7 @@ const ContentRenderer: React.FC<ContentRendererProps> = (props) => {
           onChangeLanguage={(code: string) => i18n.changeLanguage(code)}
           onNavigate={(url) => history.push(url)}
           onOpenExternalPage={handleOpenExternalPage}
-          onOpenDialog={dialog => dispatch(dialogActions.openDialogWithoutPayload(dialog))}
+          onOpenDialog={dialog => dispatch(dialogActions.openDialogWithoutPayload({ type: dialog }))}
         />
       case 'mapDataSeries':
         return <MapWithTimeSliderLoader

@@ -379,9 +379,9 @@ const Login: React.FC<LoginProps> = (props) => {
         }
 
         if (!response.user.account.accountConfirmedAt || response.user.account.accountConfirmedAt <= 0) {
-          dispatch(dialogActions.openDialogWithoutPayload('signupSuccess'));
+          dispatch(dialogActions.openDialogWithoutPayload({ type: 'signupSuccess', origin: dialogState.config?.origin }));
         }
-        if (history && !initialLoginData?.preventNavigateOnSuccess) {
+        if (history && dialogState.config?.origin !== 'surveyFlow') {
           history.push('/');
         }
         handleClose();
@@ -489,7 +489,7 @@ const Login: React.FC<LoginProps> = (props) => {
             }}
             onOpenDialog={(dialog) => {
               handleClose();
-              dispatch(dialogActions.openDialogWithoutPayload(dialog));
+              dispatch(dialogActions.openDialogWithoutPayload({ type: dialog, origin: dialogState.config?.origin }));
             }}
           />
         }

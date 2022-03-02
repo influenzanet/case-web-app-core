@@ -369,7 +369,8 @@ const Signup: React.FC = () => {
   const closeWithSuccess = () => {
     setError('')
     setLoading(false)
-    dispatch(dialogActions.openDialogWithoutPayload('signupSuccess'));
+    if (dialogState.config?.origin !== 'surveyFlow')
+      dispatch(dialogActions.openDialogWithoutPayload({ type: 'signupSuccess', origin: dialogState.config?.origin }));
   }
 
 
@@ -469,7 +470,7 @@ const Signup: React.FC = () => {
         <SignupForm
           isLoading={loading}
           onSubmit={(data) => handleSignup(data)}
-          onOpenDialog={(dialog) => dispatch(dialogActions.openDialogWithoutPayload(dialog))}
+          onOpenDialog={(dialog) => dispatch(dialogActions.openDialogWithoutPayload({ type: dialog }))}
           error={error}
           clearError={() => setError('')}
         />

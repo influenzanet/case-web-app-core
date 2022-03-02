@@ -30,7 +30,7 @@ const RouteToLayout: React.FC<RouteToLayoutProps> = (props) => {
     if (openAction !== undefined) {
       switch (openAction) {
         case 'openSignupDialog':
-          dispatch(dialogActions.openDialogWithoutPayload('signup'))
+          dispatch(dialogActions.openDialogWithoutPayload({ type: 'signup' }))
           break;
       }
     }

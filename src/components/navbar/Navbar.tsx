@@ -98,7 +98,7 @@ const Navbar: React.FC<NavbarProps> = (props) => {
 
   useEffect(() => {
     if (hasAuthTokens && !isLoggedIn) {
-      dispatch(dialogActions.openDialogWithoutPayload('signupSuccess'))
+      dispatch(dialogActions.openDialogWithoutPayload({ type: 'signupSuccess' }))
     }
   }, [location.pathname])
 
@@ -140,7 +140,7 @@ const Navbar: React.FC<NavbarProps> = (props) => {
           disableSignup={signupDisabled}
           onOpenUrl={props.onOpenExternalPage}
           onNavigate={handleNavigation}
-          onOpenDialog={(dialog) => dispatch(dialogActions.openDialogWithoutPayload(dialog))}
+          onOpenDialog={(dialog) => dispatch(dialogActions.openDialogWithoutPayload({ type: dialog }))}
           onLogout={() => logout()}
         />
       }

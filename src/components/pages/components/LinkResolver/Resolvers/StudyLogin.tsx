@@ -105,7 +105,7 @@ const StudyLogin: React.FC<StudyLoginProps> = (props) => {
       persistState={persistState}
       onChangePersistState={(checked) => dispatch(setPersistState(checked))}
       onOpenDialog={(dialog) => {
-        dispatch(dialogActions.openDialogWithoutPayload(dialog));
+        dispatch(dialogActions.openDialogWithoutPayload({ type: dialog }));
       }}
       onSubmit={(email, password, rememberMe) => {
         dispatch(dialogActions.openLoginDialog(
