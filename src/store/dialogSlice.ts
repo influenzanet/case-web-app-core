@@ -58,12 +58,14 @@ const dialogSlice = createSlice({
     openLoginDialog(state, action: PayloadAction<LoginDialog>) {
       state.config = {
         type: action.payload.type,
+        origin: action.payload.origin,
         payload: action.payload.payload
       }
     },
     openAlertDialog(state, action: PayloadAction<AlertDialog>) {
       state.config = {
         type: action.payload.type,
+        origin: action.payload.origin,
         payload: action.payload.payload
       }
     },

@@ -470,7 +470,7 @@ const Signup: React.FC = () => {
         <SignupForm
           isLoading={loading}
           onSubmit={(data) => handleSignup(data)}
-          onOpenDialog={(dialog) => dispatch(dialogActions.openDialogWithoutPayload({ type: dialog }))}
+          onOpenDialog={(dialog) => dispatch(dialogActions.openDialogWithoutPayload({ type: dialog, origin: dialogState.config?.origin }))}
           error={error}
           clearError={() => setError('')}
         />
