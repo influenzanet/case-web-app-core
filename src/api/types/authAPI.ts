@@ -4,6 +4,7 @@ export interface SignupMsg {
   email: string;
   password: string;
   instanceId: string;
+  infoCheck: string;
   preferredLanguage: string;
   wantsNewsletter: boolean;
   use2fa: boolean;

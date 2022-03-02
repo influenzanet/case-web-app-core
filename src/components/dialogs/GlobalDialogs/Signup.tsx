@@ -35,6 +35,7 @@ interface SignupFormData {
   email: string;
   password: string;
   confirmPassword: string;
+  infoCheck: string;
   captchaToken?: string;
 }
 
@@ -53,12 +54,23 @@ const checkEmailFormat = (email: string): boolean => {
   return emailFormatRegexp.test(email);
 }
 
+const signUpInfoCheckStyle: React.CSSProperties = {
+  position: 'absolute',
+  opacity: 0,
+  top: 0,
+  left: 0,
+  width: 0,
+  height: 0,
+  zIndex: -2,
+}
+
 const SignupForm: React.FC<SignupFormProps> = (props) => {
   const { t, i18n } = useTranslation(['dialogs']);
   const [signupData, setSignupData] = useState(props.initialSignupData ? props.initialSignupData : {
     email: '',
     password: '',
     confirmPassword: '',
+    infoCheck: '',
   });
 
   const privacyConsentText = useTranslatedMarkdown('consent/privacy.md');
@@ -83,6 +95,7 @@ const SignupForm: React.FC<SignupFormProps> = (props) => {
       email: '',
       password: '',
       confirmPassword: '',
+      infoCheck: '',
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.initialSignupData])
@@ -207,6 +220,23 @@ const SignupForm: React.FC<SignupFormProps> = (props) => {
             setSignupData(prev => { return { ...prev, confirmPassword: value } })
           }}
         />
+
+        {/* additional input to check signup validity --> */}
+        <label style={signUpInfoCheckStyle} aria-hidden="true" htmlFor='name'></label>
+        <input
+          style={signUpInfoCheckStyle}
+          type="text"
+          id="name"
+          name="name"
+          value={signupData.infoCheck}
+          tabIndex={-1}
+          autoComplete='off'
+          onChange={(event) => {
+            const value = event.target.value;
+            setSignupData(prev => { return { ...prev, infoCheck: value } })
+          }}
+        ></input>
+        {/* <-- additional input to check signup validity */}
 
         <Checkbox
           className={marginBottomClass}
@@ -387,6 +417,7 @@ const Signup: React.FC = () => {
       const response = await signupWithEmailRequest({
         email: data.email,
         password: data.password,
+        infoCheck: data.infoCheck,
         instanceId: instanceId,
         preferredLanguage: i18n.language,
         wantsNewsletter: true,
