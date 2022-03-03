@@ -37,6 +37,7 @@
 - Email validation rule during signup has been replaced to allow characters that are supported by the standard (.e.g, 'x').
 - Include the possibility to customize footer column's className.
 - Dialog config includes optional info about origin, to signalize where the dialog was opened from.
+- Can open manage profiles dialog if not verified yet. (Needed to finish initial survey flow.)
 
 ### Fixes
 

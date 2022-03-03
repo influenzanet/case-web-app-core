@@ -11,6 +11,7 @@ import ChangePassword from './GlobalDialogs/ChangePassword';
 import DeleteAccount from './GlobalDialogs/DeleteAccount';
 import ManageProfiles from './GlobalDialogs/ManageProfiles';
 import PasswordForgotten from './GlobalDialogs/PasswordForgotten';
+import { useAuthTokenCheck } from '../../hooks/useAuthTokenCheck';
 
 
 interface GlobalDialogsProps {
@@ -19,12 +20,12 @@ interface GlobalDialogsProps {
 
 const GlobalDialogs: React.FC<GlobalDialogsProps> = (props) => {
   const isAuth = useIsAuthenticated();
+  const hasToken = useAuthTokenCheck();
 
   const authDialogs = () => {
     return <React.Fragment>
       <ChangeEmail />
       <ChangePassword />
-      <ManageProfiles />
       <ChangeLanguage
         onChangeLanguage={props.onChangeLanguage}
       />
@@ -40,7 +41,8 @@ const GlobalDialogs: React.FC<GlobalDialogsProps> = (props) => {
       <SignupSuccess />
       <PasswordForgotten />
       <AlertDialog />
-      { isAuth ? authDialogs() : null}
+      {hasToken ? <ManageProfiles /> : null}
+      {isAuth ? authDialogs() : null}
     </React.Fragment>
   );
 };

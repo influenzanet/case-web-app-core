@@ -5,7 +5,6 @@ export type DialogOrigin = 'surveyFlow'
 interface DialogWithoutPayload {
   type: string;
   origin?: DialogOrigin;
-
 }
 
 export interface LoginDialog {
