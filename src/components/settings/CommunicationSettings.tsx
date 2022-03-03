@@ -38,7 +38,7 @@ const CommunicationSettings: React.FC<CommunicationSettingsProps> = (props) => {
         {t(`${props.itemKey}.emailReminders.info`)}
       </p>
       <EditBtn
-        onClick={() => dispatch(dialogActions.openDialogWithoutPayload('changeNotifications'))}
+        onClick={() => dispatch(dialogActions.openDialogWithoutPayload({ type: 'changeNotifications' }))}
       >
         {t(`${props.itemKey}.emailReminders.btnManageNotifications`)}
       </EditBtn>
@@ -52,7 +52,7 @@ const CommunicationSettings: React.FC<CommunicationSettingsProps> = (props) => {
           {t(`${props.itemKey}.defaultLanguage.info`)}
         </p>
         <EditBtn
-          onClick={() => dispatch(dialogActions.openDialogWithoutPayload('changeLanguage'))}
+          onClick={() => dispatch(dialogActions.openDialogWithoutPayload({ type: 'changeLanguage' }))}
         >
           {t(`${props.itemKey}.defaultLanguage.languages.${userLanguage}`)}
         </EditBtn>

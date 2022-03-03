@@ -34,7 +34,7 @@ const DeleteAccount: React.FC<DeleteAccountProps> = (props) => {
       />
       <button className="btn btn-danger-light mt-2"
         onClick={() => {
-          dispatch(dialogActions.openDialogWithoutPayload('deleteAccount'))
+          dispatch(dialogActions.openDialogWithoutPayload({ type: 'deleteAccount' }))
         }}
       >
         {t(`${props.itemKey}.deleteBtn`)}

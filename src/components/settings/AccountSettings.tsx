@@ -39,7 +39,7 @@ const AccountSettings: React.FC<AccountSettingsProps> = (props) => {
         {t(`${props.itemKey}.profiles.info`)}
       </p>
       <EditBtn
-        onClick={() => dispatch(dialogActions.openDialogWithoutPayload('manageProfiles'))}
+        onClick={() => dispatch(dialogActions.openDialogWithoutPayload({ type: 'manageProfiles' }))}
       >
         {t(`${props.itemKey}.profiles.btn`, { count: currentUser.profiles.length })}
       </EditBtn>
@@ -60,7 +60,7 @@ const AccountSettings: React.FC<AccountSettingsProps> = (props) => {
         {t(`${props.itemKey}.email.info`)}
       </p>
       <EditBtn
-        onClick={() => dispatch(dialogActions.openDialogWithoutPayload('changeEmail'))}
+        onClick={() => dispatch(dialogActions.openDialogWithoutPayload({ type: 'changeEmail' }))}
       >
         {blurEmail(currentUser.account.accountId)}
       </EditBtn>
@@ -73,7 +73,7 @@ const AccountSettings: React.FC<AccountSettingsProps> = (props) => {
         {t(`${props.itemKey}.password.info`)}
       </p>
       <EditBtn
-        onClick={() => dispatch(dialogActions.openDialogWithoutPayload('changePassword'))}
+        onClick={() => dispatch(dialogActions.openDialogWithoutPayload({ type: 'changePassword' }))}
       >
         {"••••••••••••••"}
       </EditBtn>
