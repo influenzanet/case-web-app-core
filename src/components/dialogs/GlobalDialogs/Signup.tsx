@@ -436,7 +436,7 @@ const Signup: React.FC = () => {
         roles: [],
         contactPreferences: { subscribedToNewsletter: false, sendNewsletterTo: [], subscribedToWeekly: true, receiveWeeklyMessageDayOfWeek: 0 },
         contactInfos: [],
-        profiles: [],
+        profiles: response.data.profiles,
         timestamps: {
           createdAt: 0,
           updatedAt: 0,
