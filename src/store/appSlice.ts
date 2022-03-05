@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Profile } from '../api/types/user';
 
+
 export interface AuthInfo {
   accessToken: string;
   refreshToken: string;
@@ -14,6 +15,11 @@ export interface AppState {
     active: boolean;
     profile?: Profile;
   };
+  lastAction?: {
+    name: string;
+    time: Date;
+    info?: any;
+  }
 }
 
 export const initialState: AppState = {
@@ -21,7 +27,8 @@ export const initialState: AppState = {
   auth: undefined,
   surveyMode: {
     active: false,
-  }
+  },
+  lastAction: undefined,
 };
 
 const appSlice = createSlice({
@@ -51,6 +58,13 @@ const appSlice = createSlice({
     closeSurveyMode: (state) => {
       state.surveyMode = {
         active: false
+      }
+    },
+    updateLastAction: (state, action: PayloadAction<{ actionName: string, info?: any }>) => {
+      state.lastAction = {
+        name: action.payload.actionName,
+        info: action.payload.info,
+        time: new Date()
       }
     }
   },
