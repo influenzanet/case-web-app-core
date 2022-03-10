@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.0.0 - ???
+## 2.0.0 - 2022-03-10
 
 ### BREAKING CHANGES
 
