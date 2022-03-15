@@ -24,7 +24,7 @@ const NavbarItem: React.FC<NavbarItemProps> = (props) => {
   return (
     <li className="nav-item " >
       <NavLink
-        className={clsx("nav-link nav-link-height", props.item.className)}
+        className={clsx("btn nav-link nav-link-height", props.item.className)}
         to={itemURL}
         onClick={(e: any) => {
           switch (props.item.type) {

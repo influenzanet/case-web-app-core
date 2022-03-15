@@ -144,12 +144,6 @@ const NormalNavbar: React.FC<NormalNavbarProps> = (props) => {
         <Dropdown.Toggle
           className="fs-btn nav-link-height d-flex align-items-center"
           id="nav-auth-menu"
-          style={{
-            outline: 'none',
-            boxShadow: 'none',
-            outlineWidth: 0,
-            border: 'none',
-          }}
         >
           {props.currentProfile ? <Avatar
             avatars={props.avatars}
@@ -173,7 +167,7 @@ const NormalNavbar: React.FC<NormalNavbarProps> = (props) => {
               as="button"
               aria-label={item.label}
               key={item.itemKey}
-              className="dropdown-item"
+              className="dropdown-item btn"
               type="button"
               onClick={() => {
                 if (!item.url) {
@@ -194,6 +188,7 @@ const NormalNavbar: React.FC<NormalNavbarProps> = (props) => {
 
           <Dropdown.Item
             as="button"
+            className='btn'
             aria-label={props.labels.logoutBtn}
             onClick={props.onLogout}
           >
@@ -214,12 +209,6 @@ const NormalNavbar: React.FC<NormalNavbarProps> = (props) => {
         <Dropdown.Toggle
           className="fs-btn nav-link-height d-flex align-items-center"
           id="nav-auth-menu"
-          style={{
-            outline: 'none',
-            boxShadow: 'none',
-            outlineWidth: 0,
-            border: 'none',
-          }}
         >
           {props.currentProfile ? <Avatar
             avatars={props.avatars}
@@ -240,6 +229,7 @@ const NormalNavbar: React.FC<NormalNavbarProps> = (props) => {
 
           <Dropdown.Item
             as="button"
+            className='btn'
             aria-label={props.labels.openSingupSuccessDialogBtn}
             onClick={() => props.onOpenDialog('signupSuccess')}
           >
@@ -248,6 +238,7 @@ const NormalNavbar: React.FC<NormalNavbarProps> = (props) => {
 
           <Dropdown.Item
             as="button"
+            className='btn'
             aria-label={props.labels.logoutBtn}
             onClick={props.onLogout}
           >

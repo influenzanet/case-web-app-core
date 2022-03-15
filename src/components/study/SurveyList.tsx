@@ -185,7 +185,7 @@ const SurveyList: React.FC<SurveyListProps> = (props) => {
 
   const loadingContent = () => <LoadingPlaceholder
     color="secondary"
-    minHeight={300}
+    minHeight={450}
   />
 
   return (

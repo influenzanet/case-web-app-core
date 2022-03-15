@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.1 - 2022-03-15
+
+- Improve navbar styles for accessibility
+
 ## 2.0.0 - 2022-03-10
 
 ### BREAKING CHANGES

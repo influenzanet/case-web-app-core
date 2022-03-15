@@ -22,11 +22,11 @@ const DrawerDropdownItem: React.FC<DrawerDropdownItemProps> = (props) => {
 
   return (
     <div className="w-100">
-      <a
+      <button
         key={props.item.itemKey}
-        //type="button"
+        role="navigation"
         className={clsx(
-          "nav-link px-3 py-1a cursor-pointer",
+          "btn w-100 text-start nav-link px-3 py-1a cursor-pointer",
           {
             'fw-bold active text-body': match !== null,
             'text-decoration-underline': open,
@@ -46,17 +46,18 @@ const DrawerDropdownItem: React.FC<DrawerDropdownItemProps> = (props) => {
             open ? <ChevronUp /> : <ChevronDown />
           }
         </span>
-      </a>
+      </button>
       <Collapse in={open}>
         <div>
           {props.item.dropdownItems?.map(item => {
             const activeRoute = match !== null && match.path === item.url;
             return (
-              <a
+              <button
                 aria-label={item.label}
                 key={item.itemKey}
+                role="navigation"
                 className={clsx(
-                  "nav-link px-4",
+                  "nav-link px-4 btn w-100 text-start",
                   {
                     "active text-body": activeRoute
                   }
@@ -75,7 +76,7 @@ const DrawerDropdownItem: React.FC<DrawerDropdownItemProps> = (props) => {
               >
                 {item.label}
                 <i className={clsx(item.iconClass, 'ms-1')}></i>
-              </a>)
+              </button>)
           }
           )}
         </div>

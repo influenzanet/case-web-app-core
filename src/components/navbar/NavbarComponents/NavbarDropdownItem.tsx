@@ -28,12 +28,6 @@ const NavbarDropdownItem: React.FC<NavbarDropdownItemProps> = (props) => {
             'fw-bold active text-body': match !== null
           }
         )}
-        style={{
-          outline: 'none',
-          boxShadow: 'none',
-          outlineWidth: 0,
-          border: 'none',
-        }}
         id={props.item.itemKey + '-menu'}
       >
         {props.item.iconClass ?
@@ -50,7 +44,7 @@ const NavbarDropdownItem: React.FC<NavbarDropdownItemProps> = (props) => {
             aria-label={item.label}
             key={item.itemKey}
             className={clsx(
-              "dropdown-item",
+              "dropdown-item btn",
               {
                 "fw-bold": match !== null && match.path === item.url
               }
