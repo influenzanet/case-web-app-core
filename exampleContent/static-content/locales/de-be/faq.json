@@ -1,4 +1,8 @@
 {
+  "helmet": {
+    "title": "Frage und Antwort (FAQ)",
+    "description": "Beschreibung der Seiteninhalt für SEO"
+  },
   "title": "Frage und Antwort (FAQ)",
   "accordionControls": {
     "open": "Mehr lesen",

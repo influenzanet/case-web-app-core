@@ -42,7 +42,7 @@ type PageItemConfig = TeaserImageConfig | RouterComponentConfig |
   AccordionListConfig | SimpleCard | SystemInfoConfig | AccountSettingsConfig |
   CommunicationSettingsConfig | DeleteAccountConfig | LogoCreditsConfig |
   SurveyListConfig | LinkListConfig | MapDataSeriesConfig | LineWithScatterChartConfig | ContainerConfig | PlaceholderComponentConfig | ExtensionComponent |
-  ActionCardConfig | ReportListConfig
+  ActionCardConfig | ReportListConfig | HelmetConfig
 
 
 export interface MarkdownComponentConfig {
@@ -233,6 +233,12 @@ export interface PlaceholderComponentConfig {
 export interface RouterComponentConfig {
   type: 'router';
   pagesConfig: PagesConfig;
+}
+
+export interface HelmetConfig {
+  type: 'helmet';
+  updateTitle?: boolean;
+  updateDescription?: boolean;
 }
 
 export interface ExtensionComponent {

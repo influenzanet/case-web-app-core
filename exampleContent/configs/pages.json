@@ -505,6 +505,14 @@
               "className": "col-12 col-lg-8",
               "items": [
                 {
+                  "itemKey": "helmet",
+                  "config": {
+                    "type": "helmet",
+                    "updateTitle": true,
+                    "updateDescription": true
+                  }
+                },
+                {
                   "itemKey": "faqTop",
                   "className": "",
                   "config": {

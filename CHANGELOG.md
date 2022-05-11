@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.1.0 - 2022-05-11
+
+### Added
+
+- New page component "helmet" that utilises a react helmet component to override the current page's title and meta description.
+
+### Changed
+
+- Updated external libraries.
+
 ## 2.0.1 - 2022-03-15
 
 - Improve navbar styles for accessibility
@@ -52,8 +62,8 @@
 ## 1.4.1 - 2022-01-20
 
 ### Added
-- Can trigger dialog opening with url query param ?action=openSignupDialog
 
+- Can trigger dialog opening with url query param ?action=openSignupDialog
 
 ## 1.4.0 - 2021-11-19
 
@@ -95,7 +105,6 @@
 
 - Updated dependencies
 
-
 ## [1.1.0] - 2021-07-08
 
 ### Added
@@ -105,8 +114,7 @@
 ### Changed
 
 - [BREAKING-CHANGE]: updated dependencies - react markdown renderer needs new format. See documentation here:
-https://github.com/coneno/case-web-ui/blob/master/CHANGELOG.md#breaking-changes
-
+<https://github.com/coneno/case-web-ui/blob/master/CHANGELOG.md#breaking-changes>
 
 ## [1.0.19]
 
@@ -114,7 +122,6 @@ https://github.com/coneno/case-web-ui/blob/master/CHANGELOG.md#breaking-changes
 
 - Support `VideoPlayer`'s track propetry to define subtitles
 - Updating dependencies. Using stable bootstrap version.
-
 
 ## [1.0.18]
 
