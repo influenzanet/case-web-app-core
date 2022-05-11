@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux'
 import { Switch, useHistory } from 'react-router-dom';
 import { dialogActions } from '../../../store/dialogSlice';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 
 import { PageColumn, PagesConfig, PageItem, PageRow, ExtensionComponent } from '../../../types/pagesConfig';
 import {
@@ -354,7 +354,7 @@ const ContentRenderer: React.FC<ContentRendererProps> = (props) => {
           <h1 className="fs-1 text-center text-white text-uppercase m-0 p-2">{item.config.label}</h1>
         </div>
       case 'helmet':
-        return <Helmet>
+        return <Helmet key={item.itemKey}>
           {item.config.updateTitle ? <title>{t(`${item.itemKey}.title`)}</title> : null}
           {item.config.updateDescription ? <meta name="description" content={t(`${item.itemKey}.description`)} /> : null}
         </Helmet>

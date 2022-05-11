@@ -19,7 +19,7 @@ import { RootState } from './store/rootReducer';
 import { setDefaultAccessTokenHeader } from './api/instances/authenticatedApi';
 import { loadLastSelectedLanguage, saveLanguageSelection } from './i18n';
 import { CustomSurveyResponseComponent } from 'case-web-ui/build/components/survey/SurveySingleItemView/ResponseComponent/ResponseComponent';
-
+import { HelmetProvider } from 'react-helmet-async';
 
 export interface Extension {
   name: string;
@@ -76,43 +76,45 @@ const AppCore: React.FC<AppCoreProps> = (props) => {
   }
 
   return (
-    <Router basename={process.env.NODE_ENV === 'production' ? process.env.PUBLIC_URL : undefined}>
-      <ScrollToTop />
+    <HelmetProvider>
+      <Router basename={process.env.NODE_ENV === 'production' ? process.env.PUBLIC_URL : undefined}>
+        <ScrollToTop />
 
-      {props.customHeader ? props.customHeader : null}
-      {
-        !props.hideDefaultHeader ? <HeaderRenderer
-          config={props.headerConfig}
+        {props.customHeader ? props.customHeader : null}
+        {
+          !props.hideDefaultHeader ? <HeaderRenderer
+            config={props.headerConfig}
+            onChangeLanguage={handleLanguageChange}
+            onOpenExternalPage={handleOpenExternalPage}
+          /> : null
+        }
+
+        <Navbar
+          loading={props.navbarConfig === undefined}
+          content={props.navbarConfig}
+          onOpenExternalPage={handleOpenExternalPage}
+        />
+
+        <Pages
+          config={props.pagesConfig}
+          onOpenExternalPage={handleOpenExternalPage}
+          extensions={props.extensions}
+          customResponseComponents={props.customSurveyResponseComponents}
+          dateLocales={props.dateLocales}
+        />
+
+        {!props.hideDefaultFooter ? <FooterRenderer
+          footerConfig={props.footerConfig}
           onChangeLanguage={handleLanguageChange}
           onOpenExternalPage={handleOpenExternalPage}
-        /> : null
-      }
+        /> : null}
+        {props.customFooter ? props.customFooter : null}
 
-      <Navbar
-        loading={props.navbarConfig === undefined}
-        content={props.navbarConfig}
-        onOpenExternalPage={handleOpenExternalPage}
-      />
-
-      <Pages
-        config={props.pagesConfig}
-        onOpenExternalPage={handleOpenExternalPage}
-        extensions={props.extensions}
-        customResponseComponents={props.customSurveyResponseComponents}
-        dateLocales={props.dateLocales}
-      />
-
-      {!props.hideDefaultFooter ? <FooterRenderer
-        footerConfig={props.footerConfig}
-        onChangeLanguage={handleLanguageChange}
-        onOpenExternalPage={handleOpenExternalPage}
-      /> : null}
-      {props.customFooter ? props.customFooter : null}
-
-      <GlobalDialogs
-        onChangeLanguage={handleLanguageChange}
-      />
-    </Router>
+        <GlobalDialogs
+          onChangeLanguage={handleLanguageChange}
+        />
+      </Router>
+    </HelmetProvider>
   );
 };
 
