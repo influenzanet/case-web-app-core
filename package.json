@@ -4,7 +4,7 @@
   "version": "2.1.1",
   "scripts": {
     "build": "rollup -c",
-    "storybook": "start-storybook -p 6007 -s ./exampleContent ",
+    "storybook": "start-storybook -p 6007",
     "storybook:export": "build-storybook",
     "test": "jest",
     "test:watch": "jest --watch",
