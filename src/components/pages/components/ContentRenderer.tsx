@@ -40,7 +40,7 @@ import { getTranslatedMarkdownPath } from '../../../hooks/useTranslatedMarkdown'
 import RouteToLayout from './RouteToLayout';
 import { Extension } from '../../../AppCore';
 import ReportList from '../../study/ReportList';
-
+import IframeResizer from 'iframe-resizer-react';
 
 interface ContentRendererProps {
   hideTitleBar?: boolean;
@@ -358,6 +358,15 @@ const ContentRenderer: React.FC<ContentRendererProps> = (props) => {
           {item.config.updateTitle ? <title>{t(`${item.itemKey}.title`)}</title> : null}
           {item.config.updateDescription ? <meta name="description" content={t(`${item.itemKey}.description`)} /> : null}
         </Helmet>
+      case 'iframe':
+        return <IframeResizer
+          key={item.itemKey}
+          log
+          height={item.config.height}
+          src={item.config.url}
+          scrolling={item.config.scrolling}
+          style={{ width: '1px', minWidth: '100%' }}
+        />
       case 'extension':
         return handleExtensionRendering(item, renderItem, (url: string) => { history.push(url) });
       case 'router':

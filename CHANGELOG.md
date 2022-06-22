@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.2.0 - 2022-06-22
+
+### Added
+
+- New page content type for resizable iframes. This relies on the libarary: <https://github.com/davidjbradshaw/iframe-resizer-react>. For more details of how to properly connect cross-domain iframes, check out the examples there.
+
+### Changed
+
+- Updated external libraries
+
 ## 2.1.0 - 2022-05-11
 
 ### Added
