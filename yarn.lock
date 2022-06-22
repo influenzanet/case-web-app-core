@@ -6858,17 +6858,17 @@ human-signals@^2.1.0:
   resolved "https://registry.yarnpkg.com/human-signals/-/human-signals-2.1.0.tgz#dc91fcba42e4d06e4abaed33b3e7a3c02f514ea0"
   integrity sha512-B4FFZ6q/T2jhhksgkbEW3HBvWIfDW85snkQgawt07S7J5QXTk6BkNV+0yAeZrM5QpMAdYlocGoljn0sJ/WQkFw==
 
-i18next-http-backend@^1.4.0:
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/i18next-http-backend/-/i18next-http-backend-1.4.0.tgz#e6abef0615316e00837798d2385c13395096f963"
-  integrity sha512-wsvx7E/CT1pHmBM99Vu57YLJpsrHbVjxGxf25EIJ/6oTjsvCkZZ6c3SA4TejcK5jIHfv9oLxQX8l+DFKZHZ0Gg==
+i18next-http-backend@^1.4.1:
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/i18next-http-backend/-/i18next-http-backend-1.4.1.tgz#d8d308e7d8c5b89988446d0b83f469361e051bc0"
+  integrity sha512-s4Q9hK2jS29iyhniMP82z+yYY8riGTrWbnyvsSzi5TaF7Le4E7b5deTmtuaRuab9fdDcYXtcwdBgawZG+JCEjA==
   dependencies:
     cross-fetch "3.1.5"
 
-i18next@^21.8.3:
-  version "21.8.3"
-  resolved "https://registry.yarnpkg.com/i18next/-/i18next-21.8.3.tgz#1d90fbb8907ba94c2320111ec2c43cdffe4f3fc2"
-  integrity sha512-I6QEXu096oaNH8h+hs2eHu6hxtWPdb/rsoRFHmFep01uuwB0h86ckXaT14ladhstWenEScsxiAQ2TW9fmDG57Q==
+i18next@^21.8.10:
+  version "21.8.10"
+  resolved "https://registry.yarnpkg.com/i18next/-/i18next-21.8.10.tgz#12f164cc0f5f7904f0d4e0cfdf5950b93793d171"
+  integrity sha512-7xRb6y4QlSqZRZ3uA5BIEsLuZpmxpzHLizQyKjDDThOcvdfgICOX7aFoBnh4BSWcLtJamTqSweaOuK22A2xqkA==
   dependencies:
     "@babel/runtime" "^7.17.2"
 
@@ -10164,10 +10164,10 @@ react-helmet-async@^1.3.0:
     react-fast-compare "^3.2.0"
     shallowequal "^1.1.0"
 
-react-i18next@^11.16.9:
-  version "11.16.9"
-  resolved "https://registry.yarnpkg.com/react-i18next/-/react-i18next-11.16.9.tgz#890cdac0c49120e075d6c520b43dbad3f91bd2df"
-  integrity sha512-euXxWvcEAvsY7ZVkwx9ztCq4butqtsGHEkpkuo0RMj8Ru09IF9o2KxCyN+zyv51Nr0aBh/elaTIiR6fMb8YfVg==
+react-i18next@^11.17.2:
+  version "11.17.2"
+  resolved "https://registry.yarnpkg.com/react-i18next/-/react-i18next-11.17.2.tgz#4ca77a20bedfa607e4e863dcc85963d1a180e2e9"
+  integrity sha512-/HG4XSResWDY450cFmoUqLgCYDu8VYMFISGcMnZlxRSV05naj3+F7DoebwnPu6z/akA3Wd0Xe7KGTYdywL9z9g==
   dependencies:
     "@babel/runtime" "^7.14.5"
     html-escaper "^2.0.2"
