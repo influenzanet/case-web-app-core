@@ -42,7 +42,7 @@ type PageItemConfig = TeaserImageConfig | RouterComponentConfig |
   AccordionListConfig | SimpleCard | SystemInfoConfig | AccountSettingsConfig |
   CommunicationSettingsConfig | DeleteAccountConfig | LogoCreditsConfig |
   SurveyListConfig | LinkListConfig | MapDataSeriesConfig | LineWithScatterChartConfig | ContainerConfig | PlaceholderComponentConfig | ExtensionComponent |
-  ActionCardConfig | ReportListConfig | HelmetConfig
+  ActionCardConfig | ReportListConfig | HelmetConfig | IframeConfig
 
 
 export interface MarkdownComponentConfig {
@@ -239,6 +239,13 @@ export interface HelmetConfig {
   type: 'helmet';
   updateTitle?: boolean;
   updateDescription?: boolean;
+}
+
+export interface IframeConfig {
+  type: 'iframe';
+  url: string;
+  scrolling?: boolean;
+  height?: string | number;
 }
 
 export interface ExtensionComponent {
