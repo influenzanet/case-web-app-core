@@ -61,6 +61,7 @@ const RouteToLayout: React.FC<RouteToLayoutProps> = (props) => {
           defaultRoutes={props.defaultRoutes}
           extensions={props.extensions}
           dateLocales={props.dateLocales}
+          helmet={props.pageConfig.helmet}
         />
       }
     />

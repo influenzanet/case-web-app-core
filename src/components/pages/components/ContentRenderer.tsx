@@ -6,7 +6,7 @@ import { Switch, useHistory } from 'react-router-dom';
 import { dialogActions } from '../../../store/dialogSlice';
 import { Helmet } from 'react-helmet-async';
 
-import { PageColumn, PagesConfig, PageItem, PageRow, ExtensionComponent } from '../../../types/pagesConfig';
+import { PageColumn, PagesConfig, PageItem, PageRow, ExtensionComponent, HelmetPageConfig } from '../../../types/pagesConfig';
 import {
   handleOpenExternalPage,
   ImageCard,
@@ -51,6 +51,7 @@ interface ContentRendererProps {
   defaultRoutes: DefaultRoutes;
   extensions?: Extension[];
   dateLocales?: Array<{ code: string, locale: any, format: string }>;
+  helmet?: HelmetPageConfig;
 }
 
 const shouldHide = (hideWhen?: string, isAuth?: boolean): boolean => {
@@ -407,6 +408,18 @@ const ContentRenderer: React.FC<ContentRendererProps> = (props) => {
 
   return (
     <React.Fragment>
+      {
+        props.helmet ? <Helmet>
+          {
+            props.helmet.ignoreTitle ? null :
+              <title>{t(`${props.helmet.override === 'local' ? props.pageKey : 'global'}:helmet.title`)}</title>
+          }
+          {
+            props.helmet.ignoreDescription ? null :
+              <meta name="description" content={t(`${props.helmet.override === 'local' ? props.pageKey : 'global'}:helmet.description`)} />
+          }
+        </Helmet> : null
+      }
       {props.hideTitleBar ? null :
         <TitleBar
           content={t('title')}

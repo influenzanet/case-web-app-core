@@ -9,6 +9,9 @@
     {
       "path": "/home",
       "pageKey": "landing",
+      "helmet": {
+        "override": "global"
+      },
       "rows": [
         {
           "key": "test",
@@ -385,6 +388,9 @@
     },
     {
       "path": "/privacy",
+      "helmet": {
+        "override": "local"
+      },
       "pageKey": "privacy",
       "rows": [
         {

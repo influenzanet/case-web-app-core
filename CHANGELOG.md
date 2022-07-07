@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.3.0 - 2022-07-07
+
+### Changed
+
+- Add new pageConfig attribute to be able to configure helmet overrides for a page either from local translation file, or from global translation json.
+
 ## 2.2.0 - 2022-06-22
 
 ### Added

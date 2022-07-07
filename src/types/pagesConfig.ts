@@ -5,6 +5,12 @@ export interface PagesConfig {
   defaultRoutes?: DefaultRoutes;
 }
 
+export interface HelmetPageConfig {
+  override: 'global' | 'local';
+  ignoreTitle?: boolean;
+  ignoreDescription?: boolean;
+}
+
 export interface PageConfig {
   path: string;
   pageKey: string;
@@ -12,6 +18,7 @@ export interface PageConfig {
   rows: Array<PageRow>;
   subPages?: PagesConfig; // to use for sub-router components without wrapper
   hideTitleBar?: boolean;
+  helmet?: HelmetPageConfig;
 }
 
 export interface PageRow {

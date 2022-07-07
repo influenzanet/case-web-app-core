@@ -1,3 +1,6 @@
 {
-  "title": "Datenschutz-Erklärung Infectieradar.be"
+  "title": "Datenschutz-Erklärung Infectieradar.be",
+  "helmet": {
+    "title": "Datenschutz"
+  }
 }
