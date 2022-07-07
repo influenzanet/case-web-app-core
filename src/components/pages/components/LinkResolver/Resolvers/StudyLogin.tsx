@@ -70,7 +70,7 @@ const StudyLogin: React.FC<StudyLoginProps> = (props) => {
           if (logedInUser !== response.data.accountId) {
             logout(true);
           } else if (response.data.isSameUser) {
-            history.replace(props.defaultRoutes.studyPage);
+            history.replace(props.defaultRoutes.studyPage ? props.defaultRoutes.studyPage : props.defaultRoutes.auth);
             return false;
           } else {
             logout(true);

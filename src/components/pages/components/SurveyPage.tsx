@@ -143,7 +143,7 @@ const SurveyPage: React.FC<SurveyPageProps> = (props) => {
       setLoading(false);
       setProtectRoute(false);
       history.push(
-        isAuth ? props.defaultRoutes.studyPage : props.defaultRoutes.unauth
+        isAuth ? props.defaultRoutes.studyPage ? props.defaultRoutes.studyPage : props.defaultRoutes.auth : props.defaultRoutes.unauth
       );
     } catch (e) {
       const err = getErrorMsg(e);
