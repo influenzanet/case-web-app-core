@@ -443,6 +443,10 @@
                   "config": {
                     "type": "router",
                     "pagesConfig": {
+                      "defaultRoutes": {
+                        "auth": "/router/route1",
+                        "unauth": "/router/route1"
+                      },
                       "pages": [
                         {
                           "path": "/router/route1",

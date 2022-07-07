@@ -47,6 +47,11 @@
           "type": "internal",
           "itemKey": "route2",
           "url": "/router/route2"
+        },
+        {
+          "type": "internal",
+          "itemKey": "route3",
+          "url": "/router/route3"
         }
       ]
     },

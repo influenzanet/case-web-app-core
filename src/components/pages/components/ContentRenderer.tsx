@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux'
-import { Switch, useHistory } from 'react-router-dom';
+import { Redirect, Switch, useHistory } from 'react-router-dom';
 import { dialogActions } from '../../../store/dialogSlice';
 import { Helmet } from 'react-helmet-async';
 
@@ -377,16 +377,17 @@ const ContentRenderer: React.FC<ContentRendererProps> = (props) => {
           studyPage: '/home',
           surveyPage: '/surveys',
         }
-        return <Switch key={item.itemKey}>{
-          item.config.pagesConfig.pages.map(pageConfig => {
+        return <Switch key={item.itemKey}>
+          {item.config.pagesConfig.pages.map(pageConfig => {
             return <RouteToLayout
               key={pageConfig.path}
               path={pageConfig.path}
               pageConfig={pageConfig}
               defaultRoutes={dRoutes}
             />
-          })
-        }</Switch>
+          })}
+          <Redirect to={props.isAuthenticated ? dRoutes.auth : dRoutes.unauth} />
+        </Switch>
     }
     return <div
       key={item.itemKey}
@@ -447,8 +448,8 @@ const ContentRenderer: React.FC<ContentRendererProps> = (props) => {
       }
       )}
       {props.subPages ?
-        <Switch key={props.pageKey}>{
-          props.subPages.pages.map(pageConfig => {
+        <Switch key={props.pageKey}>
+          {props.subPages.pages.map(pageConfig => {
             return <RouteToLayout
               key={pageConfig.path}
               path={pageConfig.path}
@@ -456,8 +457,11 @@ const ContentRenderer: React.FC<ContentRendererProps> = (props) => {
               defaultRoutes={props.subPages?.defaultRoutes ? props.subPages?.defaultRoutes : props.defaultRoutes}
               extensions={props.extensions}
             />
-          })
-        }</Switch> : null}
+          })}
+          {props.subPages?.defaultRoutes !== undefined ?
+            <Redirect to={props.isAuthenticated ? props.subPages.defaultRoutes.auth : props.subPages.defaultRoutes.unauth} />
+            : null}
+        </Switch> : null}
     </React.Fragment>
   );
 };

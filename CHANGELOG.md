@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.3.1 - 2022-07-07
+
+### Changed
+
+- Added logic to handle default routes for router page components and sub-pages.
+
 ## 2.3.0 - 2022-07-07
 
 ### Changed
