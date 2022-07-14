@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.3.3 - 2022-07-14
+
+### Changed
+
+- add userAPI to exported modules
+
 ## 2.3.2 - 2022-07-07
 
 ### Changed
