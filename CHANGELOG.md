@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.3.4 - 2022-07-22
+
+### Changed
+
+- Updated dependencies
+- Add copyright prop support for teaser image
+- Can hide content of action card
+
 ## 2.3.3 - 2022-07-14
 
 ### Changed

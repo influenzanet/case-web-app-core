@@ -173,9 +173,9 @@ const ContentRenderer: React.FC<ContentRendererProps> = (props) => {
             }
           }}
         >
-          <MarkdownRenderer markdown={
+          {item.config.hideBodyContent ? null : <MarkdownRenderer markdown={
             t(`${item.itemKey}.body`)
-          } />
+          } />}
         </ActionCard>
       case 'image':
         return <ImageContainer

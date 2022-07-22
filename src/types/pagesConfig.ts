@@ -92,6 +92,8 @@ export interface TeaserImageConfig {
     height?: number;
     className?: string;
     backgroundPosition?: string;
+    copyrightNotice?: string;
+    copyrightNoticeXAlignment?: 'start' | 'end';
   }
   textBox?: {
     className?: string;
@@ -138,6 +140,7 @@ export interface ActionCardConfig {
     backgroundSize?: string;
     overlayOpacity?: number;
   };
+  hideBodyContent?: boolean;
   useFooterText?: boolean;
   className?: string;
 }
