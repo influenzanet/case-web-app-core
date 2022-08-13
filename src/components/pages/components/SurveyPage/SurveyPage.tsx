@@ -112,10 +112,14 @@ const SurveyPage: React.FC<SurveyPageProps> = (props) => {
         fetchSurvey(currentSurveyKey);
         // alert('TODO: handle login after login required')
       } else {
-        if (currentUser.profiles.length === 1) {
-          setSelectedProfileID(currentUser.profiles[0].id)
+        if (profileID && profileID?.length > 0) {
+          console.log('profile already selected when page opened')
         } else {
-          console.error("unexpected user object: ", currentUser);
+          if (currentUser.profiles.length === 1) {
+            setSelectedProfileID(currentUser.profiles[0].id)
+          } else {
+            console.error("unexpected user object: ", currentUser);
+          }
         }
       }
     } else {
