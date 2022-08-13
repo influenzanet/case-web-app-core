@@ -49,7 +49,7 @@ const appSlice = createSlice({
     setAppAuth: (state, action: PayloadAction<AuthInfo>) => {
       state.auth = action.payload;
     },
-    openSurveyMode: (state, action: PayloadAction<Profile>) => {
+    openSurveyMode: (state, action: PayloadAction<Profile | undefined>) => {
       state.surveyMode = {
         active: true,
         profile: action.payload

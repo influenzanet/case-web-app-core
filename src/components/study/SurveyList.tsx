@@ -157,7 +157,7 @@ const SurveyList: React.FC<SurveyListProps> = (props) => {
   const requiredSurveys = sortedCardInfos.filter(s => s.category !== 'optional');
 
   const openSurvey = (studyKey: string, surveyKey: string, profileId: string) => {
-    history.push(props.defaultRoutes.surveyPage + `/${studyKey}/${surveyKey}?pid=${profileId}`);
+    history.push(props.defaultRoutes.surveyPage + `/${studyKey}/?surveyKey=${surveyKey}&pid=${profileId}`);
   }
 
   const renderContent = () => <div className={props.className}>

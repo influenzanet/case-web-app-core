@@ -15,6 +15,7 @@ export interface LoginDialog {
     password: string
     rememberMe: boolean
     verificationCode?: string
+    preventNavigateOnSuccess?: boolean
   }
 }
 

@@ -6,7 +6,7 @@ import RouteToLayout from './components/RouteToLayout';
 import { useIsAuthenticated } from '../../hooks/useIsAuthenticated';
 import LinkResolver, { linkResolverRootUrl } from './components/LinkResolver/LinkResolver';
 import { DefaultRoutes } from '../../types/routing';
-import SurveyPage from './components/SurveyPage';
+import SurveyPage from './components/SurveyPage/SurveyPage';
 import { LoadingPlaceholder, containerClassName } from 'case-web-ui';
 import clsx from 'clsx';
 import { Extension } from '../../AppCore';
@@ -50,10 +50,14 @@ const Pages: React.FC<PagesProps> = (props) => {
             dateLocales={props.dateLocales}
           />
         })}
-        <Route path={defaultRoutes.surveyPage + '/:studyKey/:surveyKey'} render={() => <SurveyPage
+        <Route path={defaultRoutes.surveyPage + '/:studyKey'} render={() => <SurveyPage
           customResponseComponents={props.customResponseComponents}
           dateLocales={props.dateLocales}
-          defaultRoutes={defaultRoutes} />} />
+          urls={{
+            finishedFlowWithLogin: defaultRoutes.auth,
+            finishedFlowWithoutLogin: defaultRoutes.unauth
+          }}
+        />} />
         <Route path={linkResolverRootUrl} render={() => <LinkResolver defaultRoutes={defaultRoutes} />} />,
         <Redirect to={isAuth ? defaultRoutes.auth : defaultRoutes.unauth} />
       </Switch>
