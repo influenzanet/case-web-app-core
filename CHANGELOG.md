@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.4.0 - 2022-08-
+
+### BREAKING CHANGES
+
+- Added new survey component with chainable surveys, and support for temporary participants
+  - New translations required: see an example in exampleContent/static-content/locales/nl-be/surveyPage.json
+
 ## 2.3.4 - 2022-07-22
 
 ### Changed
