@@ -73,22 +73,29 @@ const SignupSuccess: React.FC = () => {
   const onReloadUser = async () => {
     try {
       setLoading(true)
+
       const user = (await getUserReq()).data;
-      dispatch(userActions.setUser(user));
-      console.log(user)
       if (user.account.accountConfirmedAt > 0) {
+
+        /*
+        *  In case the account was confirmed, set the freshly acquired user state **after** renewing the token.
+        *  This is done in order to avoid race conditions with other components that depend on the user state.
+        *  Differently, those components might fail performing api requests since they would be using a weaker token.
+        */ 
         await renewToken();
+        dispatch(userActions.setUser(user));
+
         handleClose();
       } else {
         setError2(t('dialogs:signupSuccess.errors.verifyEmailFirst'));
       }
+
     } catch (e: any) {
       console.error(e);
     } finally {
       setLoading(false)
     }
   }
-
 
   const handleClose = () => {
     setError('');
