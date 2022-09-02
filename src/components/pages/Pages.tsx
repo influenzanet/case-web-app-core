@@ -17,6 +17,7 @@ interface PagesProps {
   extensions?: Extension[];
   customResponseComponents?: CustomSurveyResponseComponent[];
   dateLocales?: Array<{ code: string, locale: any, format: string }>;
+  defaultRoutes: DefaultRoutes;
   onOpenExternalPage: (url: string) => void;
 }
 
@@ -30,13 +31,6 @@ const Pages: React.FC<PagesProps> = (props) => {
     </div>
   }
 
-  const defaultRoutes: DefaultRoutes = props.config.defaultRoutes ? props.config.defaultRoutes : {
-    auth: '/home',
-    unauth: '/home',
-    studyPage: '/home',
-    surveyPage: '/surveys',
-  }
-
   return (
     <div>
       <Switch >
@@ -45,21 +39,23 @@ const Pages: React.FC<PagesProps> = (props) => {
             key={pageConfig.path}
             path={pageConfig.path}
             pageConfig={pageConfig}
-            defaultRoutes={defaultRoutes}
+            defaultRoutes={props.defaultRoutes}
             extensions={props.extensions}
             dateLocales={props.dateLocales}
           />
         })}
-        <Route path={defaultRoutes.surveyPage + '/:studyKey'} render={() => <SurveyPage
+        <Route path={props.defaultRoutes.surveyPage + '/:studyKey'} render={() => <SurveyPage
           customResponseComponents={props.customResponseComponents}
           dateLocales={props.dateLocales}
           urls={{
-            finishedFlowWithLogin: defaultRoutes.auth,
-            finishedFlowWithoutLogin: defaultRoutes.unauth
+            finishedFlowWithLogin: props.defaultRoutes.auth,
+            finishedFlowWithoutLogin: props.defaultRoutes.unauth
           }}
         />} />
-        <Route path={linkResolverRootUrl} render={() => <LinkResolver defaultRoutes={defaultRoutes} />} />,
-        <Redirect to={isAuth ? defaultRoutes.auth : defaultRoutes.unauth} />
+
+        <Route path={linkResolverRootUrl} render={() => <LinkResolver defaultRoutes={props.defaultRoutes} />} />,
+        <Redirect to={isAuth ? props.defaultRoutes.auth : props.defaultRoutes.unauth} />
+
       </Switch>
     </div>
   );
