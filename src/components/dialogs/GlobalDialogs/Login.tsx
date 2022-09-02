@@ -21,6 +21,7 @@ import { useSetAuthState } from '../../../hooks/useSetAuthState';
 import { useHistory } from 'react-router-dom';
 import { getErrorMsg } from '../../../api/utils';
 import { useLogout } from '../../../hooks/useLogout';
+import { DefaultRoutes } from '../../../types/routing';
 
 const marginBottomClass = "mb-2";
 const marginTopClass = "mt-2";
@@ -31,6 +32,7 @@ const signupDisabled = process.env.REACT_APP_DISABLE_SIGNUP === 'true';
 
 
 interface LoginProps {
+  defaultRoutes: DefaultRoutes;
 }
 
 interface LoginFormData {
@@ -381,9 +383,15 @@ const Login: React.FC<LoginProps> = (props) => {
         if (!response.user.account.accountConfirmedAt || response.user.account.accountConfirmedAt <= 0) {
           dispatch(dialogActions.openDialogWithoutPayload({ type: 'signupSuccess', origin: dialogState.config?.origin }));
         }
-        if (history && dialogState.config?.origin !== 'surveyFlow') {
-          history.push('/');
+        
+        /*
+        * We might already be in the defaultRoutes.auth path because of the change in state that occurs above, which triggers
+        * a redirect. The pathname check is to prevent racing conditions and avoid doing multiple api calls
+        */
+        if (history && history.location.pathname !== props.defaultRoutes.auth && dialogState.config?.origin !== 'surveyFlow') {
+          history.push(props.defaultRoutes.auth);
         }
+
         handleClose();
       }
     } catch (e) {

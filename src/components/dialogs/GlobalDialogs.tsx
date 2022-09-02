@@ -12,9 +12,11 @@ import DeleteAccount from './GlobalDialogs/DeleteAccount';
 import ManageProfiles from './GlobalDialogs/ManageProfiles';
 import PasswordForgotten from './GlobalDialogs/PasswordForgotten';
 import { useAuthTokenCheck } from '../../hooks/useAuthTokenCheck';
+import { DefaultRoutes } from '../../types/routing';
 
 
 interface GlobalDialogsProps {
+  defaultRoutes: DefaultRoutes;
   onChangeLanguage: (code: string) => void;
 }
 
@@ -36,7 +38,9 @@ const GlobalDialogs: React.FC<GlobalDialogsProps> = (props) => {
 
   return (
     <React.Fragment>
-      <Login />
+      <Login 
+        defaultRoutes={props.defaultRoutes}
+      />
       <Signup />
       <SignupSuccess />
       <PasswordForgotten />

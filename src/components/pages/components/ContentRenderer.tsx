@@ -33,7 +33,7 @@ import CommunicationSettings from '../../settings/CommunicationSettings';
 import DeleteAccount from '../../settings/DeleteAccount';
 
 import SurveyList from '../../study/SurveyList';
-import { DefaultRoutes } from '../../../types/routing';
+import { BasicRoutes, DefaultRoutes } from '../../../types/routing';
 import { setPersistState } from '../../../store/appSlice';
 import { RootState } from '../../../store/rootReducer';
 import { getTranslatedMarkdownPath } from '../../../hooks/useTranslatedMarkdown';
@@ -371,14 +371,9 @@ const ContentRenderer: React.FC<ContentRendererProps> = (props) => {
       case 'extension':
         return handleExtensionRendering(item, renderItem, (url: string) => { history.push(url) });
       case 'router':
-        const dRoutes = item.config.pagesConfig.defaultRoutes ? item.config.pagesConfig.defaultRoutes : {
-          auth: '/home',
-          unauth: '/home',
-          studyPage: '/home',
-          surveyPage: '/surveys',
-        }
-        return <Switch key={item.itemKey}>
-          {item.config.pagesConfig.pages.map(pageConfig => {
+        const dRoutes = item.config.pagesConfig.defaultRoutes ? item.config.pagesConfig.defaultRoutes : BasicRoutes;
+        return <Switch key={item.itemKey}>{
+          item.config.pagesConfig.pages.map(pageConfig => {
             return <RouteToLayout
               key={pageConfig.path}
               path={pageConfig.path}

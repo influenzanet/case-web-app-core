@@ -19,6 +19,7 @@ import { RootState } from './store/rootReducer';
 import { setDefaultAccessTokenHeader } from './api/instances/authenticatedApi';
 import { loadLastSelectedLanguage, saveLanguageSelection } from './i18n';
 import { CustomSurveyResponseComponent } from 'case-web-ui/build/components/survey/SurveySingleItemView/ResponseComponent/ResponseComponent';
+import { BasicRoutes } from './types/routing';
 import { HelmetProvider } from 'react-helmet-async';
 
 export interface Extension {
@@ -41,11 +42,21 @@ interface AppCoreProps {
   dateLocales?: Array<{ code: string, locale: any, format: string }>;
 }
 
-
 const AppCore: React.FC<AppCoreProps> = (props) => {
   const dispatch = useDispatch();
   const { i18n } = useTranslation();
   const accessToken = useSelector((state: RootState) => state.app.auth?.accessToken);
+
+  /*
+  * In order to solve the issue https://github.com/coneno/case-web-app-core/issues/5, now Dialogs also need to know the application level default routes, 
+  * but removing the defaultRoutes field from the PagesConfig interface and make it available at a higher level would be a breaking change for all the existing frontends.
+  * 
+  * From now on, all components under AppCore that need to be aware of the application level default routes, can use a prop directly initialized with the const below.          
+  * 
+  * See how it is handled in the Pages and GlobalDialog components    
+  */
+
+  const defaultRoutes = props.pagesConfig?.defaultRoutes ? props.pagesConfig.defaultRoutes : BasicRoutes
 
   useEffect(() => {
     if (accessToken) {
@@ -89,29 +100,31 @@ const AppCore: React.FC<AppCoreProps> = (props) => {
           /> : null
         }
 
-        <Navbar
-          loading={props.navbarConfig === undefined}
-          content={props.navbarConfig}
-          onOpenExternalPage={handleOpenExternalPage}
-        />
+      <Navbar
+        loading={props.navbarConfig === undefined}
+        content={props.navbarConfig}
+        onOpenExternalPage={handleOpenExternalPage}
+      />
 
-        <Pages
-          config={props.pagesConfig}
-          onOpenExternalPage={handleOpenExternalPage}
-          extensions={props.extensions}
-          customResponseComponents={props.customSurveyResponseComponents}
-          dateLocales={props.dateLocales}
-        />
+      <Pages
+        config={props.pagesConfig}
+        onOpenExternalPage={handleOpenExternalPage}
+        extensions={props.extensions}
+        customResponseComponents={props.customSurveyResponseComponents}
+        dateLocales={props.dateLocales}
+        defaultRoutes={defaultRoutes}
+      />
 
-        {!props.hideDefaultFooter ? <FooterRenderer
-          footerConfig={props.footerConfig}
-          onChangeLanguage={handleLanguageChange}
-          onOpenExternalPage={handleOpenExternalPage}
-        /> : null}
-        {props.customFooter ? props.customFooter : null}
+      {!props.hideDefaultFooter ? <FooterRenderer
+        footerConfig={props.footerConfig}
+        onChangeLanguage={handleLanguageChange}
+        onOpenExternalPage={handleOpenExternalPage}
+      /> : null}
+      {props.customFooter ? props.customFooter : null}
 
         <GlobalDialogs
-          onChangeLanguage={handleLanguageChange}
+          defaultRoutes={defaultRoutes}
+        onChangeLanguage={handleLanguageChange}
         />
       </Router>
     </HelmetProvider>
