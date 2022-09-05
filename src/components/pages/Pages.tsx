@@ -36,6 +36,7 @@ const Pages: React.FC<PagesProps> = (props) => {
   return (
     <div>
       <Switch >
+        <Redirect from="/" exact to={isAuth ? props.defaultRoutes.auth : props.defaultRoutes.unauth} />
         {props.config.pages.map(pageConfig => {
           return <RouteToLayout
             key={pageConfig.path}
@@ -55,7 +56,7 @@ const Pages: React.FC<PagesProps> = (props) => {
           }}
         />} />
 
-        <Route path={linkResolverRootUrl} render={() => <LinkResolver defaultRoutes={props.defaultRoutes} />} />,
+        <Route path={linkResolverRootUrl} render={() => <LinkResolver defaultRoutes={props.defaultRoutes} />} />
         <Redirect to={notFoundRoute} />
       </Switch>
     </div>
