@@ -3,7 +3,8 @@
     "auth": "/home",
     "unauth": "/home",
     "studyPage": "/home",
-    "surveyPage": "/surveys"
+    "surveyPage": "/surveys",
+    "notFound": "/404"
   },
   "pages": [
     {
@@ -565,6 +566,32 @@
                     },
                     "imageSrc": "images/placeholder_image.png",
                     "showActionBtn": true
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "/404",
+      "pageKey": "404",
+      "rows": [
+        {
+          "key": "content",
+          "fullWidth": false,
+          "className": "my-3",
+          "columns": [
+            {
+              "key": "mainCol",
+              "className": "col-12 col-lg-8",
+              "items": [
+                {
+                  "itemKey": "helmet",
+                  "config": {
+                    "type": "placeholder",
+                    "label": "404 page"
                   }
                 }
               ]

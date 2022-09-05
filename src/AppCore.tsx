@@ -48,12 +48,12 @@ const AppCore: React.FC<AppCoreProps> = (props) => {
   const accessToken = useSelector((state: RootState) => state.app.auth?.accessToken);
 
   /*
-  * In order to solve the issue https://github.com/coneno/case-web-app-core/issues/5, now Dialogs also need to know the application level default routes, 
+  * In order to solve the issue https://github.com/coneno/case-web-app-core/issues/5, now Dialogs also need to know the application level default routes,
   * but removing the defaultRoutes field from the PagesConfig interface and make it available at a higher level would be a breaking change for all the existing frontends.
-  * 
-  * From now on, all components under AppCore that need to be aware of the application level default routes, can use a prop directly initialized with the const below.          
-  * 
-  * See how it is handled in the Pages and GlobalDialog components    
+  *
+  * From now on, all components under AppCore that need to be aware of the application level default routes, can use a prop directly initialized with the const below.
+  *
+  * See how it is handled in the Pages and GlobalDialog components
   */
 
   const defaultRoutes = props.pagesConfig?.defaultRoutes ? props.pagesConfig.defaultRoutes : BasicRoutes
@@ -100,31 +100,31 @@ const AppCore: React.FC<AppCoreProps> = (props) => {
           /> : null
         }
 
-      <Navbar
-        loading={props.navbarConfig === undefined}
-        content={props.navbarConfig}
-        onOpenExternalPage={handleOpenExternalPage}
-      />
+        <Navbar
+          loading={props.navbarConfig === undefined}
+          content={props.navbarConfig}
+          onOpenExternalPage={handleOpenExternalPage}
+        />
 
-      <Pages
-        config={props.pagesConfig}
-        onOpenExternalPage={handleOpenExternalPage}
-        extensions={props.extensions}
-        customResponseComponents={props.customSurveyResponseComponents}
-        dateLocales={props.dateLocales}
-        defaultRoutes={defaultRoutes}
-      />
+        <Pages
+          config={props.pagesConfig}
+          onOpenExternalPage={handleOpenExternalPage}
+          extensions={props.extensions}
+          customResponseComponents={props.customSurveyResponseComponents}
+          dateLocales={props.dateLocales}
+          defaultRoutes={defaultRoutes}
+        />
 
-      {!props.hideDefaultFooter ? <FooterRenderer
-        footerConfig={props.footerConfig}
-        onChangeLanguage={handleLanguageChange}
-        onOpenExternalPage={handleOpenExternalPage}
-      /> : null}
-      {props.customFooter ? props.customFooter : null}
+        {!props.hideDefaultFooter ? <FooterRenderer
+          footerConfig={props.footerConfig}
+          onChangeLanguage={handleLanguageChange}
+          onOpenExternalPage={handleOpenExternalPage}
+        /> : null}
+        {props.customFooter ? props.customFooter : null}
 
         <GlobalDialogs
           defaultRoutes={defaultRoutes}
-        onChangeLanguage={handleLanguageChange}
+          onChangeLanguage={handleLanguageChange}
         />
       </Router>
     </HelmetProvider>

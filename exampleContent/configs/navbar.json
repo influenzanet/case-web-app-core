@@ -30,6 +30,11 @@
           "type": "internal",
           "itemKey": "faq",
           "url": "/faq"
+        },
+        {
+          "type": "internal",
+          "itemKey": "wrongLink",
+          "url": "/wrong-link"
         }
       ]
     },

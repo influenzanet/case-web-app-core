@@ -372,6 +372,7 @@ const ContentRenderer: React.FC<ContentRendererProps> = (props) => {
         return handleExtensionRendering(item, renderItem, (url: string) => { history.push(url) });
       case 'router':
         const dRoutes = item.config.pagesConfig.defaultRoutes ? item.config.pagesConfig.defaultRoutes : BasicRoutes;
+        const notFoundRoute = dRoutes.notFound ? dRoutes.notFound : (props.isAuthenticated ? dRoutes.auth : dRoutes.unauth);
         return <Switch key={item.itemKey}>{
           item.config.pagesConfig.pages.map(pageConfig => {
             return <RouteToLayout
@@ -381,7 +382,7 @@ const ContentRenderer: React.FC<ContentRendererProps> = (props) => {
               defaultRoutes={dRoutes}
             />
           })}
-          <Redirect to={props.isAuthenticated ? dRoutes.auth : dRoutes.unauth} />
+          <Redirect to={notFoundRoute} />
         </Switch>
     }
     return <div

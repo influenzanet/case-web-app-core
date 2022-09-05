@@ -31,6 +31,8 @@ const Pages: React.FC<PagesProps> = (props) => {
     </div>
   }
 
+  const notFoundRoute = props.defaultRoutes.notFound ? props.defaultRoutes.notFound : (isAuth ? props.defaultRoutes.auth : props.defaultRoutes.unauth);
+
   return (
     <div>
       <Switch >
@@ -54,8 +56,7 @@ const Pages: React.FC<PagesProps> = (props) => {
         />} />
 
         <Route path={linkResolverRootUrl} render={() => <LinkResolver defaultRoutes={props.defaultRoutes} />} />,
-        <Redirect to={isAuth ? props.defaultRoutes.auth : props.defaultRoutes.unauth} />
-
+        <Redirect to={notFoundRoute} />
       </Switch>
     </div>
   );

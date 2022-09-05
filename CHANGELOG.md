@@ -1,11 +1,20 @@
 # Changelog
 
-## 2.4.0 - 2022-08-
+## 2.4.0 - 2022-09-
 
 ### BREAKING CHANGES
 
 - Added new survey component with chainable surveys, and support for temporary participants
   - New translations required: see an example in exampleContent/static-content/locales/nl-be/surveyPage.json
+
+### Added
+
+- Can define a "notFound" route to override what should happen when the requested URL is not available. This changes the current behaviour to always forward to `.auth` or `.unauth` default route. If no `.notFound` route is provided, it falls back to the current behavior.
+
+### Changed
+
+- Updated external dependencies to patch versions
+- Fixes provided through PR #4 and #6
 
 ## 2.3.4 - 2022-07-22
 
