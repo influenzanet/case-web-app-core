@@ -362,7 +362,7 @@ const ContentRenderer: React.FC<ContentRendererProps> = (props) => {
       case 'iframe':
         return <IframeResizer
           key={item.itemKey}
-          log
+          log={item.config.log}
           height={item.config.height}
           src={item.config.url}
           scrolling={item.config.scrolling}

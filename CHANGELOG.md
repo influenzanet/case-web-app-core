@@ -13,6 +13,7 @@
 
 ### Changed
 
+- iFrame component accepts the optional "log" attribute [boolean], instead of having it default `true`
 - Updated external dependencies to patch versions
 - Fixes provided through PR #4 and #6
 

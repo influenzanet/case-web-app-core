@@ -256,6 +256,7 @@ export interface IframeConfig {
   url: string;
   scrolling?: boolean;
   height?: string | number;
+  log?: boolean;
 }
 
 export interface ExtensionComponent {
