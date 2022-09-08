@@ -57,7 +57,7 @@ const SurveyModeNavbar: React.FC<SurveyModeNavbarProps> = (props) => {
             <li className="nav-item navlink-container">
               <button
                 type="button"
-                className="btn nav-link d-flex align-items-center text-decoration-none ps-0 py-2"
+                className="nav-link d-flex align-items-center text-decoration-none ps-0 py-2"
                 onClick={props.onExit}>
 
                 <span className="material-icons me-1">{'keyboard_backspace'}</span>

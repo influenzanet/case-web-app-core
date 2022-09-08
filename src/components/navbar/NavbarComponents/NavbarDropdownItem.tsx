@@ -44,7 +44,6 @@ const NavbarDropdownItem: React.FC<NavbarDropdownItemProps> = (props) => {
             aria-label={item.label}
             key={item.itemKey}
             className={clsx(
-              "dropdown-item btn",
               {
                 "fw-bold": match !== null && match.path === item.url
               }

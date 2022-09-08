@@ -167,7 +167,7 @@ const NormalNavbar: React.FC<NormalNavbarProps> = (props) => {
               as="button"
               aria-label={item.label}
               key={item.itemKey}
-              className="dropdown-item btn"
+              className=""
               type="button"
               onClick={() => {
                 if (!item.url) {
@@ -188,7 +188,7 @@ const NormalNavbar: React.FC<NormalNavbarProps> = (props) => {
 
           <Dropdown.Item
             as="button"
-            className='btn'
+            className=''
             aria-label={props.labels.logoutBtn}
             onClick={props.onLogout}
           >
@@ -229,7 +229,7 @@ const NormalNavbar: React.FC<NormalNavbarProps> = (props) => {
 
           <Dropdown.Item
             as="button"
-            className='btn'
+            className=''
             aria-label={props.labels.openSingupSuccessDialogBtn}
             onClick={() => props.onOpenDialog('signupSuccess')}
           >
@@ -238,7 +238,7 @@ const NormalNavbar: React.FC<NormalNavbarProps> = (props) => {
 
           <Dropdown.Item
             as="button"
-            className='btn'
+            className=''
             aria-label={props.labels.logoutBtn}
             onClick={props.onLogout}
           >
