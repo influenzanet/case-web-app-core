@@ -28,7 +28,7 @@ const DrawerDropdownItem: React.FC<DrawerDropdownItemProps> = (props) => {
         className={clsx(
           "btn w-100 text-start nav-link px-3 py-1a cursor-pointer",
           {
-            'fw-bold active text-body': match !== null,
+            'fw-bold active text-body border-0': match !== null,
             'text-decoration-underline': open,
           }
         )}
@@ -59,7 +59,7 @@ const DrawerDropdownItem: React.FC<DrawerDropdownItemProps> = (props) => {
                 className={clsx(
                   "nav-link px-4 btn w-100 text-start",
                   {
-                    "active text-body": activeRoute
+                    "active text-body border-0": activeRoute
                   }
                 )}
                 onClick={() => {
