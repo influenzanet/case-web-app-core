@@ -40,7 +40,7 @@
     "babel-loader": "^8.2.5",
     "babel-preset-react-app": "^10.0.1",
     "bootstrap": "^5.2.0",
-    "case-web-ui": "^1.11.2",
+    "case-web-ui": "^1.12.0",
     "clsx": "^1.2.1",
     "date-fns": "^2.29.2",
     "i18next": "^21.8.14",
