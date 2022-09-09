@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.4.1 - 2022-09-09
+
+### Changed
+
+- After upgrade to bootstrap 5.2.1 nav-link component and dropdown-items were styled differently than before. This update fixes the behaviour change to reproduce the previous one.
+
 ## 2.4.0 - 2022-09-08
 
 ### BREAKING CHANGES
