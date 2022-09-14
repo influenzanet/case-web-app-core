@@ -348,9 +348,12 @@ const SurveyPage: React.FC<SurveyPageProps> = (props) => {
     } else {
       for (const survey of resp.data.surveys) {
         if (survey.category === 'immediate' && survey.surveyKey !== currentSurveyKey) {
-          setCurrentSurveyKey(survey.surveyKey);
-          shouldOpenSurvey = true;
-          break;
+          const now = Math.round(new Date().getTime() / 1000);
+          if (!survey.validUntil || parseFloat(survey.validUntil) > now) {
+            setCurrentSurveyKey(survey.surveyKey);
+            shouldOpenSurvey = true;
+            break;
+          }
         }
       }
     }

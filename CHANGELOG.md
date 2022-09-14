@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.4.2 - 2022-09-14
+
+### Changed
+
+- Survey page won't open "immediate" survey if has validUntil that is not in the future.
+
 ## 2.4.1 - 2022-09-09
 
 ### Changed
