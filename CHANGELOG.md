@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.5.0 - 2022-10-21
+
+### BREAKING CHANGE
+
+- Updated survey-engine and case-web-ui to be able to use the new survey data model.
+
+### Changed
+
+- Updated dependencies.
+
 ## 2.4.2 - 2022-09-14
 
 ### Changed

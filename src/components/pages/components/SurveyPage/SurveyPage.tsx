@@ -419,7 +419,7 @@ const SurveyPage: React.FC<SurveyPageProps> = (props) => {
           const now = Math.round(new Date().getTime() / 1000);
 
           setCurrentSurveyResponse({
-            key: currentSurvey.surveyDef.current.surveyDefinition.key,
+            key: currentSurvey.surveyDef.surveyDefinition.key,
             responses: [...responses],
             versionId: version,
             submittedAt: now,
