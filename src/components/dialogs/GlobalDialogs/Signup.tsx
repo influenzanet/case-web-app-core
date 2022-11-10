@@ -67,7 +67,7 @@ type DialogSize = 'sm' | 'lg' | 'xl';
 
 const consentDialogSize = (): DialogSize | undefined => {
   const s = process.env.REACT_APP_CONSENT_DIALOG_WIDTH ?? undefined;
-  if(s === 'sm' || s === 'lg' || s == 'xl') {
+  if(s === 'sm' || s === 'lg' || s === 'xl') {
     return s;
   }
   return undefined;
