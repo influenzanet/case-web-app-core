@@ -26,10 +26,9 @@ import { setAppAuth } from '../../../store/appSlice';
 import { setDefaultAccessTokenHeader } from '../../../api/instances/authenticatedApi';
 import { userActions } from '../../../store/userSlice';
 import { getErrorMsg } from '../../../api/utils';
+import { parseBooleanFlag } from '../../../utils/parseBooleanFlag';
 
 const marginBottomClass = "mb-2";
-
-
 
 interface SignupFormData {
   email: string;
@@ -64,6 +63,18 @@ const signUpInfoCheckStyle: React.CSSProperties = {
   zIndex: -2,
 }
 
+type DialogSize = 'sm' | 'lg' | 'xl';
+
+const consentDialogSize = (): DialogSize | undefined => {
+  const s = process.env.REACT_APP_CONSENT_DIALOG_WIDTH ?? undefined;
+  if(s === 'sm' || s === 'lg' || s === 'xl') {
+    return s;
+  }
+  return undefined;
+}
+
+const use2FA = parseBooleanFlag(process.env.REACT_APP_USE_2FA_SIGNUP, true, false);
+
 const SignupForm: React.FC<SignupFormProps> = (props) => {
   const { t, i18n } = useTranslation(['dialogs']);
   const [signupData, setSignupData] = useState(props.initialSignupData ? props.initialSignupData : {
@@ -88,6 +99,7 @@ const SignupForm: React.FC<SignupFormProps> = (props) => {
 
   const reCaptchaSiteKey = process.env.REACT_APP_RECAPTCHA_SITEKEY ? process.env.REACT_APP_RECAPTCHA_SITEKEY : '';
   const useRecaptcha = process.env.REACT_APP_USE_RECAPTCHA === 'true';
+
   const recaptchaRef = useRef<ReCAPTCHA>(null);
 
   useEffect(() => {
@@ -97,6 +109,7 @@ const SignupForm: React.FC<SignupFormProps> = (props) => {
       confirmPassword: '',
       infoCheck: '',
     });
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.initialSignupData])
 
@@ -139,9 +152,9 @@ const SignupForm: React.FC<SignupFormProps> = (props) => {
   const confirmPasswordInputLabel = t('signup.confirmPasswordInputLabel');
   const confirmPasswordPlaceholder = t('signup.confirmPasswordInputLabel');
 
+  const dialogSize = consentDialogSize();
   return (
     <React.Fragment>
-
       {infoText && infoText.length > 0 ?
         <AlertBox
           type="info"
@@ -342,6 +355,7 @@ const SignupForm: React.FC<SignupFormProps> = (props) => {
 
       </form>
       <ConsentDialog
+        size={dialogSize}
         open={openPrivacyConsent}
         title={t("privacyConsent.title")}
         content={privacyConsentText.content}
@@ -357,6 +371,7 @@ const SignupForm: React.FC<SignupFormProps> = (props) => {
         }}
       />
       <ConsentDialog
+        size={dialogSize}
         open={openRecaptchaConsent}
         title={t("recaptchaConsent.title")}
         content={recaptchaConsentText.content}
@@ -421,7 +436,7 @@ const Signup: React.FC = () => {
         instanceId: instanceId,
         preferredLanguage: i18n.language,
         wantsNewsletter: true,
-        use2fa: true
+        use2fa: use2FA
       }, data.captchaToken);
 
       // TODO: update user correctly
