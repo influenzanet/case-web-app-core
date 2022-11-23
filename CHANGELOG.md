@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.6.0 - 2022-11-23
+
+### Changed
+
+- [PR7](https://github.com/coneno/case-web-app-core/pull/7): adding more configuration options regarding 2FA and dialog size.
+
 ## 2.5.0 - 2022-10-21
 
 ### BREAKING CHANGE
