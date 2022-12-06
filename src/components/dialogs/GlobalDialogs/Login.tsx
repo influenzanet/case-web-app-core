@@ -298,6 +298,7 @@ const Login: React.FC<LoginProps> = (props) => {
 
   const open = dialogState.config?.type === 'login';
   const initialLoginData = open ? (dialogState.config as LoginDialog).payload : undefined;
+  const preventNavigateOnSuccess = open ? (dialogState.config as LoginDialog).payload?.preventNavigateOnSuccess : undefined;
 
   const setAuthState = useSetAuthState();
   const logout = useLogout();
@@ -383,12 +384,12 @@ const Login: React.FC<LoginProps> = (props) => {
         if (!response.user.account.accountConfirmedAt || response.user.account.accountConfirmedAt <= 0) {
           dispatch(dialogActions.openDialogWithoutPayload({ type: 'signupSuccess', origin: dialogState.config?.origin }));
         }
-        
+
         /*
         * We might already be in the defaultRoutes.auth path because of the change in state that occurs above, which triggers
         * a redirect. The pathname check is to prevent racing conditions and avoid doing multiple api calls
         */
-        if (history && history.location.pathname !== props.defaultRoutes.auth && dialogState.config?.origin !== 'surveyFlow') {
+        if (history && history.location.pathname !== props.defaultRoutes.auth && dialogState.config?.origin !== 'surveyFlow' && !preventNavigateOnSuccess) {
           history.push(props.defaultRoutes.auth);
         }
 
