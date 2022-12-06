@@ -30,6 +30,7 @@ const StudyLogin: React.FC<StudyLoginProps> = (props) => {
   const dispatch = useDispatch();
 
   const query = useUrlQuery();
+  const [redirectTo, setRedirectTo] = useState<string | undefined>()
   const history = useHistory();
   const hasToken = useAuthTokenCheck();
   const logout = useLogout();
@@ -41,9 +42,16 @@ const StudyLogin: React.FC<StudyLoginProps> = (props) => {
 
   const [loginData, setLoginData] = useState({ accountId: '', verificationCode: '' });
   const [loading, setLoading] = useState(false);
+  const [loginInitiated, setLoginInitiated] = useState(false);
 
   useEffect(() => {
     const token = query.get("token");
+    const redirect = query.get("redirect");
+    if (redirect !== null) {
+      setRedirectTo(redirect);
+    } else {
+      setRedirectTo(undefined);
+    }
     let replaceUrl = LinkResolverPaths.StudyLogin;
 
     validateToken(token).then(
@@ -55,6 +63,12 @@ const StudyLogin: React.FC<StudyLoginProps> = (props) => {
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (loginInitiated && logedInUser.length > 0 && redirectTo !== undefined && redirectTo.length > 0) {
+      history.replace(redirectTo)
+    }
+  }, [logedInUser])
 
 
   const validateToken = async (token: string | null): Promise<boolean> => {
@@ -70,7 +84,11 @@ const StudyLogin: React.FC<StudyLoginProps> = (props) => {
           if (logedInUser !== response.data.accountId) {
             logout(true);
           } else if (response.data.isSameUser) {
-            history.replace(props.defaultRoutes.studyPage ? props.defaultRoutes.studyPage : props.defaultRoutes.auth);
+            let navTo = props.defaultRoutes.studyPage ? props.defaultRoutes.studyPage : props.defaultRoutes.auth;
+            if (redirectTo !== undefined && redirectTo.length > 0) {
+              navTo = redirectTo;
+            }
+            history.replace(navTo);
             return false;
           } else {
             logout(true);
@@ -108,6 +126,7 @@ const StudyLogin: React.FC<StudyLoginProps> = (props) => {
         dispatch(dialogActions.openDialogWithoutPayload({ type: dialog }));
       }}
       onSubmit={(email, password, rememberMe) => {
+        setLoginInitiated(true);
         dispatch(dialogActions.openLoginDialog(
           {
             type: 'login',
@@ -115,7 +134,8 @@ const StudyLogin: React.FC<StudyLoginProps> = (props) => {
               email: email,
               password: password,
               verificationCode: loginData.verificationCode,
-              rememberMe: rememberMe
+              rememberMe: rememberMe,
+              preventNavigateOnSuccess: (redirectTo !== undefined && redirectTo !== null && redirectTo.length > 0),
             }
           }
         ));
