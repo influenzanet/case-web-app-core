@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.7.0 -
+
+### Changed
+
+- [PR8](https://github.com/coneno/case-web-app-core/pull/8):
+  - add the possibility to customise redirect URL after login from an email link.
+  - update dependencies
+
 ## 2.6.0 - 2022-11-23
 
 ### Changed
