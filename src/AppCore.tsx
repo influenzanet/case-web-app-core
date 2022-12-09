@@ -21,6 +21,7 @@ import { loadLastSelectedLanguage, saveLanguageSelection } from './i18n';
 import { CustomSurveyResponseComponent } from 'case-web-ui/build/components/survey/SurveySingleItemView/ResponseComponent/ResponseComponent';
 import { BasicRoutes } from './types/routing';
 import { HelmetProvider } from 'react-helmet-async';
+import LocalStorage from './components/misc/LocalStorage';
 
 export interface Extension {
   name: string;
@@ -88,6 +89,7 @@ const AppCore: React.FC<AppCoreProps> = (props) => {
 
   return (
     <HelmetProvider>
+      <LocalStorage />
       <Router basename={process.env.NODE_ENV === 'production' ? process.env.PUBLIC_URL : undefined}>
         <ScrollToTop />
 
