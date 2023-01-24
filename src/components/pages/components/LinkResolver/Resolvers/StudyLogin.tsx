@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { DefaultRoutes } from '../../../../../types/routing';
 import { useTranslation } from 'react-i18next';
 import { useLogout } from '../../../../../hooks/useLogout';
@@ -52,7 +52,7 @@ const StudyLogin: React.FC<StudyLoginProps> = (props) => {
     } else {
       setRedirectTo(undefined);
     }
-    let replaceUrl = LinkResolverPaths.StudyLogin;
+    const replaceUrl = LinkResolverPaths.StudyLogin;
 
     validateToken(token).then(
       stayOnPage => {
@@ -61,24 +61,22 @@ const StudyLogin: React.FC<StudyLoginProps> = (props) => {
         }
       }
     );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const isRedirectToDefined = (): boolean => {
+  const isRedirectToDefined = useCallback((): boolean => {
     return redirectTo !== undefined && redirectTo.length > 0;
-  }
+  }, [redirectTo])
 
   useEffect(() => {
     if (loginInitiated && loggedInUser.length > 0 && isRedirectToDefined()) {
       history.replace(redirectTo as string)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loggedInUser])
+  }, [loginInitiated, loggedInUser, history, redirectTo, isRedirectToDefined])
 
   const validateToken = async (token: string | null): Promise<boolean> => {
     if (!token) {
       return true;
-    };
+    }
 
     setLoading(true);
     try {
