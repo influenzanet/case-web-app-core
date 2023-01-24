@@ -30,10 +30,11 @@ const StudyLogin: React.FC<StudyLoginProps> = (props) => {
   const dispatch = useDispatch();
 
   const query = useUrlQuery();
+  const [redirectTo, setRedirectTo] = useState<string | undefined>()
   const history = useHistory();
   const hasToken = useAuthTokenCheck();
   const logout = useLogout();
-  const logedInUser = useSelector((state: RootState) => state.user.currentUser.account.accountId);
+  const loggedInUser = useSelector((state: RootState) => state.user.currentUser.account.accountId);
 
   const { t } = useTranslation(["linkresolvers"]);
   const accessToken = useSelector((state: RootState) => state.app.auth?.accessToken);
@@ -41,9 +42,16 @@ const StudyLogin: React.FC<StudyLoginProps> = (props) => {
 
   const [loginData, setLoginData] = useState({ accountId: '', verificationCode: '' });
   const [loading, setLoading] = useState(false);
+  const [loginInitiated, setLoginInitiated] = useState(false);
 
   useEffect(() => {
     const token = query.get("token");
+    const redirect = query.get("redirect");
+    if (redirect !== null) {
+      setRedirectTo(redirect);
+    } else {
+      setRedirectTo(undefined);
+    }
     let replaceUrl = LinkResolverPaths.StudyLogin;
 
     validateToken(token).then(
@@ -56,6 +64,16 @@ const StudyLogin: React.FC<StudyLoginProps> = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const isRedirectToDefined = (): boolean => {
+    return redirectTo !== undefined && redirectTo.length > 0;
+  }
+
+  useEffect(() => {
+    if (loginInitiated && loggedInUser.length > 0 && isRedirectToDefined()) {
+      history.replace(redirectTo as string)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loggedInUser])
 
   const validateToken = async (token: string | null): Promise<boolean> => {
     if (!token) {
@@ -67,10 +85,14 @@ const StudyLogin: React.FC<StudyLoginProps> = (props) => {
       const response = await autoValidateTemporaryTokenReq(token, accessToken ? accessToken : '');
       if (response.status === 200) {
         if (hasToken) {
-          if (logedInUser !== response.data.accountId) {
+          if (loggedInUser !== response.data.accountId) {
             logout(true);
           } else if (response.data.isSameUser) {
-            history.replace(props.defaultRoutes.studyPage ? props.defaultRoutes.studyPage : props.defaultRoutes.auth);
+            let navTo = props.defaultRoutes.studyPage ? props.defaultRoutes.studyPage : props.defaultRoutes.auth;
+            if (isRedirectToDefined()) {
+              navTo = redirectTo as string;
+            }
+            history.replace(navTo);
             return false;
           } else {
             logout(true);
@@ -108,6 +130,7 @@ const StudyLogin: React.FC<StudyLoginProps> = (props) => {
         dispatch(dialogActions.openDialogWithoutPayload({ type: dialog }));
       }}
       onSubmit={(email, password, rememberMe) => {
+        setLoginInitiated(true);
         dispatch(dialogActions.openLoginDialog(
           {
             type: 'login',
@@ -115,7 +138,8 @@ const StudyLogin: React.FC<StudyLoginProps> = (props) => {
               email: email,
               password: password,
               verificationCode: loginData.verificationCode,
-              rememberMe: rememberMe
+              rememberMe: rememberMe,
+              preventNavigateOnSuccess: isRedirectToDefined(),
             }
           }
         ));
