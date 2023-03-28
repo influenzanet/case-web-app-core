@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.7.1 - 2023-03-28
+
+### Changed
+
+- Extension components should also receive the date locales through props
+- Added the `GenericPageItemProps` interface that can be used for extension component props to extend it with their custom props.
+
 ## 2.7.0 - 2023-01-24
 
 ### Changed

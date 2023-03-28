@@ -99,6 +99,7 @@ const ContentRenderer: React.FC<ContentRendererProps> = (props) => {
       pageKey={props.pageKey}
       itemKey={item.itemKey}
       className={item.className}
+      dateLocales={props.dateLocales}
       renderGenericItemFunc={renderGenericItemFunc}
       onNavigate={onNavigate}
       {...itemConfig.config} />
