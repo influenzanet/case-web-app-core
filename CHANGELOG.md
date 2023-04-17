@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.7.2 - 2023-04-17
+
+### Changed
+
+- Add `no-store` to i18n http backend cache control header to avoid caching of translations.
+- Updated dependencies and peer dependencies versions.
+
 ## 2.7.1 - 2023-03-28
 
 ### Changed
