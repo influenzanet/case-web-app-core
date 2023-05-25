@@ -1,7 +1,7 @@
 import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit'
 import { reset as resetAppSlice } from './appSlice'
 import { loadState, saveState } from './localStorage'
-import throttle from 'lodash.throttle'
+import { throttle } from 'lodash-es'
 
 import rootReducer from './rootReducer'
 import { userActions } from './userSlice'

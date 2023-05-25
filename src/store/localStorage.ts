@@ -3,18 +3,16 @@ import { initialState as appState } from './appSlice';
 import { initialState as dialogState } from './dialogSlice';
 import { initialState as userState } from './userSlice';
 import { initialState as configState } from './configSlice';
-import merge from 'lodash.merge';
-import clonedeep from 'lodash.clonedeep';
-
+import { merge, cloneDeep } from 'lodash-es';
 
 const stateKey = 'state';
 
 export const loadState = (): RootState => {
   let initialRootState: RootState = {
-    app: clonedeep(appState),
-    dialog: clonedeep(dialogState),
-    user: clonedeep(userState),
-    config: clonedeep(configState)
+    app: cloneDeep(appState),
+    dialog: cloneDeep(dialogState),
+    user: cloneDeep(userState),
+    config: cloneDeep(configState)
   };
   try {
     const serializedState = localStorage.getItem(stateKey);
@@ -37,9 +35,9 @@ export const loadState = (): RootState => {
 export const saveState = (state: RootState) => {
   try {
     if (state.app.persistState) {
-      const savedState = clonedeep(state);
-      savedState.config = clonedeep(configState);
-      savedState.dialog = clonedeep(dialogState);
+      const savedState = cloneDeep(state);
+      savedState.config = cloneDeep(configState);
+      savedState.dialog = cloneDeep(dialogState);
 
       const serializedState = JSON.stringify(savedState);
       localStorage.setItem(stateKey, serializedState);
