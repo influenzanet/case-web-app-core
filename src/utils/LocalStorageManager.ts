@@ -1,4 +1,4 @@
-import { cloneDeep } from 'lodash';
+import cloneDeep from "lodash.clonedeep";
 
 /**
  * Represent a function to be invoked before `state` is persisted
@@ -14,7 +14,6 @@ export type OnSaveCallback<T> = (state: T) => T;
  * @template T - The type of the data being persisted.
  */
 export class LocalStorageManager<T> {
-
   /**
    * Callbacks to be invoked before `state` is persisted to LocalStorage.
    * These functions should be pure and have no side effects. They should not throw any exceptions.
@@ -27,10 +26,10 @@ export class LocalStorageManager<T> {
   public storageKey: string;
 
   /**
-  * Creates a new `LocalStorageManager` instance.
-  *
-  * @param storageKey - The key to use for storing data in the LocalStorage.
-  */
+   * Creates a new `LocalStorageManager` instance.
+   *
+   * @param storageKey - The key to use for storing data in the LocalStorage.
+   */
   public constructor(storageKey: string) {
     this.storageKey = storageKey;
   }
@@ -72,8 +71,7 @@ export class LocalStorageManager<T> {
     try {
       const serializedState = JSON.stringify(stateCopy);
       localStorage.setItem(this.storageKey, serializedState);
-    }
-    catch (error) {
+    } catch (error) {
       console.error(error);
     }
   };
