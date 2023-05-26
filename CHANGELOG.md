@@ -1,5 +1,27 @@
 # Changelog
 
+## 2.7.2 - 2023-04-17
+
+### Changed
+
+- Add `no-store` to i18n http backend cache control header to avoid caching of translations.
+- Updated dependencies and peer dependencies versions.
+
+## 2.7.1 - 2023-03-28
+
+### Changed
+
+- Extension components should also receive the date locales through props
+- Added the `GenericPageItemProps` interface that can be used for extension component props to extend it with their custom props.
+
+## 2.7.0 - 2023-01-24
+
+### Changed
+
+- [PR8](https://github.com/coneno/case-web-app-core/pull/8):
+  - add the possibility to customise redirect URL after login from an email link.
+  - update dependencies
+
 ## 2.6.0 - 2022-11-23
 
 ### Changed

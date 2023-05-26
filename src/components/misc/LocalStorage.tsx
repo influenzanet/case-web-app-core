@@ -1,10 +1,9 @@
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Unsubscribe } from '@reduxjs/toolkit';
-import { DebouncedFunc } from 'lodash';
-import throttle from 'lodash.throttle';
 import { GlobalState } from '../../store/rootReducer';
 import store, { localStorageManager } from '../../store/store';
+import { DebouncedFunc, throttle } from 'lodash-es';
 
 let throttling: DebouncedFunc<() => void>;
 let storeUnsubscribe: Unsubscribe;

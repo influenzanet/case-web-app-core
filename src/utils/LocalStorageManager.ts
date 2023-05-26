@@ -1,4 +1,4 @@
-import cloneDeep from "lodash.clonedeep";
+import { cloneDeep } from 'lodash-es';
 
 /**
  * Represent a function to be invoked before `state` is persisted

@@ -27,7 +27,10 @@ export const initI18n = (
       lowerCaseLng: true,
       backend: {
         // for all available options read the backend's repository readme file
-        loadPath: localeUrl + '/{{lng}}/{{ns}}.json'
+        loadPath: localeUrl + '/{{lng}}/{{ns}}.json',
+        requestOptions: {
+          cache: 'no-store'
+        }
       },
       interpolation: {
         escapeValue: false, // react already safes from xss

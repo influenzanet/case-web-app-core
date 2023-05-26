@@ -1,15 +1,15 @@
 import { AnyAction, Reducer, ReducersMapObject } from '@reduxjs/toolkit';
-import clonedeep from 'lodash.clonedeep';
 import { default as appReducer, initialState as appInitialState } from './appSlice';
 import { default as configReducer, initialState as configInitialState } from './configSlice';
 import { default as dialogReducer, initialState as dialogInitialState } from './dialogSlice';
 import { default as userReducer, initialState as userInitialState } from './userSlice';
+import { cloneDeep } from 'lodash-es';
 
 export const initialRootState = {
-  app: clonedeep(appInitialState),
-  dialog: clonedeep(dialogInitialState),
-  user: clonedeep(userInitialState),
-  config: clonedeep(configInitialState)
+  app: cloneDeep(appInitialState),
+  dialog: cloneDeep(dialogInitialState),
+  user: cloneDeep(userInitialState),
+  config: cloneDeep(configInitialState)
 }
 
 const rootReducers: RootReducerMap = {

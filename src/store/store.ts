@@ -1,19 +1,19 @@
 import { configureStore } from '@reduxjs/toolkit';
-import rootReducers, { GlobalState, initialRootState, RootState } from './rootReducer';
+import rootReducers, { GlobalState, initialRootState } from './rootReducer';
 import { LocalStorageManager } from '../utils/LocalStorageManager';
 import { reset as resetAppSlice } from './appSlice';
 import { userActions } from './userSlice';
 import { initialState as configInitialState } from './configSlice';
 import { initialState as dialogInitialState } from './dialogSlice';
-import clonedeep from 'lodash.clonedeep';
 import { ReducersManager } from './ReducersManager';
+import { cloneDeep } from 'lodash-es';
 
 export const reducersManager = new ReducersManager<GlobalState>(rootReducers);
 export const localStorageManager = new LocalStorageManager<GlobalState>('state');
 
 localStorageManager.onSave((state) => {
-  state.config = clonedeep(configInitialState);
-  state.dialog = clonedeep(dialogInitialState);
+  state.config = cloneDeep(configInitialState);
+  state.dialog = cloneDeep(dialogInitialState);
 
   state.app.surveyMode = {
     active: false,
