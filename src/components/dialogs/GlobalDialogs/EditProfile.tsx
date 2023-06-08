@@ -15,6 +15,7 @@ import {
   Checkbox,
   TextField,
   defaultDialogPaddingXClass,
+  MarkdownRenderer
 } from 'case-web-ui';
 import { RootState } from '../../../store/rootReducer';
 
@@ -77,7 +78,7 @@ const EditProfile: React.FC<EditProfileProps> = (props) => {
   }
 
   const isNewProfile: boolean = profile.id.length < 1;
-
+  const consentText: string = t('dialogs:editProfile.consentCheckboxText')
   return (
     <Dialog
       open={props.open}
@@ -116,7 +117,10 @@ const EditProfile: React.FC<EditProfileProps> = (props) => {
             }
           }
         >
-          {t('dialogs:editProfile.consentCheckboxText')}
+        <MarkdownRenderer
+          className="p-0 flex-grow-1"
+          markdown={consentText}
+        />
         </Checkbox>
 
         <TextField
