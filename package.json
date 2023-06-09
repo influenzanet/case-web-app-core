@@ -39,7 +39,11 @@
     "babel-loader": "^8.2.5",
     "babel-preset-react-app": "^10.0.1",
     "bootstrap": "^5.2.3",
+<<<<<<< HEAD
     "case-web-ui": "npm:@influenzanet/case-web-ui@^1.14.8-staging.3",
+=======
+    "case-web-ui": "npm:@influenzanet/case-web-ui@^1.14.7-staging.1",
+>>>>>>> 1764652 (use @influenzanet case-web-app-core)
     "clsx": "^1.2.1",
     "date-fns": "^2.29.3",
     "eslint": "^8.31.0",
