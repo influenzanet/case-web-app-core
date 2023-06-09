@@ -1,7 +1,7 @@
 {
   "name": "@influenzanet/case-web-app-core",
   "description": "Common logic and components for the participant web-app",
-  "version": "2.7.4-staging",
+  "version": "2.7.4-staging.1",
   "scripts": {
     "build": "rollup -c",
     "storybook": "start-storybook -p 6007",
@@ -39,7 +39,7 @@
     "babel-loader": "^8.2.5",
     "babel-preset-react-app": "^10.0.1",
     "bootstrap": "^5.2.3",
-    "case-web-ui": "^1.14.4",
+    "case-web-ui": "npm:@influenzanet/case-web-ui@^1.14.7-staging.1",
     "clsx": "^1.2.1",
     "date-fns": "^2.29.3",
     "eslint": "^8.31.0",
