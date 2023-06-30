@@ -5063,10 +5063,10 @@ case-sensitive-paths-webpack-plugin@^2.3.0:
   resolved "https://registry.yarnpkg.com/case-sensitive-paths-webpack-plugin/-/case-sensitive-paths-webpack-plugin-2.4.0.tgz#db64066c6422eed2e08cc14b986ca43796dbc6d4"
   integrity sha512-roIFONhcxog0JSSWbvVAh3OocukmSgpqOH6YpMkCvav/ySIV3JKg4Dc8vYtQjYi/UxpNE36r/9v+VqTQqgkYmw==
 
-case-web-ui@^1.14.4:
-  version "1.14.4"
-  resolved "https://registry.yarnpkg.com/case-web-ui/-/case-web-ui-1.14.4.tgz#db7a98fe030b29ddf2456c7ec41ff90fa0cae380"
-  integrity sha512-6TzbX7zXkFGbFjZV2ZpX0b0EwcRwPr5zcnRbSvCd9kuAxJpDoGfCjdG1DU4YpC0vemHHAKN7Aaf+epGn1uF2JQ==
+"case-web-ui@npm:@influenzanet/case-web-ui@^1.14.7-staging.1":
+  version "1.14.7-staging.1"
+  resolved "https://registry.yarnpkg.com/@influenzanet/case-web-ui/-/case-web-ui-1.14.7-staging.1.tgz#e1aabca2b450bbdb19231581ec9c558c094b4916"
+  integrity sha512-7Paf5kTiT6hG0QUsI1mHxwBE0gloXqhaQajki/ub28VGKb0AcAqIt4Z/+DwtRQjo2C7NqhcwQZ8KN5xb3YszuA==
   dependencies:
     "@fortawesome/fontawesome-free" "^5.15.4"
 
