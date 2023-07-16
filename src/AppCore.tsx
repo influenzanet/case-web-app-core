@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import HeaderRenderer from './components/layout/HeaderRenderer';
 import FooterRenderer from './components/layout/FooterRenderer';
@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { AppConfig } from './types/appConfig';
 import { appConfig } from './store/configSlice';
-import { handleOpenExternalPage } from 'case-web-ui';
+import { handleOpenExternalPage, LoadingPlaceholder } from 'case-web-ui';
 import { HeaderConfig } from './types/headerConfig';
 import Navbar from './components/navbar/Navbar';
 import { NavbarConfig } from './types/navbarConfig';
@@ -108,15 +108,16 @@ const AppCore: React.FC<AppCoreProps> = (props) => {
           onOpenExternalPage={handleOpenExternalPage}
         />
 
-        <Pages
-          config={props.pagesConfig}
-          onOpenExternalPage={handleOpenExternalPage}
-          extensions={props.extensions}
-          customResponseComponents={props.customSurveyResponseComponents}
-          dateLocales={props.dateLocales}
-          defaultRoutes={defaultRoutes}
-        />
-
+        <Suspense fallback={<LoadingPlaceholder color="secondary" minHeight="100vh" />}>
+          <Pages
+            config={props.pagesConfig}
+            onOpenExternalPage={handleOpenExternalPage}
+            extensions={props.extensions}
+            customResponseComponents={props.customSurveyResponseComponents}
+            dateLocales={props.dateLocales}
+            defaultRoutes={defaultRoutes}
+          />
+        </Suspense>
         {!props.hideDefaultFooter ? <FooterRenderer
           footerConfig={props.footerConfig}
           onChangeLanguage={handleLanguageChange}
