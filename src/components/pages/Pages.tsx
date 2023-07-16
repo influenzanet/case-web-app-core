@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 
 import { PagesConfig } from '../../types/pagesConfig';
 import { Redirect, Route, Switch } from 'react-router-dom';
@@ -24,42 +24,46 @@ interface PagesProps {
 const Pages: React.FC<PagesProps> = (props) => {
   const isAuth = useIsAuthenticated();
 
-  if (!props.config) {
-    // Loading page:
-    return <div className={clsx(containerClassName, 'my-3')}>
-      <LoadingPlaceholder color='secondary' minHeight='60vh' />
-    </div>
+  // Loading page:
+  const loadingDiv = <div className={clsx(containerClassName, 'my-3')}>
+    <LoadingPlaceholder className='loading-page' color='secondary' minHeight='60vh' />
+  </div>;
+
+  if(!props.config) {
+    return loadingDiv;
   }
 
   const notFoundRoute = props.defaultRoutes.notFound ? props.defaultRoutes.notFound : (isAuth ? props.defaultRoutes.auth : props.defaultRoutes.unauth);
 
   return (
-    <div>
-      <Switch >
-        <Redirect from="/" exact to={isAuth ? props.defaultRoutes.auth : props.defaultRoutes.unauth} />
-        {props.config.pages.map(pageConfig => {
-          return <RouteToLayout
-            key={pageConfig.path}
-            path={pageConfig.path}
-            pageConfig={pageConfig}
-            defaultRoutes={props.defaultRoutes}
-            extensions={props.extensions}
+    <Suspense fallback={loadingDiv}>
+      <div>
+        <Switch >
+          <Redirect from="/" exact to={isAuth ? props.defaultRoutes.auth : props.defaultRoutes.unauth} />
+          {props.config.pages.map(pageConfig => {
+            return <RouteToLayout
+              key={pageConfig.path}
+              path={pageConfig.path}
+              pageConfig={pageConfig}
+              defaultRoutes={props.defaultRoutes}
+              extensions={props.extensions}
+              dateLocales={props.dateLocales}
+            />
+          })}
+          <Route path={props.defaultRoutes.surveyPage + '/:studyKey'} render={() => <SurveyPage
+            customResponseComponents={props.customResponseComponents}
             dateLocales={props.dateLocales}
-          />
-        })}
-        <Route path={props.defaultRoutes.surveyPage + '/:studyKey'} render={() => <SurveyPage
-          customResponseComponents={props.customResponseComponents}
-          dateLocales={props.dateLocales}
-          urls={{
-            finishedFlowWithLogin: props.defaultRoutes.auth,
-            finishedFlowWithoutLogin: props.defaultRoutes.unauth
-          }}
-        />} />
+            urls={{
+              finishedFlowWithLogin: props.defaultRoutes.auth,
+              finishedFlowWithoutLogin: props.defaultRoutes.unauth
+            }}
+          />} />
 
-        <Route path={linkResolverRootUrl} render={() => <LinkResolver defaultRoutes={props.defaultRoutes} />} />
-        <Redirect to={notFoundRoute} />
-      </Switch>
-    </div>
+          <Route path={linkResolverRootUrl} render={() => <LinkResolver defaultRoutes={props.defaultRoutes} />} />
+          <Redirect to={notFoundRoute} />
+        </Switch>
+      </div>
+    </Suspense>
   );
 };
 

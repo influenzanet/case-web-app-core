@@ -116,7 +116,6 @@ const AppCore: React.FC<AppCoreProps> = (props) => {
           dateLocales={props.dateLocales}
           defaultRoutes={defaultRoutes}
         />
-
         {!props.hideDefaultFooter ? <FooterRenderer
           footerConfig={props.footerConfig}
           onChangeLanguage={handleLanguageChange}
