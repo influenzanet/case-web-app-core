@@ -149,6 +149,8 @@ const ContentRenderer: React.FC<ContentRendererProps> = (props) => {
               dispatch(dialogActions.openDialogWithoutPayload({ type: action.value }))
             } else if (action.type === 'navigate') {
               history.push(action.value);
+            } else if (action.type === 'navigateExternal') {
+              window.open(action.value, '_blank');
             }
           }}
         />
