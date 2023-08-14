@@ -519,7 +519,7 @@ const SurveyPage: React.FC<SurveyPageProps> = (props) => {
       profiles={currentUser.profiles}
       onSelectProfile={(p: Profile) => {
         setSelectedProfileID(p.id);
-        dialogActions.closeDialog();
+        setDialogOpen(undefined);
       }}
       onOpenProfileManager={() => {
         dispatch(dialogActions.openDialogWithoutPayload({ type: 'manageProfiles', origin: 'surveyFlow' }))
