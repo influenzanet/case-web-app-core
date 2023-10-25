@@ -215,7 +215,7 @@ const SurveyPage: React.FC<SurveyPageProps> = (props) => {
           survey: surveyKey,
           pid: tempParticipant?.temporaryParticipantId,
         })).data;
-      };
+      }
 
       console.log(survey)
       const now = Math.round(new Date().getTime() / 1000);
@@ -349,7 +349,8 @@ const SurveyPage: React.FC<SurveyPageProps> = (props) => {
       for (const survey of resp.data.surveys) {
         if (survey.category === 'immediate' && survey.surveyKey !== currentSurveyKey) {
           const now = Math.round(new Date().getTime() / 1000);
-          if (!survey.validUntil || parseFloat(survey.validUntil) > now) {
+          const currentlyValid = (!survey.validUntil || parseFloat(survey.validUntil) > now) && (!survey.validFrom || parseFloat(survey.validFrom) < now);
+          if (currentlyValid) {
             setCurrentSurveyKey(survey.surveyKey);
             shouldOpenSurvey = true;
             break;
