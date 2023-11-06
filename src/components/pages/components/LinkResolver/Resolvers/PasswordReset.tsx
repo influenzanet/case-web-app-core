@@ -19,7 +19,7 @@ import {
   TitleBar,
   DialogBtn,
   TextField,
-} from 'case-web-ui';
+} from '@influenzanet/case-web-ui';
 
 
 interface PasswordResetProps {

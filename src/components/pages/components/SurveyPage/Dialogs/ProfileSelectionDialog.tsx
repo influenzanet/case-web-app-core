@@ -1,6 +1,6 @@
-import { AlertBox, Avatar, defaultDialogPaddingXClass, Dialog, DialogBtn } from 'case-web-ui';
-import { AvatarConfig } from 'case-web-ui/build/types/avatars';
-import { Profile } from 'case-web-ui/build/types/profile';
+import { AlertBox, Avatar, defaultDialogPaddingXClass, Dialog, DialogBtn } from '@influenzanet/case-web-ui';
+import { AvatarConfig } from '@influenzanet/case-web-ui/build/types/avatars';
+import { Profile } from '@influenzanet/case-web-ui/build/types/profile';
 import clsx from 'clsx';
 import React from 'react';
 

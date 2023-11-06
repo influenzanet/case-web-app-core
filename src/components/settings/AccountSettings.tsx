@@ -4,7 +4,7 @@ import { blurEmail } from '../../utils/blurEmail';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from "../../store/rootReducer";
 import { useTranslation } from 'react-i18next';
-import { EditBtn } from 'case-web-ui';
+import { EditBtn } from '@influenzanet/case-web-ui';
 import { dialogActions } from '../../store/dialogSlice';
 import { useIsAuthenticated } from '../../hooks/useIsAuthenticated';
 

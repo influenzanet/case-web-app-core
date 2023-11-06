@@ -2,7 +2,7 @@ import React, { Suspense } from "react";
 
 import 'localStyles';
 import NormalNavbar from "./NavbarComponents/NormalNavbar";
-import { LoadingPlaceholder } from "case-web-ui";
+import { LoadingPlaceholder } from "@influenzanet/case-web-ui";
 import SurveyModeNavbar from "./NavbarComponents/SurveyModeNavbar";
 import { BrowserRouter } from "react-router-dom";
 

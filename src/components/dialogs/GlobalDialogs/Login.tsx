@@ -6,7 +6,7 @@ import {
   TextField,
   DialogBtn,
   defaultDialogPaddingXClass,
-} from 'case-web-ui';
+} from '@influenzanet/case-web-ui';
 import { useSelector, useDispatch } from 'react-redux'
 import { RootState } from '../../../store/rootReducer';
 import { LoginDialog, dialogActions } from '../../../store/dialogSlice';

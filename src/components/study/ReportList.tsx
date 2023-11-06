@@ -1,5 +1,5 @@
-import { getExternalOrLocalContentURL, LoadingPlaceholder, ReportList as ReportListDisplay } from 'case-web-ui';
-import { Profile } from 'case-web-ui/build/types/profile';
+import { getExternalOrLocalContentURL, LoadingPlaceholder, ReportList as ReportListDisplay } from '@influenzanet/case-web-ui';
+import { Profile } from '@influenzanet/case-web-ui/build/types/profile';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';

@@ -13,7 +13,7 @@ import {
   defaultDialogPaddingXClass,
   AlertBox,
   SelectField,
-} from 'case-web-ui';
+} from '@influenzanet/case-web-ui';
 
 
 interface ChangeLanguageProps {

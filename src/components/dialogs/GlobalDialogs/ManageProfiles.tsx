@@ -16,7 +16,7 @@ import {
   Avatar,
   ConfirmDialog,
   defaultDialogPaddingXClass,
-} from 'case-web-ui';
+} from '@influenzanet/case-web-ui';
 import EditProfile from './EditProfile';
 
 

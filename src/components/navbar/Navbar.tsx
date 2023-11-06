@@ -8,7 +8,7 @@ import { useLogout } from '../../hooks/useLogout';
 import { useHistory, useLocation } from 'react-router-dom';
 import { NavbarConfig } from '../../types/navbarConfig';
 import { Profile } from '../../api/types/user';
-import { LoadingPlaceholder } from 'case-web-ui';
+import { LoadingPlaceholder } from '@influenzanet/case-web-ui';
 import { useAuthTokenCheck } from '../../hooks/useAuthTokenCheck';
 import { dialogActions } from '../../store/dialogSlice';
 import SurveyModeNavbar from './NavbarComponents/SurveyModeNavbar';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Avatar, containerClassName } from 'case-web-ui';
+import { Avatar, containerClassName } from '@influenzanet/case-web-ui';
 import { Navbar } from 'react-bootstrap';
 import clsx from 'clsx';
 import { Profile } from '../../../api/types/user';

@@ -1561,6 +1561,13 @@
   resolved "https://registry.yarnpkg.com/@humanwhocodes/object-schema/-/object-schema-1.2.1.tgz#b520529ec21d8e5945a1851dfd1c32e94e39ff45"
   integrity sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==
 
+"@influenzanet/case-web-ui@^1.14.4":
+  version "1.15.0-staging.1"
+  resolved "https://registry.yarnpkg.com/@influenzanet/case-web-ui/-/case-web-ui-1.15.0-staging.1.tgz#ac18c8c68de48d8600902b27f77ff2f9d0bded51"
+  integrity sha512-ZhJTDYmMke8JfdpJKjRKKaJhSvUeHHtfeqsm67XNg3Bh2OHzUmGuytuSvpWuvC4KI3hUGjpFd13ZVQsLfghl1w==
+  dependencies:
+    "@fortawesome/fontawesome-free" "^5.15.4"
+
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@istanbuljs/load-nyc-config/-/load-nyc-config-1.1.0.tgz#fd3db1d59ecf7cf121e80650bb86712f9b55eced"
@@ -5062,13 +5069,6 @@ case-sensitive-paths-webpack-plugin@^2.3.0:
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/case-sensitive-paths-webpack-plugin/-/case-sensitive-paths-webpack-plugin-2.4.0.tgz#db64066c6422eed2e08cc14b986ca43796dbc6d4"
   integrity sha512-roIFONhcxog0JSSWbvVAh3OocukmSgpqOH6YpMkCvav/ySIV3JKg4Dc8vYtQjYi/UxpNE36r/9v+VqTQqgkYmw==
-
-"case-web-ui@npm:@influenzanet/case-web-ui@^1.14.8-staging.2":
-  version "1.14.8-staging.2"
-  resolved "https://registry.yarnpkg.com/@influenzanet/case-web-ui/-/case-web-ui-1.14.8-staging.2.tgz#86cde0d11db7485d0af2017d96fcf3d604393a8c"
-  integrity sha512-8pQ6d3nyFUQhFIByQq2kk9T8wzxUjz0xfr9zvvcJ6QKqhJSpPYuErvY1Da119hYBTcNqDCx8ZBHDIqCboBPZcA==
-  dependencies:
-    "@fortawesome/fontawesome-free" "^5.15.4"
 
 ccount@^1.0.0:
   version "1.1.0"

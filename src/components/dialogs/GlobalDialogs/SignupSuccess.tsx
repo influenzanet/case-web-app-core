@@ -11,7 +11,7 @@ import {
   AlertBox,
   defaultDialogPaddingXClass,
   Dialog,
-} from 'case-web-ui';
+} from '@influenzanet/case-web-ui';
 import { userActions } from '../../../store/userSlice';
 import { renewToken } from '../../../api/instances/authenticatedApi';
 
@@ -81,7 +81,7 @@ const SignupSuccess: React.FC = () => {
         *  In case the account was confirmed, set the freshly acquired user state **after** renewing the token.
         *  This is done in order to avoid race conditions with other components that depend on the user state.
         *  Differently, those components might fail performing api requests since they would be using a weaker token.
-        */ 
+        */
         await renewToken();
         dispatch(userActions.setUser(user));
 
