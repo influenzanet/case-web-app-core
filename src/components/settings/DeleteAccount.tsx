@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useIsAuthenticated } from '../../hooks/useIsAuthenticated';
-import { AlertBox } from 'case-web-ui';
+import { AlertBox } from '@influenzanet/case-web-ui';
 import { useDispatch } from 'react-redux';
 import { dialogActions } from '../../store/dialogSlice';
 

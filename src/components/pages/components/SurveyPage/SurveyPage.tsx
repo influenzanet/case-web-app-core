@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { AlertBox, ConfirmDialog, containerClassName, getLocalizedString, LoadingPlaceholder, SurveyView, TitleBar } from 'case-web-ui';
+import { AlertBox, ConfirmDialog, containerClassName, getLocalizedString, LoadingPlaceholder, SurveyView, TitleBar } from '@influenzanet/case-web-ui';
 import { Survey, SurveyContext, SurveyResponse } from 'survey-engine/data_types';
 import { useTranslation } from 'react-i18next';
 import SubmitSuccessWithLoginOptionsDialog, { LoginOptions } from './Dialogs/SubmitSuccessWithLoginOptionsDialog';
 import ErrorWithRetry from './PageComponents/ErrorWithRetry';
 import ProfileSelectionDialog from './Dialogs/ProfileSelectionDialog';
 import SuccessDialog from './Dialogs/SuccessDialog';
-import { Profile } from 'case-web-ui/build/types/profile';
+import { Profile } from '@influenzanet/case-web-ui/build/types/profile';
 import LoginRequiredDialog from './Dialogs/LoginRequiredDialog';
 import PreventAccidentalNavigationPrompt from '../../../misc/PreventAccidentalNavigationPrompt';
 import { useHistory, useParams } from 'react-router-dom';
@@ -16,7 +16,7 @@ import { studyAPI } from '../../../..';
 import { SurveyAndContextMsg } from '../../../../api/types/studyAPI';
 import { RootState } from '../../../../store/rootReducer';
 import { appActions } from '../../../../store/appSlice';
-import { CustomSurveyResponseComponent } from 'case-web-ui/build/components/survey/SurveySingleItemView/ResponseComponent/ResponseComponent';
+import { CustomSurveyResponseComponent } from '@influenzanet/case-web-ui/build/components/survey/SurveySingleItemView/ResponseComponent/ResponseComponent';
 import { useUrlQuery } from '../../../../hooks/useUrlQuery';
 import clsx from 'clsx';
 

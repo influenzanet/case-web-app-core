@@ -25,7 +25,7 @@ import {
   containerClassName,
   ActionCard,
   MarkdownRenderer,
-} from 'case-web-ui';
+} from '@influenzanet/case-web-ui';
 
 import SystemInfo from '../../settings/SystemInfo';
 import AccountSettings from '../../settings/AccountSettings';

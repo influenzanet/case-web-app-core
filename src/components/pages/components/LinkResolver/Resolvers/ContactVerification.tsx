@@ -22,7 +22,7 @@ import {
   containerClassName,
   AlertBox,
   TitleBar,
-} from 'case-web-ui';
+} from '@influenzanet/case-web-ui';
 
 interface ContactVerificationProps {
   defaultRoutes: DefaultRoutes;

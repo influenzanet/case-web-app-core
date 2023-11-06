@@ -2,7 +2,7 @@ import React from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { EditBtn } from 'case-web-ui';
+import { EditBtn } from '@influenzanet/case-web-ui';
 import { dialogActions } from '../../store/dialogSlice';
 import { useIsAuthenticated } from '../../hooks/useIsAuthenticated';
 import { RootState } from '../../store/rootReducer';

@@ -16,7 +16,7 @@ import {
   containerClassName,
   TitleBar,
   LoginCard,
-} from 'case-web-ui';
+} from '@influenzanet/case-web-ui';
 import { setPersistState } from '../../../../../store/appSlice';
 
 

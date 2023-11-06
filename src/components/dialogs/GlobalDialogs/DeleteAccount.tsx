@@ -9,7 +9,7 @@ import {
   DialogBtn,
   AlertBox,
   defaultDialogPaddingXClass,
-} from 'case-web-ui';
+} from '@influenzanet/case-web-ui';
 import { useLogout } from '../../../hooks/useLogout';
 import { deleteAccountReq } from '../../../api/userAPI';
 import { getErrorMsg } from '../../../api/utils';

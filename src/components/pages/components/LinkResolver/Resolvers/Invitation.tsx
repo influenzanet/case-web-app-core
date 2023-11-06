@@ -23,7 +23,7 @@ import {
   ConsentDialog,
   Checkbox,
   DialogBtn,
-} from 'case-web-ui';
+} from '@influenzanet/case-web-ui';
 
 
 

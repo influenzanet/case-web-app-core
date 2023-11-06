@@ -13,7 +13,7 @@ import {
   AlertBox,
   TextField,
   defaultDialogPaddingXClass,
-} from 'case-web-ui';
+} from '@influenzanet/case-web-ui';
 
 interface ChangePasswordProps {
 }

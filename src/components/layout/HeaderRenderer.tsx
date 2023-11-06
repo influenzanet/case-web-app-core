@@ -1,6 +1,6 @@
 import React from 'react';
 import { HeaderConfig, SimpleLogoHeaderConfig } from '../../types/headerConfig';
-import { LoadingPlaceholder, SimpleHeader } from 'case-web-ui';
+import { LoadingPlaceholder, SimpleHeader } from '@influenzanet/case-web-ui';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/rootReducer';

@@ -7,10 +7,10 @@ import { useIsAuthenticated } from '../../hooks/useIsAuthenticated';
 import LinkResolver, { linkResolverRootUrl } from './components/LinkResolver/LinkResolver';
 import { DefaultRoutes } from '../../types/routing';
 import SurveyPage from './components/SurveyPage/SurveyPage';
-import { LoadingPlaceholder, containerClassName } from 'case-web-ui';
+import { LoadingPlaceholder, containerClassName } from '@influenzanet/case-web-ui';
 import clsx from 'clsx';
 import { Extension } from '../../AppCore';
-import { CustomSurveyResponseComponent } from 'case-web-ui/build/components/survey/SurveySingleItemView/ResponseComponent/ResponseComponent';
+import { CustomSurveyResponseComponent } from '@influenzanet/case-web-ui/build/components/survey/SurveySingleItemView/ResponseComponent/ResponseComponent';
 
 interface PagesProps {
   config?: PagesConfig;

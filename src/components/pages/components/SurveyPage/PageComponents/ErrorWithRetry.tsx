@@ -1,4 +1,4 @@
-import { AlertBox } from 'case-web-ui';
+import { AlertBox } from '@influenzanet/case-web-ui';
 import React from 'react';
 
 interface ErrorWithRetryProps {

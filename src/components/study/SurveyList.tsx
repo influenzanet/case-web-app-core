@@ -6,8 +6,8 @@ import { enterStudyReq, getAllAssignedSurveysReq, getAllAvailableStudiesReq, get
 import { AssignedSurvey, StudyInfoForUser, StudyInfos, SurveyInfo } from '../../api/types/studyAPI';
 import { RootState } from '../../store/rootReducer';
 import { DefaultRoutes } from '../../types/routing';
-import { LoadingPlaceholder, SurveyList as SurveyListRenderer } from 'case-web-ui';
-import { SurveyCardDetails } from 'case-web-ui/build/components/cards/SurveyCard';
+import { LoadingPlaceholder, SurveyList as SurveyListRenderer } from '@influenzanet/case-web-ui';
+import { SurveyCardDetails } from '@influenzanet/case-web-ui/build/components/cards/SurveyCard';
 import { parseGRPCTimestamp } from '../../utils/parseGRPCTimestamp';
 
 interface SurveyListProps {
