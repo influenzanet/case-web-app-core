@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.7.3 - 2023-10-25
+
+### Changed
+
+- `immediate` surveys are only opened if they are active now (check both for validUntil and validFrom (new))
+
 ## 2.7.2 - 2023-04-17
 
 ### Changed

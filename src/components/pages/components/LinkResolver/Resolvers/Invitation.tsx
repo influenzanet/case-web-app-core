@@ -72,7 +72,7 @@ const Invitation: React.FC<InvitationProps> = (props) => {
     verifyEmail(token);
     loadInfos(token);
 
-    let replaceUrl = LinkResolverPaths.Invitation;
+    const replaceUrl = LinkResolverPaths.Invitation;
     history.replace(replaceUrl);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
