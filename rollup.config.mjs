@@ -3,10 +3,10 @@ import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import typescript from "rollup-plugin-typescript2";
 import postcss from "rollup-plugin-postcss";
-import copy from 'rollup-plugin-copy';
-import json from 'rollup-plugin-json';
+import copy from "rollup-plugin-copy";
+import json from "@rollup/plugin-json";
 
-const packageJson = require("./package.json");
+import packageJson from "./package.json" assert { type: "json" };
 
 const config = {
   input: "src/index.ts",
@@ -14,13 +14,15 @@ const config = {
     {
       file: packageJson.main,
       format: "cjs",
-      sourcemap: true
+      sourcemap: true,
+      sourcemapExcludeSources: true,
     },
     {
       file: packageJson.module,
       format: "esm",
-      sourcemap: true
-    }
+      sourcemap: true,
+      sourcemapExcludeSources: true,
+    },
   ],
   plugins: [
     peerDepsExternal(),
@@ -28,15 +30,14 @@ const config = {
     commonjs(),
     json(),
     typescript({
-      useTsconfigDeclarationDir: true
+      tsconfig: "tsconfig.json",
+      useTsconfigDeclarationDir: true,
     }),
     postcss({ modules: true }),
     copy({
-      targets: [
-        { src: 'src/scss/*', dest: 'build/scss' }
-      ]
-    })
-  ]
+      targets: [{ src: "src/scss/*", dest: "build/scss" }],
+    }),
+  ],
 };
 
 export default config;
