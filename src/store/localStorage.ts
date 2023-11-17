@@ -1,18 +1,21 @@
 import { RootState } from "./rootReducer";
-import { initialState as appState } from './appSlice';
-import { initialState as dialogState } from './dialogSlice';
-import { initialState as userState } from './userSlice';
-import { initialState as configState } from './configSlice';
-import { merge, cloneDeep } from 'lodash-es';
+import { initialState as appState } from "./appSlice";
+import { initialState as dialogState } from "./dialogSlice";
+import { initialState as userState } from "./userSlice";
+import { initialState as configState } from "./configSlice";
 
-const stateKey = 'state';
+import { initialState as studiesState } from "./studiesSlice";
+import { merge, cloneDeep } from "lodash-es";
+
+const stateKey = "state";
 
 export const loadState = (): RootState => {
   let initialRootState: RootState = {
     app: cloneDeep(appState),
     dialog: cloneDeep(dialogState),
     user: cloneDeep(userState),
-    config: cloneDeep(configState)
+    config: cloneDeep(configState),
+    studies: cloneDeep(studiesState),
   };
   try {
     const serializedState = localStorage.getItem(stateKey);
@@ -23,7 +26,7 @@ export const loadState = (): RootState => {
     initialRootState = merge(initialRootState, loadedState);
     initialRootState.app.surveyMode = {
       active: false,
-    }
+    };
     // Object.assign(initialRootState, loadedState);
     return initialRootState;
   } catch (err) {
@@ -41,8 +44,7 @@ export const saveState = (state: RootState) => {
 
       const serializedState = JSON.stringify(savedState);
       localStorage.setItem(stateKey, serializedState);
-    }
-    else {
+    } else {
       localStorage.removeItem(stateKey);
     }
   } catch {
@@ -56,4 +58,4 @@ export const removePersistedState = () => {
   } catch (error) {
     console.error(error);
   }
-}
+};

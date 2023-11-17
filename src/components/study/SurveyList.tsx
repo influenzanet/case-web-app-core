@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
-import { enterStudyReq, getAllAssignedSurveysReq, getAllAvailableStudiesReq, getStudiesForUserReq } from '../../api/studyAPI';
-import { AssignedSurvey, StudyInfoForUser, StudyInfos, SurveyInfo } from '../../api/types/studyAPI';
-import { RootState } from '../../store/rootReducer';
-import { DefaultRoutes } from '../../types/routing';
-import { LoadingPlaceholder, SurveyList as SurveyListRenderer } from '@influenzanet/case-web-ui';
-import { SurveyCardDetails } from '@influenzanet/case-web-ui/build/components/cards/SurveyCard';
-import { parseGRPCTimestamp } from '../../utils/parseGRPCTimestamp';
+import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
+import { RootState } from "../../store/rootReducer";
+import { DefaultRoutes } from "../../types/routing";
+import {
+  LoadingPlaceholder,
+  SurveyList as SurveyListRenderer,
+} from "@influenzanet/case-web-ui";
+import { SurveyCardDetails } from "@influenzanet/case-web-ui/build/components/cards/SurveyCard";
 
 interface SurveyListProps {
   pageKey: string;
@@ -24,169 +24,100 @@ const SurveyList: React.FC<SurveyListProps> = (props) => {
   const avatars = useSelector((state: RootState) => state.config.avatars);
   const history = useHistory();
 
-  const [subscribedStudies, setSubscribedStudies] = useState<StudyInfos[]>([]);
-  const [assignedSurveys, setAssigndSurveys] = useState<AssignedSurvey[]>([]);
-  const [surveyInfos, setSurveyInfos] = useState<SurveyInfo[]>([]);
+  const profiles = useSelector(
+    (state: RootState) => state.user.currentUser.profiles
+  );
 
-  useEffect(() => {
-
-    fetchStudies();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentUser]);
+  const activeSurveyInfos = useSelector(
+    (state: RootState) => state.studies.activeSurveyInfos
+  );
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    if (subscribedStudies.length < 1) {
+    if (profiles.length < 1) {
       return;
     }
-    fetchAllAssignedSurveys();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [subscribedStudies]);
-
-  const fetchStudies = async () => {
-    if (loading) { return; }
-    setLoading(true);
-    let available: StudyInfos[] = [];
-    let subscribed: StudyInfoForUser[] = [];
-    try {
-      available = (await getAllAvailableStudiesReq()).data.studies;
-      subscribed = (await getStudiesForUserReq()).data.studies;
-      if (!subscribed) {
-        subscribed = [];
-      }
-    } catch (e: any) {
-      console.error(e.response);
-      return;
-    }
-
-    let subscribedForAtLeastOne = false;
-    for (const study of available) {
-      if (study.props.systemDefaultStudy) {
-        const userInfosForStudy = subscribed.find(subs => subs.key === study.key);
-        const success = await enterStudyForAllProfiles(study.key, userInfosForStudy ? userInfosForStudy.profileIds : []);
-        if (success) {
-          subscribedForAtLeastOne = true;
-        }
-      }
-    }
-    setLoading(false);
-    setSubscribedStudies(subscribed.slice());
-    if (subscribedForAtLeastOne) {
-      await fetchStudies();
-    }
-  }
-
-  const enterStudyForAllProfiles = async (studyKey: string, alreadySubscribedProfiles: string[]): Promise<boolean> => {
-    let counter = 0;
-    for (const p of currentUser.profiles) {
-      if (alreadySubscribedProfiles.includes(p.id)) {
-        continue;
-      }
-      try {
-        await enterStudyReq(studyKey, p.id)
-        counter += 1;
-      } catch (e: any) {
-        console.log(e.response);
-      }
-    }
-    return counter > 0;
-  }
-
-
-
-  const fetchAllAssignedSurveys = async () => {
-    if (loading) { return; }
-    setLoading(true);
-    try {
-      const response = (await getAllAssignedSurveysReq()).data;
-      const surveys = response.surveys.map(s => {
-        return {
-          ...s,
-          validFrom: parseGRPCTimestamp(s.validFrom),
-          validUntil: parseGRPCTimestamp(s.validUntil),
-        }
-      });
-      setAssigndSurveys(surveys);
-      setSurveyInfos(response.surveyInfos.slice())
-    } catch (e: any) {
-      console.error(e.response);
-    }
-    setLoading(false);
-  }
-
-  const activeSurveys = assignedSurveys.filter(s => {
-    const now = new Date().getTime() / 1000;
-    if (s.validFrom && s.validFrom > now) {
-      return false;
-    }
-    if (s.validUntil && s.validUntil < now) {
-      return false;
-    }
-    return true;
-  });
+  }, [profiles]);
 
   const cardInfos: SurveyCardDetails[] = [];
-  for (const s of activeSurveys) {
-    // const ind = cardInfos.findIndex(ci => ci.surveyKey === s.surveyKey && ci.studyKey === s.studyKey && ci.category === s.category);
-    const ind = -1; // separate card for every profile
 
-    const profile = currentUser.profiles.find(p => p.id === s.profileId);
+  for (const assignedSurvey of profiles
+    .map((profile) => profile.assignedSurveys)
+    .flat()
+    .filter((s) => s && s.profileId)) {
+    const profile = profiles.find((p) => p.id === assignedSurvey.profileId);
+
     if (!profile) {
-      console.warn("profile cannot be added")
+      console.warn("Profile cannot be added");
       continue;
     }
-    const currentSurveyInfo = surveyInfos.find(si => si.studyKey === s.studyKey && si.surveyKey === s.surveyKey);
+
+    const currentSurveyInfo = activeSurveyInfos.find(
+      (si) =>
+        si.studyKey === assignedSurvey.studyKey &&
+        si.surveyKey === assignedSurvey.surveyKey
+    );
+
     if (!currentSurveyInfo) {
       continue;
     }
-    if (ind > -1) {
-      cardInfos[ind].profiles.push({ ...profile });
-    } else {
-      cardInfos.push({
-        ...s,
-        profiles: [
-          profile
-        ],
-        surveyInfos: currentSurveyInfo,
-      })
-    }
-  };
 
-  const sortedCardInfos = cardInfos.sort((a, b) => a.profiles[0].id.localeCompare(b.profiles[0].id));
-  const optionalSurveys = sortedCardInfos.filter(s => s.category === 'optional');
-  const requiredSurveys = sortedCardInfos.filter(s => s.category !== 'optional');
-
-  const openSurvey = (studyKey: string, surveyKey: string, profileId: string) => {
-    history.push(props.defaultRoutes.surveyPage + `/${studyKey}/?surveyKey=${surveyKey}&pid=${profileId}`);
+    cardInfos.push({
+      ...assignedSurvey,
+      profiles: [profile],
+      surveyInfos: currentSurveyInfo,
+    });
   }
 
-  const renderContent = () => <div className={props.className}>
-    <SurveyListRenderer
-      requiredSurveys={requiredSurveys}
-      optionalSurveys={optionalSurveys}
-      openSurvey={openSurvey}
-      avatars={avatars}
-      selectedLanguage={i18n.language}
-      texts={{
-        requiredSurveys: {
-          title: t(`${props.itemKey}.requiredSurveys.title`),
-          successMsg: t(`${props.itemKey}.requiredSurveys.successMsg`),
-          info: t(`${props.itemKey}.requiredSurveys.info`),
-        },
-        optionalSurveys: {
-          title: t(`${props.itemKey}.optionalSurveys.title`),
-          hideBtn: t(`${props.itemKey}.optionalSurveys.hideBtn`),
-          showBtn: t(`${props.itemKey}.optionalSurveys.showBtn`),
-          info: t(`${props.itemKey}.optionalSurveys.info`),
-        }
-      }}
-    />
-  </div>
+  const sortedCardInfos = cardInfos.sort((a, b) =>
+    a.profiles[0].id.localeCompare(b.profiles[0].id)
+  );
+  const optionalSurveys = sortedCardInfos.filter(
+    (s) => s.category === "optional"
+  );
+  const requiredSurveys = sortedCardInfos.filter(
+    (s) => s.category !== "optional"
+  );
 
-  const loadingContent = () => <LoadingPlaceholder
-    color="secondary"
-    minHeight={450}
-  />
+  const openSurvey = (
+    studyKey: string,
+    surveyKey: string,
+    profileId: string
+  ) => {
+    history.push(
+      props.defaultRoutes.surveyPage +
+        `/${studyKey}/?surveyKey=${surveyKey}&pid=${profileId}`
+    );
+  };
+
+  const renderContent = () => (
+    <div className={props.className}>
+      <SurveyListRenderer
+        requiredSurveys={requiredSurveys}
+        optionalSurveys={optionalSurveys}
+        openSurvey={openSurvey}
+        avatars={avatars}
+        selectedLanguage={i18n.language}
+        texts={{
+          requiredSurveys: {
+            title: t(`${props.itemKey}.requiredSurveys.title`),
+            successMsg: t(`${props.itemKey}.requiredSurveys.successMsg`),
+            info: t(`${props.itemKey}.requiredSurveys.info`),
+          },
+          optionalSurveys: {
+            title: t(`${props.itemKey}.optionalSurveys.title`),
+            hideBtn: t(`${props.itemKey}.optionalSurveys.hideBtn`),
+            showBtn: t(`${props.itemKey}.optionalSurveys.showBtn`),
+            info: t(`${props.itemKey}.optionalSurveys.info`),
+          },
+        }}
+      />
+    </div>
+  );
+
+  const loadingContent = () => (
+    <LoadingPlaceholder color="secondary" minHeight={450} />
+  );
 
   return (
     <React.Fragment>
