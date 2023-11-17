@@ -1,13 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { RootState } from "../../store/rootReducer";
 import { DefaultRoutes } from "../../types/routing";
-import {
-  LoadingPlaceholder,
-  SurveyList as SurveyListRenderer,
-} from "@influenzanet/case-web-ui";
+import { SurveyList as SurveyListRenderer } from "@influenzanet/case-web-ui";
 import { SurveyCardDetails } from "@influenzanet/case-web-ui/build/components/cards/SurveyCard";
 
 interface SurveyListProps {
@@ -18,9 +15,7 @@ interface SurveyListProps {
 }
 
 const SurveyList: React.FC<SurveyListProps> = (props) => {
-  const [loading, setLoading] = useState(false);
   const { t, i18n } = useTranslation([props.pageKey]);
-  const currentUser = useSelector((state: RootState) => state.user.currentUser);
   const avatars = useSelector((state: RootState) => state.config.avatars);
   const history = useHistory();
 
@@ -34,10 +29,7 @@ const SurveyList: React.FC<SurveyListProps> = (props) => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    if (profiles.length < 1) {
-      return;
-    }
-  }, [profiles]);
+  });
 
   const cardInfos: SurveyCardDetails[] = [];
 
@@ -115,15 +107,7 @@ const SurveyList: React.FC<SurveyListProps> = (props) => {
     </div>
   );
 
-  const loadingContent = () => (
-    <LoadingPlaceholder color="secondary" minHeight={450} />
-  );
-
-  return (
-    <React.Fragment>
-      {loading ? loadingContent() : renderContent()}
-    </React.Fragment>
-  );
+  return <React.Fragment>{renderContent()}</React.Fragment>;
 };
 
 export default SurveyList;

@@ -74,6 +74,7 @@ const ContactVerification: React.FC<ContactVerificationProps> = (props) => {
     try {
       const response = await verifyContactReq(token);
       if (response.status === 200) {
+        dispatch(dialogActions.closeDialog());
         dispatch(signupActions.contactVerified());
         if (hasToken) {
           if (logedInUser !== response.data.account.accountId) {
