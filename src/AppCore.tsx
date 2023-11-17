@@ -22,6 +22,7 @@ import { CustomSurveyResponseComponent } from '@influenzanet/case-web-ui/build/c
 import { BasicRoutes } from './types/routing';
 import { HelmetProvider } from 'react-helmet-async';
 import LocalStorage from './components/misc/LocalStorage';
+import DefaultStudiesManager from './components/study/DefaultStudiesManager';
 
 export interface Extension {
   name: string;
@@ -59,13 +60,14 @@ const AppCore: React.FC<AppCoreProps> = (props) => {
 
   const defaultRoutes = props.pagesConfig?.defaultRoutes ? props.pagesConfig.defaultRoutes : BasicRoutes
 
+  if (accessToken) {
+    setDefaultAccessTokenHeader(accessToken);
+  }
+
   useEffect(() => {
-    if (accessToken) {
-      setDefaultAccessTokenHeader(accessToken);
-    }
     const language = loadLastSelectedLanguage(process.env.REACT_APP_DEFAULT_LANGUAGE ? process.env.REACT_APP_DEFAULT_LANGUAGE : 'en');
     i18n.changeLanguage(language);
-  }, []);
+  }, [i18n]);
 
   useEffect(() => {
     saveLanguageSelection(i18n.language);
@@ -73,14 +75,14 @@ const AppCore: React.FC<AppCoreProps> = (props) => {
 
   useEffect(() => {
     dispatch(appConfig.updateInstanceID(props.appConfig?.instanceId ? props.appConfig?.instanceId : 'default'));
-  }, [props.appConfig?.instanceId])
+  }, [dispatch, props.appConfig?.instanceId])
 
   useEffect(() => {
     if (props.appConfig) {
       dispatch(appConfig.updateLanguages(props.appConfig.languages));
       dispatch(appConfig.updateAvatars(props.appConfig.avatars));
     }
-  }, [props.appConfig])
+  }, [dispatch, props.appConfig])
 
   const handleLanguageChange = (code: string) => {
     console.log(`Changing language to: ${code}`);
@@ -91,7 +93,10 @@ const AppCore: React.FC<AppCoreProps> = (props) => {
     <HelmetProvider>
       <LocalStorage />
       <Router basename={process.env.NODE_ENV === 'production' ? process.env.PUBLIC_URL : undefined}>
+
         <ScrollToTop />
+
+        <DefaultStudiesManager />
 
         {props.customHeader ? props.customHeader : null}
         {
@@ -133,3 +138,7 @@ const AppCore: React.FC<AppCoreProps> = (props) => {
 };
 
 export default AppCore;
+
+
+
+

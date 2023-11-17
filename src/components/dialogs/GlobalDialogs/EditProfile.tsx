@@ -15,9 +15,9 @@ import {
   Checkbox,
   TextField,
   defaultDialogPaddingXClass,
-  MarkdownRenderer,
 } from "@influenzanet/case-web-ui";
 import { RootState } from "../../../store/rootReducer";
+import { enterStudy } from "../../../thunks/studiesThunks";
 
 interface EditProfileProps {
   open: boolean;
@@ -29,6 +29,10 @@ const EditProfile: React.FC<EditProfileProps> = (props) => {
   const dispatch = useDispatch();
   const { t } = useTranslation(["dialogs"]);
   const avatars = useSelector((state: RootState) => state.config.avatars);
+
+  const defaultStudies = useSelector(
+    (state: RootState) => state.studies.defaultStudies
+  );
 
   const [profile, setProfile] = useState<Profile>(props.selectedProfile);
 
@@ -52,6 +56,17 @@ const EditProfile: React.FC<EditProfileProps> = (props) => {
       await renewToken();
       const user = (await getUserReq()).data;
       dispatch(userActions.setUser(user));
+      // if the profile creation is successful, enter the default studies
+      if (defaultStudies.length > 0) {
+        defaultStudies.forEach((studyKey) => {
+          dispatch(
+            enterStudy({
+              profileId: profile.id,
+              studyKey,
+            })
+          );
+        });
+      }
       setLoading(false);
       close();
     } catch (e) {
@@ -71,6 +86,8 @@ const EditProfile: React.FC<EditProfileProps> = (props) => {
       createdAt: 0,
       consentConfirmedAt: 0,
       mainProfile: false,
+      studies: [],
+      assignedSurveys: [],
     });
     props.onClose();
   };
@@ -111,10 +128,7 @@ const EditProfile: React.FC<EditProfileProps> = (props) => {
             }
           }}
         >
-          <MarkdownRenderer
-            className="p-0 flex-grow-1"
-            markdown={consentText}
-          />
+          {t("dialogs:editProfile.consentCheckboxText")}
         </Checkbox>
 
         <TextField

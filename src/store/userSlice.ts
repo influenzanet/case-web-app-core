@@ -1,20 +1,23 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { User, ContactPreferences } from '../api/types/user';
-import { TokenResponse } from '../api/types/authAPI';
-
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { User, ContactPreferences } from "../api/types/user";
+import { TokenResponse } from "../api/types/authAPI";
+import { initializeStudiesForUser } from "../thunks/userThunks";
+import { enterStudy, ProfilesSurveysMap } from "../thunks/studiesThunks";
+import { isEqual, union } from "lodash-es";
 
 export interface UserState {
-  currentUser: User
+  currentUser: User;
+  selectedProfileId: string;
 }
 
 export const initialState: UserState = {
   currentUser: {
-    id: '',
+    id: "",
     account: {
-      type: '',
-      accountId: '',
+      type: "",
+      accountId: "",
       accountConfirmedAt: 0,
-      preferredLanguage: '',
+      preferredLanguage: "",
     },
     roles: [],
     timestamps: {
@@ -31,29 +34,24 @@ export const initialState: UserState = {
       receiveWeeklyMessageDayOfWeek: -1,
     } as ContactPreferences,
     contactInfos: [],
-  } as User,
+  },
   selectedProfileId: "",
-} as UserState;
+};
 
 const userSlice = createSlice({
-  name: 'user',
-  initialState: initialState,
+  name: "user",
+  initialState,
   reducers: {
-    reset: (state) => {
-      state = { ...initialState };
-      return state;
-    },
+    reset: () => initialState,
     initializeLanguage: (state, action: PayloadAction<string>) => {
-      if (state.currentUser.account.preferredLanguage === '') {
+      if (state.currentUser.account.preferredLanguage === "") {
         state.currentUser.account.preferredLanguage = action.payload;
-        return state;
-      } else {
-        return state;
       }
     },
     setFromTokenResponse: (state, action: PayloadAction<TokenResponse>) => {
       state.currentUser.profiles = action.payload.profiles;
-      state.currentUser.account.preferredLanguage = action.payload.preferredLanguage;
+      state.currentUser.account.preferredLanguage =
+        action.payload.preferredLanguage;
     },
     setUser: (state, action: PayloadAction<User>) => {
       state.currentUser = action.payload;
@@ -64,6 +62,42 @@ const userSlice = createSlice({
     setPreferredLanguage: (state, action: PayloadAction<string>) => {
       state.currentUser.account.preferredLanguage = action.payload;
     },
+    initializeActiveSurveys: (
+      state,
+      action: PayloadAction<ProfilesSurveysMap>
+    ) => {
+      state.currentUser.profiles = state.currentUser.profiles.map((profile) => {
+        const surveysForProfile = action.payload[profile.id] || [];
+        return { ...profile, assignedSurveys: surveysForProfile };
+      });
+    },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(initializeStudiesForUser.fulfilled, (state, action) => {
+      const updatedProfiles = state.currentUser.profiles.map((profile) => {
+        const studiesForProfile = action.payload[profile.id];
+        return studiesForProfile && !isEqual(profile.studies, studiesForProfile)
+          ? { ...profile, studies: studiesForProfile }
+          : profile;
+      });
+
+      if (!isEqual(updatedProfiles, state.currentUser.profiles)) {
+        state.currentUser.profiles = updatedProfiles;
+      }
+    });
+    builder.addCase(enterStudy.fulfilled, (state, action) => {
+      const { profileId, studyKey } = action.payload;
+
+      const updatedProfiles = state.currentUser.profiles.map((profile) =>
+        profile.id === profileId
+          ? { ...profile, studies: union(profile.studies, studyKey) }
+          : profile
+      );
+
+      if (!isEqual(updatedProfiles, state.currentUser.profiles)) {
+        state.currentUser.profiles = updatedProfiles;
+      }
+    });
   },
 });
 
