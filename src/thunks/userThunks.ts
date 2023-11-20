@@ -7,7 +7,7 @@ export type ProfileStudiesMap = {
   [profileId: string]: string[];
 };
 
-export const initializeStudiesForUser = createAsyncThunk<ProfileStudiesMap>(
+export const initializeUserStudies = createAsyncThunk<ProfileStudiesMap>(
   "user/currentUser/profiles/studies/initialize",
   async () => {
     const response = await getStudiesForUserReq();
@@ -30,7 +30,7 @@ export const initializeStudiesForUser = createAsyncThunk<ProfileStudiesMap>(
 );
 
 export const {
-  pending: fetchStudiesForUserPending,
-  fulfilled: fetchStudiesForUserFulfilled,
-  rejected: fetchStudiesForUserRejected,
-} = initializeStudiesForUser;
+  pending: initializeUserStudiesPending,
+  fulfilled: initializeUserStudiesFulfilled,
+  rejected: initializeUserStudiesRejected,
+} = initializeUserStudies;

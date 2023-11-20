@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { User, ContactPreferences } from "../api/types/user";
 import { TokenResponse } from "../api/types/authAPI";
-import { initializeStudiesForUser } from "../thunks/userThunks";
+import { initializeUserStudies } from "../thunks/userThunks";
 import { enterStudy, ProfilesSurveysMap } from "../thunks/studiesThunks";
 import { isEqual, union } from "lodash-es";
 
@@ -66,19 +66,20 @@ const userSlice = createSlice({
       state,
       action: PayloadAction<ProfilesSurveysMap>
     ) => {
-      state.currentUser.profiles = state.currentUser.profiles.map((profile) => {
+      const updatedProfiles = state.currentUser.profiles.map((profile) => {
         const surveysForProfile = action.payload[profile.id] || [];
         return { ...profile, assignedSurveys: surveysForProfile };
       });
+
+      if (!isEqual(state.currentUser.profiles, updatedProfiles)) {
+        state.currentUser.profiles = updatedProfiles;
+      }
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(initializeStudiesForUser.fulfilled, (state, action) => {
+    builder.addCase(initializeUserStudies.fulfilled, (state, action) => {
       const updatedProfiles = state.currentUser.profiles.map((profile) => {
-        const studiesForProfile = action.payload[profile.id];
-        return studiesForProfile && !isEqual(profile.studies, studiesForProfile)
-          ? { ...profile, studies: studiesForProfile }
-          : profile;
+        return { ...profile, studies: action.payload[profile.id] };
       });
 
       if (!isEqual(updatedProfiles, state.currentUser.profiles)) {

@@ -31,9 +31,11 @@ export interface Profile {
   /**
    * The following fields were added here for convenience since
    * the types defined in this file are also used as type for
-   * the redux store object.
-   *
-   * This is a huge mistake but we cannot refactor everything now.
+   * the redux store object. This practice of using the same type
+   * for different domains only because they superficially share a set
+   * of common properties is huge mistake that we
+   * cannot correct right now because it would involve a large
+   * refactoring
    */
   studies: string[];
   assignedSurveys: AssignedSurvey[];

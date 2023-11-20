@@ -11,20 +11,42 @@ import PreventAccidentalNavigationPrompt from "./components/misc/PreventAccident
 import InternalNavigator from "./components/misc/InternalNavigator";
 import { signupActions } from "./store/signupActions";
 import {
-  fetchStudiesForUserFulfilled,
-  fetchStudiesForUserPending,
-  fetchStudiesForUserRejected,
+  initializeUserStudiesFulfilled,
+  initializeUserStudiesPending,
+  initializeUserStudiesRejected,
 } from "./thunks/userThunks";
-import { enterStudy } from "./thunks/studiesThunks";
+import {
+  enterStudy,
+  enterStudyFulfilled,
+  enterStudyPending,
+  enterStudyRejected,
+  initializeActiveSurveysFulfilled,
+  initializeActiveSurveysPending,
+  initializeActiveSurveysRejected,
+  initializeDefaultStudiesFulfilled,
+  initializeDefaultStudiesPending,
+  initializeDefaultStudiesRejected,
+} from "./thunks/studiesThunks";
+import { studiesActions } from "./store/studiesSlice";
 
 const coreReduxActions = {
   appActions,
   dialogActions,
   userActions,
   signupActions,
-  fetchStudiesForUserPending,
-  fetchStudiesForUserFulfilled,
-  fetchStudiesForUserRejected,
+  studiesActions,
+  initializeUserStudiesPending,
+  initializeUserStudiesFulfilled,
+  initializeUserStudiesRejected,
+  initializeDefaultStudiesPending,
+  initializeDefaultStudiesFulfilled,
+  initializeDefaultStudiesRejected,
+  enterStudyPending,
+  enterStudyFulfilled,
+  enterStudyRejected,
+  initializeActiveSurveysPending,
+  initializeActiveSurveysFulfilled,
+  initializeActiveSurveysRejected,
 };
 
 const coreReduxThunks = {

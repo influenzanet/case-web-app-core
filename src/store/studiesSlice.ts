@@ -32,7 +32,9 @@ const studiesSlice = createSlice({
       return initialState;
     });
     builder.addCase(initializeDefaultStudies.fulfilled, (state, action) => {
-      state.defaultStudies = action.payload;
+      if (!isEqual(state.defaultStudies, action.payload)) {
+        state.defaultStudies = action.payload;
+      }
     });
   },
 });

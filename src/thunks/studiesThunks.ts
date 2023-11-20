@@ -38,6 +38,19 @@ export const enterStudy = createAsyncThunk<
 >("studies/enterStudy", async ({ profileId, studyKey }, thunkAPI) => {
   await enterStudyReq(studyKey, profileId).catch((error) => {
     const errorJson = error.toJSON();
+
+    /**
+     * unfortunately the API returns 500 BAD RESPONSE
+     * if the user is already in the study.
+     * In this case tho, we want to treat the request
+     * as if it was successful in order to cover some edge
+     * cases where the request succeeded
+     * but then the user navigated away from the page
+     * before the reducer had the chance to set the state.
+     * If the user then come back and this thunk is dispatched
+     * again, the state would then be set correctly
+     *
+     */
     if (
       errorJson.response &&
       errorJson.response.data.error !==
@@ -92,3 +105,21 @@ export const initializeActiveSurveys = createAsyncThunk(
     );
   }
 );
+
+export const {
+  pending: initializeDefaultStudiesPending,
+  fulfilled: initializeDefaultStudiesFulfilled,
+  rejected: initializeDefaultStudiesRejected,
+} = initializeDefaultStudies;
+
+export const {
+  pending: enterStudyPending,
+  fulfilled: enterStudyFulfilled,
+  rejected: enterStudyRejected,
+} = enterStudy;
+
+export const {
+  pending: initializeActiveSurveysPending,
+  fulfilled: initializeActiveSurveysFulfilled,
+  rejected: initializeActiveSurveysRejected,
+} = initializeActiveSurveys;

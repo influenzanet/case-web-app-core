@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store/rootReducer";
-import { initializeStudiesForUser } from "../../thunks/userThunks";
+import { initializeUserStudies } from "../../thunks/userThunks";
 import { Action, ThunkDispatch, unwrapResult } from "@reduxjs/toolkit";
 import {
   enterStudy,
@@ -24,7 +24,7 @@ const DefaultStudiesManager: React.FC = () => {
           await dispatch(initializeDefaultStudies())
         );
         const profilesStudiesMap = unwrapResult(
-          await dispatch(initializeStudiesForUser())
+          await dispatch(initializeUserStudies())
         );
 
         /**
