@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.7.4 - 2023-11-20
+
+### Changed
+
+- on logout, the local storage is emptied and the persistState flag is set to false, preventing the app to save
+  an empty state. This fixed an incorrect behavior during the sign up process for users that previously unsubscribed
+  from the platform
+
 ## 2.7.3 - 2023-10-25
 
 ### Changed
@@ -229,7 +237,7 @@
 ### Changed
 
 - [BREAKING-CHANGE]: updated dependencies - react markdown renderer needs new format. See documentation here:
-<https://github.com/coneno/case-web-ui/blob/master/CHANGELOG.md#breaking-changes>
+  <https://github.com/coneno/case-web-ui/blob/master/CHANGELOG.md#breaking-changes>
 
 ## [1.0.19]
 
@@ -253,7 +261,7 @@
 
 ### Changed
 
-- *BREAKING*: at signup request sent to the backend, it will send the instanceID as http header. This requires a participant-api (api-gateway) with v0.13.0 or later. This header field was included for providing the instanceID for reCaptcha validation.
+- _BREAKING_: at signup request sent to the backend, it will send the instanceID as http header. This requires a participant-api (api-gateway) with v0.13.0 or later. This header field was included for providing the instanceID for reCaptcha validation.
 - Updating project dependencies (case-web-ui), with minor improvements.
 
 ## [1.0.16]
