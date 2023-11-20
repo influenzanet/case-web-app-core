@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.7.5 - staging
+
+## Changed
+
+- SurveyList component rework
+  - profiles are no longer subscribed to default studies inside this component
+  - active surveys are now saved in the redux store so it's easy to re render the component
+    from your application in case the user is assigned new surveys or studies
+
 ## 2.7.4 - 2023-11-20
 
 ### Changed
