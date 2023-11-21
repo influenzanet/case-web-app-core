@@ -1,13 +1,13 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store/rootReducer";
-import { initializeUserStudies } from "../../thunks/userThunks";
+import { initializeUserStudies } from "../../store/thunks/userThunks";
 import { Action, ThunkDispatch, unwrapResult } from "@reduxjs/toolkit";
 import {
   enterStudy,
   initializeActiveSurveys,
   initializeDefaultStudies,
-} from "../../thunks/studiesThunks";
+} from "../../store/thunks/studiesThunks";
 
 const DefaultStudiesManager: React.FC = () => {
   const dispatch = useDispatch<ThunkDispatch<RootState, void, Action>>();

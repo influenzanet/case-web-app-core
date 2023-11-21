@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { getStudiesForUserReq } from "../api/studyAPI";
+import { getStudiesForUserReq } from "../../api/studyAPI";
 import { flatMap, groupBy, mapValues } from "lodash-es";
-import { StudyInfoForUser } from "../api/types/studyAPI";
+import { StudyInfoForUser } from "../../api/types/studyAPI";
 
 export type ProfileStudiesMap = {
   [profileId: string]: string[];

@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { User, ContactPreferences } from "../api/types/user";
 import { TokenResponse } from "../api/types/authAPI";
-import { initializeUserStudies } from "../thunks/userThunks";
-import { enterStudy, ProfilesSurveysMap } from "../thunks/studiesThunks";
+import { initializeUserStudies } from "./thunks/userThunks";
+import { enterStudy, ProfilesSurveysMap } from "./thunks/studiesThunks";
 import { isEqual, union } from "lodash-es";
 
 export interface UserState {

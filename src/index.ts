@@ -14,7 +14,7 @@ import {
   initializeUserStudiesFulfilled,
   initializeUserStudiesPending,
   initializeUserStudiesRejected,
-} from "./thunks/userThunks";
+} from "./store/thunks/userThunks";
 import {
   enterStudy,
   enterStudyFulfilled,
@@ -26,7 +26,7 @@ import {
   initializeDefaultStudiesFulfilled,
   initializeDefaultStudiesPending,
   initializeDefaultStudiesRejected,
-} from "./thunks/studiesThunks";
+} from "./store/thunks/studiesThunks";
 import { studiesActions } from "./store/studiesSlice";
 
 const coreReduxActions = {

@@ -17,7 +17,7 @@ import {
   defaultDialogPaddingXClass,
 } from "@influenzanet/case-web-ui";
 import { RootState } from "../../../store/rootReducer";
-import { enterStudy } from "../../../thunks/studiesThunks";
+import { enterStudy } from "../../../store/thunks/studiesThunks";
 
 interface EditProfileProps {
   open: boolean;

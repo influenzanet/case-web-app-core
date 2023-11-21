@@ -1,13 +1,13 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { studiesActions } from "../store/studiesSlice";
-import { AssignedSurvey } from "../api/types/studyAPI";
-import { parseGRPCTimestamp } from "../utils/parseGRPCTimestamp";
-import { userActions } from "../store/userSlice";
+import { studiesActions } from "../studiesSlice";
+import { AssignedSurvey } from "../../api/types/studyAPI";
+import { parseGRPCTimestamp } from "../../utils/parseGRPCTimestamp";
+import { userActions } from "../userSlice";
 import {
   enterStudyReq,
   getAllAssignedSurveysReq,
   getAllAvailableStudiesReq,
-} from "../api/studyAPI";
+} from "../../api/studyAPI";
 
 export const initializeDefaultStudies = createAsyncThunk<string[]>(
   "studies/defaultStudies/initialize",

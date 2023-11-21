@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { initializeDefaultStudies } from "../thunks/studiesThunks";
+import { initializeDefaultStudies } from "./thunks/studiesThunks";
 import { SurveyInfo } from "../api/types/studyAPI";
 import { isEqual } from "lodash-es";
 import { userActions } from "./userSlice";

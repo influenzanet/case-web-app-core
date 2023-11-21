@@ -33,7 +33,7 @@ import { appActions } from "../../../../store/appSlice";
 import { CustomSurveyResponseComponent } from "@influenzanet/case-web-ui/build/components/survey/SurveySingleItemView/ResponseComponent/ResponseComponent";
 import { useUrlQuery } from "../../../../hooks/useUrlQuery";
 import clsx from "clsx";
-import { initializeActiveSurveys } from "../../../../thunks/studiesThunks";
+import { initializeActiveSurveys } from "../../../../store/thunks/studiesThunks";
 
 interface SurveyPageProps {
   customResponseComponents?: CustomSurveyResponseComponent[];

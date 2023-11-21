@@ -23,7 +23,7 @@ import {
   AlertBox,
   TitleBar,
 } from "@influenzanet/case-web-ui";
-import { enterStudy } from "../../../../../thunks/studiesThunks";
+import { enterStudy } from "../../../../../store/thunks/studiesThunks";
 
 interface ContactVerificationProps {
   defaultRoutes: DefaultRoutes;
