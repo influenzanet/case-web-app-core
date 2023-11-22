@@ -10,23 +10,7 @@ import { useAuthTokenCheck } from "./hooks/useAuthTokenCheck";
 import PreventAccidentalNavigationPrompt from "./components/misc/PreventAccidentalNavigationPrompt";
 import InternalNavigator from "./components/misc/InternalNavigator";
 import { signupActions } from "./store/signupActions";
-import {
-  initializeUserStudiesFulfilled,
-  initializeUserStudiesPending,
-  initializeUserStudiesRejected,
-} from "./store/thunks/userThunks";
-import {
-  enterStudy,
-  enterStudyFulfilled,
-  enterStudyPending,
-  enterStudyRejected,
-  initializeActiveSurveysFulfilled,
-  initializeActiveSurveysPending,
-  initializeActiveSurveysRejected,
-  initializeDefaultStudiesFulfilled,
-  initializeDefaultStudiesPending,
-  initializeDefaultStudiesRejected,
-} from "./store/thunks/studiesThunks";
+import { enterStudyThunk } from "./store/thunks/studiesThunks";
 import { studiesActions } from "./store/studiesSlice";
 
 const coreReduxActions = {
@@ -35,22 +19,10 @@ const coreReduxActions = {
   userActions,
   signupActions,
   studiesActions,
-  initializeUserStudiesPending,
-  initializeUserStudiesFulfilled,
-  initializeUserStudiesRejected,
-  initializeDefaultStudiesPending,
-  initializeDefaultStudiesFulfilled,
-  initializeDefaultStudiesRejected,
-  enterStudyPending,
-  enterStudyFulfilled,
-  enterStudyRejected,
-  initializeActiveSurveysPending,
-  initializeActiveSurveysFulfilled,
-  initializeActiveSurveysRejected,
 };
 
 const coreReduxThunks = {
-  enterStudy,
+  enterStudyThunk,
 };
 
 export {

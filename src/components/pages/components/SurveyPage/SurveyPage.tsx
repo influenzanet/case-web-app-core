@@ -33,7 +33,7 @@ import { appActions } from "../../../../store/appSlice";
 import { CustomSurveyResponseComponent } from "@influenzanet/case-web-ui/build/components/survey/SurveySingleItemView/ResponseComponent/ResponseComponent";
 import { useUrlQuery } from "../../../../hooks/useUrlQuery";
 import clsx from "clsx";
-import { initializeActiveSurveys } from "../../../../store/thunks/studiesThunks";
+import { initializeActiveSurveysThunk } from "../../../../store/thunks/studiesThunks";
 
 interface SurveyPageProps {
   customResponseComponents?: CustomSurveyResponseComponent[];
@@ -395,7 +395,7 @@ const SurveyPage: React.FC<SurveyPageProps> = (props) => {
   };
 
   const getNextAction = (resp: any) => {
-    dispatch(initializeActiveSurveys());
+    dispatch(initializeActiveSurveysThunk());
 
     console.log(resp);
 

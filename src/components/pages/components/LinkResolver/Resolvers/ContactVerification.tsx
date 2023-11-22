@@ -23,7 +23,7 @@ import {
   AlertBox,
   TitleBar,
 } from "@influenzanet/case-web-ui";
-import { enterStudy } from "../../../../../store/thunks/studiesThunks";
+import { enterStudyThunk } from "../../../../../store/thunks/studiesThunks";
 
 interface ContactVerificationProps {
   defaultRoutes: DefaultRoutes;
@@ -89,7 +89,7 @@ const ContactVerification: React.FC<ContactVerificationProps> = (props) => {
               if (defaultStudies.length > 0) {
                 defaultStudies.forEach((studyKey) => {
                   dispatch(
-                    enterStudy({
+                    enterStudyThunk({
                       profileId: userResponse.data.profiles[0].id,
                       studyKey,
                     })

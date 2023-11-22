@@ -1,9 +1,14 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { User, ContactPreferences } from "../api/types/user";
 import { TokenResponse } from "../api/types/authAPI";
-import { initializeUserStudies } from "./thunks/userThunks";
-import { enterStudy, ProfilesSurveysMap } from "./thunks/studiesThunks";
 import { isEqual, union } from "lodash-es";
+import {
+  initializeActiveSurveys,
+  initializeUserStudies,
+  ProfilesSurveysMap,
+  ProfileStudiesMap,
+} from "./actions/userActions";
+import { enterStudy } from "./actions/studiesActions";
 
 export interface UserState {
   currentUser: User;
@@ -62,31 +67,36 @@ const userSlice = createSlice({
     setPreferredLanguage: (state, action: PayloadAction<string>) => {
       state.currentUser.account.preferredLanguage = action.payload;
     },
-    initializeActiveSurveys: (
-      state,
-      action: PayloadAction<ProfilesSurveysMap>
-    ) => {
-      const updatedProfiles = state.currentUser.profiles.map((profile) => {
-        const surveysForProfile = action.payload[profile.id] || [];
-        return { ...profile, assignedSurveys: surveysForProfile };
-      });
-
-      if (!isEqual(state.currentUser.profiles, updatedProfiles)) {
-        state.currentUser.profiles = updatedProfiles;
-      }
-    },
   },
   extraReducers: (builder) => {
-    builder.addCase(initializeUserStudies.fulfilled, (state, action) => {
-      const updatedProfiles = state.currentUser.profiles.map((profile) => {
-        return { ...profile, studies: action.payload[profile.id] };
-      });
+    builder.addCase(
+      initializeUserStudies,
+      (state, action: PayloadAction<ProfileStudiesMap>) => {
+        const updatedProfiles = state.currentUser.profiles.map((profile) => {
+          return { ...profile, studies: action.payload[profile.id] };
+        });
 
-      if (!isEqual(updatedProfiles, state.currentUser.profiles)) {
-        state.currentUser.profiles = updatedProfiles;
+        if (!isEqual(updatedProfiles, state.currentUser.profiles)) {
+          state.currentUser.profiles = updatedProfiles;
+        }
       }
-    });
-    builder.addCase(enterStudy.fulfilled, (state, action) => {
+    );
+
+    builder.addCase(
+      initializeActiveSurveys,
+      (state, action: PayloadAction<ProfilesSurveysMap>) => {
+        const updatedProfiles = state.currentUser.profiles.map((profile) => {
+          const surveysForProfile = action.payload[profile.id] || [];
+          return { ...profile, activeSurveys: surveysForProfile };
+        });
+
+        if (!isEqual(state.currentUser.profiles, updatedProfiles)) {
+          state.currentUser.profiles = updatedProfiles;
+        }
+      }
+    );
+
+    builder.addCase(enterStudy, (state, action) => {
       const { profileId, studyKey } = action.payload;
 
       const updatedProfiles = state.currentUser.profiles.map((profile) =>

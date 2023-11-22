@@ -1,13 +1,14 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store/rootReducer";
-import { initializeUserStudies } from "../../store/thunks/userThunks";
 import { Action, ThunkDispatch, unwrapResult } from "@reduxjs/toolkit";
 import {
-  enterStudy,
-  initializeActiveSurveys,
-  initializeDefaultStudies,
+  enterStudyThunk,
+  initializeActiveSurveysThunk,
+  initializeDefaultStudiesThunk,
 } from "../../store/thunks/studiesThunks";
+
+import { initializeUserStudiesThunk } from "../../store/thunks/userThunks";
 
 const DefaultStudiesManager: React.FC = () => {
   const dispatch = useDispatch<ThunkDispatch<RootState, void, Action>>();
@@ -21,10 +22,10 @@ const DefaultStudiesManager: React.FC = () => {
 
       try {
         const defaultStudies = unwrapResult(
-          await dispatch(initializeDefaultStudies())
+          await dispatch(initializeDefaultStudiesThunk())
         );
         const profilesStudiesMap = unwrapResult(
-          await dispatch(initializeUserStudies())
+          await dispatch(initializeUserStudiesThunk())
         );
 
         /**
@@ -48,12 +49,12 @@ const DefaultStudiesManager: React.FC = () => {
 
           if (missingDefaultStudies.length > 0) {
             missingDefaultStudies.forEach((studyKey) => {
-              dispatch(enterStudy({ profileId, studyKey }));
+              dispatch(enterStudyThunk({ profileId, studyKey }));
             });
           }
         });
 
-        await dispatch(initializeActiveSurveys());
+        await dispatch(initializeActiveSurveysThunk());
       } catch {
         /* empty */
       }

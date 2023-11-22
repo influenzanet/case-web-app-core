@@ -2,14 +2,14 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { getStudiesForUserReq } from "../../api/studyAPI";
 import { flatMap, groupBy, mapValues } from "lodash-es";
 import { StudyInfoForUser } from "../../api/types/studyAPI";
+import {
+  ProfileStudiesMap,
+  initializeUserStudies,
+} from "../actions/userActions";
 
-export type ProfileStudiesMap = {
-  [profileId: string]: string[];
-};
-
-export const initializeUserStudies = createAsyncThunk<ProfileStudiesMap>(
-  "user/currentUser/profiles/studies/initialize",
-  async () => {
+export const initializeUserStudiesThunk = createAsyncThunk<ProfileStudiesMap>(
+  initializeUserStudies.type,
+  async (_, { dispatch }) => {
     const response = await getStudiesForUserReq();
 
     const profileStudiesMap = mapValues(
@@ -25,6 +25,8 @@ export const initializeUserStudies = createAsyncThunk<ProfileStudiesMap>(
       (profileStudies) => profileStudies.map((study) => study.studyKey)
     );
 
+    dispatch(initializeUserStudies(profileStudiesMap));
+
     return profileStudiesMap;
   }
 );
@@ -33,4 +35,4 @@ export const {
   pending: initializeUserStudiesPending,
   fulfilled: initializeUserStudiesFulfilled,
   rejected: initializeUserStudiesRejected,
-} = initializeUserStudies;
+} = initializeUserStudiesThunk;

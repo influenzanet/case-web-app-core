@@ -38,7 +38,7 @@ export interface Profile {
    * refactoring
    */
   studies: string[];
-  assignedSurveys: AssignedSurvey[];
+  activeSurveys: AssignedSurvey[];
 }
 
 export interface ContactPreferences {

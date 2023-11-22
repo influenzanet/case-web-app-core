@@ -34,7 +34,7 @@ const SurveyList: React.FC<SurveyListProps> = (props) => {
   const cardInfos: SurveyCardDetails[] = [];
 
   for (const assignedSurvey of profiles
-    .map((profile) => profile.assignedSurveys)
+    .map((profile) => profile.activeSurveys)
     .flat()
     .filter((s) => s && s.profileId)) {
     const profile = profiles.find((p) => p.id === assignedSurvey.profileId);

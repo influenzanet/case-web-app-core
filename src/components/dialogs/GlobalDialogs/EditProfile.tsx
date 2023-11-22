@@ -17,7 +17,7 @@ import {
   defaultDialogPaddingXClass,
 } from "@influenzanet/case-web-ui";
 import { RootState } from "../../../store/rootReducer";
-import { enterStudy } from "../../../store/thunks/studiesThunks";
+import { enterStudyThunk } from "../../../store/thunks/studiesThunks";
 
 interface EditProfileProps {
   open: boolean;
@@ -60,7 +60,7 @@ const EditProfile: React.FC<EditProfileProps> = (props) => {
       if (defaultStudies.length > 0) {
         defaultStudies.forEach((studyKey) => {
           dispatch(
-            enterStudy({
+            enterStudyThunk({
               profileId: profile.id,
               studyKey,
             })
@@ -87,7 +87,7 @@ const EditProfile: React.FC<EditProfileProps> = (props) => {
       consentConfirmedAt: 0,
       mainProfile: false,
       studies: [],
-      assignedSurveys: [],
+      activeSurveys: [],
     });
     props.onClose();
   };

@@ -19,8 +19,6 @@ import {
 } from "@influenzanet/case-web-ui";
 import EditProfile from "./EditProfile";
 
-interface ManageProfilesProps {}
-
 const emptyProfile: Profile = {
   id: "",
   alias: "",
@@ -29,10 +27,10 @@ const emptyProfile: Profile = {
   consentConfirmedAt: 0,
   mainProfile: false,
   studies: [],
-  assignedSurveys: [],
+  activeSurveys: [],
 };
 
-const ManageProfiles: React.FC<ManageProfilesProps> = (props) => {
+const ManageProfiles: React.FC = () => {
   const { t } = useTranslation(["dialogs"]);
   const dispatch = useDispatch();
   const dialogState = useSelector((state: RootState) => state.dialog);

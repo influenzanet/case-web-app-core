@@ -1,32 +1,41 @@
-import axios from 'axios';
+import axios from "axios";
 import store, { resetStore } from "../../store/store";
-import { renewTokenReq, renewTokenURL } from '../authAPI';
-// import { apiActions } from '../../store/api/apiSlice';
-import { minuteToMillisecondFactor } from '../../constants';
-import { setAppAuth } from '../../store/appSlice';
-// import { userActions } from '../../store/user/userSlice';
+import { minuteToMillisecondFactor } from "../../constants";
+import { setAppAuth } from "../../store/appSlice";
+import { TokenResponse } from "../types/authAPI";
 
 const renewThreshold = 1 * minuteToMillisecondFactor;
 
 const authApiInstance = axios.create({
-  baseURL: process.env.REACT_APP_API_BASE_URL
+  baseURL: process.env.REACT_APP_API_BASE_URL,
 });
+
+export const renewTokenURL = "/v1/auth/renew-token";
+
+export const renewTokenReq = (refreshToken: string) =>
+  authApiInstance.post<TokenResponse>(renewTokenURL, {
+    refreshToken: refreshToken,
+  });
 
 export const renewToken = async (): Promise<string> => {
   const refreshToken = store.getState().app.auth?.refreshToken;
   if (!refreshToken || refreshToken.length <= 0) {
-    throw new Error('no valid tokens');
+    throw new Error("no valid tokens");
   }
 
   const response = await renewTokenReq(refreshToken);
-  store.dispatch(setAppAuth({
-    accessToken: response.data.accessToken,
-    refreshToken: response.data.refreshToken,
-    expiresAt: new Date().getTime() + response.data.expiresIn * minuteToMillisecondFactor,
-  }));
+  store.dispatch(
+    setAppAuth({
+      accessToken: response.data.accessToken,
+      refreshToken: response.data.refreshToken,
+      expiresAt:
+        new Date().getTime() +
+        response.data.expiresIn * minuteToMillisecondFactor,
+    })
+  );
   setDefaultAccessTokenHeader(response.data.accessToken);
   return response.data.accessToken;
-}
+};
 
 const renewTokenIfNecessary = async (): Promise<string | undefined> => {
   const expiresAt = store.getState().app.auth?.expiresAt;
@@ -39,7 +48,7 @@ const renewTokenIfNecessary = async (): Promise<string | undefined> => {
     return accessToken;
   }
   return;
-}
+};
 
 authApiInstance.interceptors.request.use(
   async (config) => {
@@ -69,13 +78,12 @@ authApiInstance.interceptors.request.use(
 );
 
 export const setDefaultAccessTokenHeader = (token: string) => {
-  authApiInstance.defaults.headers.common['Authorization'] = "Bearer " + token;
+  authApiInstance.defaults.headers.common["Authorization"] = "Bearer " + token;
 };
 
 export const resetApiAuth = () => {
   resetStore();
-  setDefaultAccessTokenHeader('');
-}
+  setDefaultAccessTokenHeader("");
+};
 
 export default authApiInstance;
-

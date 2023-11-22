@@ -1,22 +1,32 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { studiesActions } from "../studiesSlice";
 import { AssignedSurvey } from "../../api/types/studyAPI";
 import { parseGRPCTimestamp } from "../../utils/parseGRPCTimestamp";
-import { userActions } from "../userSlice";
 import {
   enterStudyReq,
   getAllAssignedSurveysReq,
   getAllAvailableStudiesReq,
 } from "../../api/studyAPI";
+import {
+  EnterStudyPayload,
+  enterStudy,
+  initializeActiveSurveyInfos,
+  initializeDefaultStudies,
+} from "../actions/studiesActions";
+import {
+  ProfilesSurveysMap,
+  initializeActiveSurveys,
+} from "../actions/userActions";
 
-export const initializeDefaultStudies = createAsyncThunk<string[]>(
-  "studies/defaultStudies/initialize",
-  async () => {
+export const initializeDefaultStudiesThunk = createAsyncThunk<string[]>(
+  initializeDefaultStudies.type,
+  async (_, { dispatch }) => {
     const response = await getAllAvailableStudiesReq();
 
     const defaultStudies = response.data.studies
       .filter((study) => study.props.systemDefaultStudy)
       .map((study) => study.key);
+
+    dispatch(initializeDefaultStudies(defaultStudies));
 
     return defaultStudies;
   }
@@ -27,15 +37,10 @@ export type EnterStudyRequest = {
   studyKey: string;
 };
 
-export type EnterStudyPayload = {
-  profileId: string;
-  studyKey: string;
-};
-
-export const enterStudy = createAsyncThunk<
+export const enterStudyThunk = createAsyncThunk<
   EnterStudyPayload,
   EnterStudyRequest
->("studies/enterStudy", async ({ profileId, studyKey }, thunkAPI) => {
+>("studies/enterStudy", async ({ profileId, studyKey }, { dispatch }) => {
   await enterStudyReq(studyKey, profileId).catch((error) => {
     const errorJson = error.toJSON();
 
@@ -59,20 +64,19 @@ export const enterStudy = createAsyncThunk<
       throw error;
     }
   });
-  await thunkAPI.dispatch(initializeActiveSurveys());
+  await dispatch(initializeActiveSurveysThunk());
 
-  return { profileId, studyKey };
+  const payload = { profileId, studyKey };
+  dispatch(enterStudy(payload));
+
+  return payload;
 });
 
 export type GetActiveSurveysRequest = {
   studyKey: string;
 };
 
-export type ProfilesSurveysMap = {
-  [profileId: string]: AssignedSurvey[];
-};
-
-export const initializeActiveSurveys = createAsyncThunk(
+export const initializeActiveSurveysThunk = createAsyncThunk(
   "studies/initializeActiveSurveys",
   async (_, { dispatch }) => {
     const response = await getAllAssignedSurveysReq();
@@ -99,10 +103,8 @@ export const initializeActiveSurveys = createAsyncThunk(
         return result;
       }, {});
 
-    dispatch(userActions.initializeActiveSurveys(profilesToActiveSurveysMap));
-    dispatch(
-      studiesActions.initializeActiveSurveyInfos(response.data.surveyInfos)
-    );
+    dispatch(initializeActiveSurveys(profilesToActiveSurveysMap));
+    dispatch(initializeActiveSurveyInfos(response.data.surveyInfos));
   }
 );
 
@@ -110,16 +112,16 @@ export const {
   pending: initializeDefaultStudiesPending,
   fulfilled: initializeDefaultStudiesFulfilled,
   rejected: initializeDefaultStudiesRejected,
-} = initializeDefaultStudies;
+} = initializeDefaultStudiesThunk;
 
 export const {
   pending: enterStudyPending,
   fulfilled: enterStudyFulfilled,
   rejected: enterStudyRejected,
-} = enterStudy;
+} = enterStudyThunk;
 
 export const {
   pending: initializeActiveSurveysPending,
   fulfilled: initializeActiveSurveysFulfilled,
   rejected: initializeActiveSurveysRejected,
-} = initializeActiveSurveys;
+} = initializeActiveSurveysThunk;
