@@ -104,7 +104,7 @@ export const initializeActiveSurveysThunk = createAsyncThunk(
       }, {});
 
     dispatch(initializeActiveSurveys(profilesToActiveSurveysMap));
-    dispatch(initializeActiveSurveyInfos(response.data.surveyInfos));
+    dispatch(initializeActiveSurveyInfos(response.data.surveyInfos || []));
   }
 );
 
