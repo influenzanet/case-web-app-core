@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   Dialog,
   AlertBox,
@@ -6,30 +6,32 @@ import {
   TextField,
   DialogBtn,
   defaultDialogPaddingXClass,
-} from '@influenzanet/case-web-ui';
-import { useSelector, useDispatch } from 'react-redux'
-import { RootState } from '../../../store/rootReducer';
-import { LoginDialog, dialogActions } from '../../../store/dialogSlice';
-import clsx from 'clsx';
+} from "@influenzanet/case-web-ui";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "../../../store/rootReducer";
+import { LoginDialog, dialogActions } from "../../../store/dialogSlice";
+import clsx from "clsx";
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 
-import { loginWithEmailRequest, resend2FAVerificationCodeRequest } from '../../../api/authAPI';
-import { setPersistState } from '../../../store/appSlice';
-import { LoginResponse } from '../../../api/types/authAPI';
-import { useSetAuthState } from '../../../hooks/useSetAuthState';
-import { useHistory } from 'react-router-dom';
-import { getErrorMsg } from '../../../api/utils';
-import { useLogout } from '../../../hooks/useLogout';
-import { DefaultRoutes } from '../../../types/routing';
+import {
+  loginWithEmailRequest,
+  resend2FAVerificationCodeRequest,
+} from "../../../api/authAPI";
+import { setPersistState } from "../../../store/appSlice";
+import { LoginResponse } from "../../../api/types/authAPI";
+import { useSetAuthState } from "../../../hooks/useSetAuthState";
+import { useHistory } from "react-router-dom";
+import { getErrorMsg } from "../../../api/utils";
+import { useLogout } from "../../../hooks/useLogout";
+import { DefaultRoutes } from "../../../types/routing";
 
 const marginBottomClass = "mb-2";
 const marginTopClass = "mt-2";
-const loginFormI18nPrefix = 'login.credentials';
-const verificationFormI18nPrefix = 'login.verificationCode';
+const loginFormI18nPrefix = "login.credentials";
+const verificationFormI18nPrefix = "login.verificationCode";
 
-const signupDisabled = process.env.REACT_APP_DISABLE_SIGNUP === 'true';
-
+const signupDisabled = process.env.REACT_APP_DISABLE_SIGNUP === "true";
 
 interface LoginProps {
   defaultRoutes: DefaultRoutes;
@@ -50,7 +52,7 @@ interface LoginFormProps {
   error: string;
   clearError: () => void;
   onSubmit: (email: string, password: string, rememberMe: boolean) => void;
-  onOpenDialog: (dialog: 'passwordForgotten' | 'signup') => void;
+  onOpenDialog: (dialog: "passwordForgotten" | "signup") => void;
 }
 
 interface VerificationCodeFormProps {
@@ -63,7 +65,7 @@ interface VerificationCodeFormProps {
 }
 
 const LoginForm: React.FC<LoginFormProps> = (props) => {
-  const { t } = useTranslation(['dialogs']);
+  const { t } = useTranslation(["dialogs"]);
   const [loginData, setLoginData] = useState<LoginFormData>({
     email: props.email,
     password: props.password,
@@ -75,62 +77,73 @@ const LoginForm: React.FC<LoginFormProps> = (props) => {
       email: props.email,
       password: props.password,
       rememberMe: props.rememberMe,
-    }
+    };
     setLoginData(newData);
     if (!isDisabled(newData)) {
       props.onSubmit(newData.email, newData.password, newData.rememberMe);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.email, props.password])
+  }, [props.email, props.password]);
 
   const isDisabled = (loginData: LoginFormData) => {
     return loginData.email.length < 3 || loginData.password.length < 6;
-  }
+  };
 
-  const rememberMeCheckbox = <Checkbox
-    id="loginDialogRememberMe"
-    className={marginBottomClass}
-    name="rememberMe"
-    checked={loginData.rememberMe}
-    label={t(`${loginFormI18nPrefix}.rememberMeLabel`)}
-    onChange={(checked) => {
-      setLoginData(prev => {
-        return {
-          ...prev,
-          rememberMe: checked,
-        }
-      })
-    }}
-  />
+  const rememberMeCheckbox = (
+    <Checkbox
+      id="loginDialogRememberMe"
+      className={marginBottomClass}
+      name="rememberMe"
+      checked={loginData.rememberMe}
+      label={t(`${loginFormI18nPrefix}.rememberMeLabel`)}
+      onChange={(checked) => {
+        setLoginData((prev) => {
+          return {
+            ...prev,
+            rememberMe: checked,
+          };
+        });
+      }}
+    />
+  );
 
   const infoText: string = t(`${loginFormI18nPrefix}.info`);
   const emailInputLabel = t(`${loginFormI18nPrefix}.emailInputLabel`);
-  const emailInputPlaceholder = t(`${loginFormI18nPrefix}.emailInputPlaceholder`);
+  const emailInputPlaceholder = t(
+    `${loginFormI18nPrefix}.emailInputPlaceholder`
+  );
   const passwordInputLabel = t(`${loginFormI18nPrefix}.passwordInputLabel`);
-  const passwordInputPlaceholder = t(`${loginFormI18nPrefix}.passwordInputPlaceholder`);
+  const passwordInputPlaceholder = t(
+    `${loginFormI18nPrefix}.passwordInputPlaceholder`
+  );
   const loginBtn = t(`${loginFormI18nPrefix}.btn`);
   const passwordForgottenBtn = t(`${loginFormI18nPrefix}.passwordForgottenBtn`);
   const signupBtn = t(`${loginFormI18nPrefix}.signupBtn`);
 
   return (
     <React.Fragment>
-      {infoText && infoText.length > 0 ?
+      {infoText && infoText.length > 0 ? (
         <AlertBox
           type="info"
           className={marginBottomClass}
           content={infoText}
-        /> : null}
+        />
+      ) : null}
 
       <form
         onSubmit={(event) => {
           event.preventDefault();
-          props.onSubmit(loginData.email, loginData.password, loginData.rememberMe);
+          props.onSubmit(
+            loginData.email,
+            loginData.password,
+            loginData.rememberMe
+          );
         }}
       >
         <AlertBox
           className={marginBottomClass}
           hide={!props.error}
-          content={props.error ? props.error : ''}
+          content={props.error ? props.error : ""}
           type="danger"
           useIcon={true}
           iconSize="2rem"
@@ -149,7 +162,9 @@ const LoginForm: React.FC<LoginFormProps> = (props) => {
           autoComplete="email"
           onChange={(event) => {
             const value = event.target.value;
-            setLoginData(prev => { return { ...prev, email: value } })
+            setLoginData((prev) => {
+              return { ...prev, email: value };
+            });
           }}
         />
         <TextField
@@ -165,7 +180,9 @@ const LoginForm: React.FC<LoginFormProps> = (props) => {
           autoComplete="current-password"
           onChange={(event) => {
             const value = event.target.value;
-            setLoginData(prev => { return { ...prev, password: value } })
+            setLoginData((prev) => {
+              return { ...prev, password: value };
+            });
           }}
         />
         {rememberMeCheckbox}
@@ -175,7 +192,7 @@ const LoginForm: React.FC<LoginFormProps> = (props) => {
             label={loginBtn}
             disabled={isDisabled(loginData) || props.isLoading}
             loading={props.isLoading}
-            loadingLabel={t('loadingMsg')}
+            loadingLabel={t("loadingMsg")}
           />
         </div>
         <div>
@@ -184,54 +201,58 @@ const LoginForm: React.FC<LoginFormProps> = (props) => {
             className="btn btn-link p-0 text-decoration-none text-start text-uppercase"
             onClick={(event) => {
               event.preventDefault();
-              props.onOpenDialog('passwordForgotten');
+              props.onOpenDialog("passwordForgotten");
             }}
-          >{passwordForgottenBtn}</button>
+          >
+            {passwordForgottenBtn}
+          </button>
         </div>
-        {
-          !signupDisabled ?
-            <div className={marginTopClass}>
-              <button
-                type="button"
-                className="btn btn-link p-0 text-decoration-none text-start text-uppercase"
-                onClick={(event) => {
-                  event.preventDefault();
-                  props.onOpenDialog('signup');
-                }}
-              >{signupBtn}</button>
-            </div>
-            : null
-        }
+        {!signupDisabled ? (
+          <div className={marginTopClass}>
+            <button
+              type="button"
+              className="btn btn-link p-0 text-decoration-none text-start text-uppercase"
+              onClick={(event) => {
+                event.preventDefault();
+                props.onOpenDialog("signup");
+              }}
+            >
+              {signupBtn}
+            </button>
+          </div>
+        ) : null}
       </form>
     </React.Fragment>
-  )
-}
+  );
+};
 
 const VerificationCodeForm: React.FC<VerificationCodeFormProps> = (props) => {
   const [verificationCode, setVerificationCode] = useState("");
-  const { t } = useTranslation(['dialogs']);
+  const { t } = useTranslation(["dialogs"]);
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    props.onSubmit(verificationCode.replace('-', ''));
-  }
+    props.onSubmit(verificationCode.replace("-", ""));
+  };
 
   const submitButtonEnabled = () => {
-    return !props.isLoading && verificationCode.replace('-', '').length === 6;
-  }
+    return !props.isLoading && verificationCode.replace("-", "").length === 6;
+  };
 
-  const submitBtnLabel = t(`${verificationFormI18nPrefix}.submitBtn`)
-  const resendBtnLabel = t(`${verificationFormI18nPrefix}.resendBtn`)
+  const submitBtnLabel = t(`${verificationFormI18nPrefix}.submitBtn`);
+  const resendBtnLabel = t(`${verificationFormI18nPrefix}.resendBtn`);
   const infoText: string = t(`${verificationFormI18nPrefix}.info`);
   const codeInputLabel = t(`${verificationFormI18nPrefix}.codeInputLabel`);
-  const codeInputPlaceholder = t(`${verificationFormI18nPrefix}.codeInputPlaceholder`);
+  const codeInputPlaceholder = t(
+    `${verificationFormI18nPrefix}.codeInputPlaceholder`
+  );
 
   return (
     <form noValidate={true} onSubmit={onSubmit}>
       <AlertBox
         className={marginBottomClass}
         hide={!props.error}
-        content={props.error ? props.error : ''}
+        content={props.error ? props.error : ""}
         type="danger"
         useIcon={true}
         iconSize="2rem"
@@ -261,15 +282,16 @@ const VerificationCodeForm: React.FC<VerificationCodeFormProps> = (props) => {
         label={submitBtnLabel}
         disabled={!submitButtonEnabled()}
         loading={props.isLoading}
-        loadingLabel={t('loadingMsg')}
+        loadingLabel={t("loadingMsg")}
       />
 
-      {infoText ? <AlertBox
-        className={marginBottomClass}
-        type="info"
-        content={infoText}
-      /> : null}
-
+      {infoText ? (
+        <AlertBox
+          className={marginBottomClass}
+          type="info"
+          content={infoText}
+        />
+      ) : null}
 
       <div>
         <button
@@ -280,12 +302,13 @@ const VerificationCodeForm: React.FC<VerificationCodeFormProps> = (props) => {
             event.preventDefault();
             props.onResendVerificationCode();
           }}
-        >{resendBtnLabel}</button>
+        >
+          {resendBtnLabel}
+        </button>
       </div>
     </form>
-  )
-}
-
+  );
+};
 
 /**
  * Login Dialog with logic to handle callbacks from the forms
@@ -293,12 +316,18 @@ const VerificationCodeForm: React.FC<VerificationCodeFormProps> = (props) => {
  */
 const Login: React.FC<LoginProps> = (props) => {
   const instanceId = useSelector((state: RootState) => state.config.instanceId);
-  const persistState = useSelector((state: RootState) => state.app.persistState);
-  const dialogState = useSelector((state: RootState) => state.dialog)
+  const persistState = useSelector(
+    (state: RootState) => state.app.persistState
+  );
+  const dialogState = useSelector((state: RootState) => state.dialog);
 
-  const open = dialogState.config?.type === 'login';
-  const initialLoginData = open ? (dialogState.config as LoginDialog).payload : undefined;
-  const preventNavigateOnSuccess = open ? (dialogState.config as LoginDialog).payload?.preventNavigateOnSuccess : undefined;
+  const open = dialogState.config?.type === "login";
+  const initialLoginData = open
+    ? (dialogState.config as LoginDialog).payload
+    : undefined;
+  const preventNavigateOnSuccess = open
+    ? (dialogState.config as LoginDialog).payload?.preventNavigateOnSuccess
+    : undefined;
 
   const setAuthState = useSetAuthState();
   const logout = useLogout();
@@ -306,23 +335,35 @@ const Login: React.FC<LoginProps> = (props) => {
 
   const [verificationStep, setVerificationStep] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
   const [resendEnabled, setResetEnabled] = useState(false);
 
-  const [emailAddress, setEmailAddress] = useState<string>(initialLoginData ? initialLoginData.email : "");
-  const [password, setPassword] = useState<string>(initialLoginData ? initialLoginData.password : "");
-  const [verificationCode, setVerificationCode] = useState<string>(initialLoginData && initialLoginData.verificationCode ? initialLoginData.verificationCode : "");
+  const [emailAddress, setEmailAddress] = useState<string>(
+    initialLoginData ? initialLoginData.email : ""
+  );
+  const [password, setPassword] = useState<string>(
+    initialLoginData ? initialLoginData.password : ""
+  );
+  const [verificationCode, setVerificationCode] = useState<string>(
+    initialLoginData && initialLoginData.verificationCode
+      ? initialLoginData.verificationCode
+      : ""
+  );
 
   const dispatch = useDispatch();
 
-  const { t, i18n } = useTranslation(['dialogs']);
+  const { t, i18n } = useTranslation(["dialogs"]);
 
   useEffect(() => {
     setResetEnabled(false);
     if (open && initialLoginData) {
       setEmailAddress(initialLoginData.email);
       setPassword(initialLoginData.password);
-      setVerificationCode(initialLoginData.verificationCode ? initialLoginData.verificationCode : '');
+      setVerificationCode(
+        initialLoginData.verificationCode
+          ? initialLoginData.verificationCode
+          : ""
+      );
       dispatch(setPersistState(initialLoginData.rememberMe));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -338,29 +379,33 @@ const Login: React.FC<LoginProps> = (props) => {
         }, 20000);
       }
     }
-  }, [loading, open, verificationStep])
+  }, [loading, open, verificationStep]);
 
-  const setAuthFields = (email: string, password: string, rememberMe: boolean) => {
+  const setAuthFields = (
+    email: string,
+    password: string,
+    rememberMe: boolean
+  ) => {
     setEmailAddress(email);
     setPassword(password);
-    setErrorMessage('');
+    setErrorMessage("");
     dispatch(setPersistState(rememberMe));
-  }
+  };
 
   const handleClose = () => {
     setEmailAddress("");
     setPassword("");
-    setErrorMessage('');
-    setVerificationCode('');
+    setErrorMessage("");
+    setVerificationCode("");
     setVerificationStep(false);
-    dispatch(dialogActions.closeDialog())
-  }
+    dispatch(dialogActions.closeDialog());
+  };
 
   const login = async (creds: LoginFormData) => {
     if (loading) return;
+    logout(true);
     setAuthFields(creds.email, creds.password, creds.rememberMe);
     setLoading(true);
-    logout(true);
 
     try {
       const resp = await loginWithEmailRequest({
@@ -373,23 +418,40 @@ const Login: React.FC<LoginProps> = (props) => {
       if (response.secondFactorNeeded) {
         setVerificationStep(true);
       } else {
-        response.user.account.accountConfirmedAt = +response.user.account.accountConfirmedAt
+        response.user.account.accountConfirmedAt =
+          +response.user.account.accountConfirmedAt;
         setAuthState(response.token, response.user);
 
         const currentLangauge = i18n.language;
-        if (response.user.account.preferredLanguage && response.user.account.preferredLanguage !== currentLangauge) {
+        if (
+          response.user.account.preferredLanguage &&
+          response.user.account.preferredLanguage !== currentLangauge
+        ) {
           i18n.changeLanguage(response.user.account.preferredLanguage);
         }
 
-        if (!response.user.account.accountConfirmedAt || response.user.account.accountConfirmedAt <= 0) {
-          dispatch(dialogActions.openDialogWithoutPayload({ type: 'signupSuccess', origin: dialogState.config?.origin }));
+        if (
+          !response.user.account.accountConfirmedAt ||
+          response.user.account.accountConfirmedAt <= 0
+        ) {
+          dispatch(
+            dialogActions.openDialogWithoutPayload({
+              type: "signupSuccess",
+              origin: dialogState.config?.origin,
+            })
+          );
         }
 
         /*
-        * We might already be in the defaultRoutes.auth path because of the change in state that occurs above, which triggers
-        * a redirect. The pathname check is to prevent racing conditions and avoid doing multiple api calls
-        */
-        if (history && history.location.pathname !== props.defaultRoutes.auth && dialogState.config?.origin !== 'surveyFlow' && !preventNavigateOnSuccess) {
+         * We might already be in the defaultRoutes.auth path because of the change in state that occurs above, which triggers
+         * a redirect. The pathname check is to prevent racing conditions and avoid doing multiple api calls
+         */
+        if (
+          history &&
+          history.location.pathname !== props.defaultRoutes.auth &&
+          dialogState.config?.origin !== "surveyFlow" &&
+          !preventNavigateOnSuccess
+        ) {
           history.push(props.defaultRoutes.auth);
         }
 
@@ -402,7 +464,7 @@ const Login: React.FC<LoginProps> = (props) => {
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   const resendCode = async () => {
     setLoading(true);
@@ -420,46 +482,43 @@ const Login: React.FC<LoginProps> = (props) => {
     } finally {
       setLoading(false);
     }
-
-  }
+  };
 
   const handleError = (errorResponse?: string) => {
     let error: string;
     switch (errorResponse) {
-      case 'invalid username and/or password':
-        error = t('dialogs:login.errors.accountOrPassword');
+      case "invalid username and/or password":
+        error = t("dialogs:login.errors.accountOrPassword");
         break;
-      case 'wrong verfication code':
-        error = t('dialogs:login.errors.wrongCode');
+      case "wrong verfication code":
+        error = t("dialogs:login.errors.wrongCode");
         break;
-      case 'new verfication code':
-        error = t('login.errors.newCodeSent');
+      case "new verfication code":
+        error = t("login.errors.newCodeSent");
         break;
-      case 'cannot generate verification code so often':
-        error = t('login.errors.rateLimit');
+      case "cannot generate verification code so often":
+        error = t("login.errors.rateLimit");
         break;
       default:
-        error = t('login.errors.unknown');
+        error = t("login.errors.unknown");
         break;
     }
     setErrorMessage(error);
-  }
+  };
 
   return (
     <Dialog
       open={open}
       title={
-        verificationStep ? t(`${verificationFormI18nPrefix}.title`) : t(`${loginFormI18nPrefix}.title`)
+        verificationStep
+          ? t(`${verificationFormI18nPrefix}.title`)
+          : t(`${loginFormI18nPrefix}.title`)
       }
       onClose={handleClose}
       ariaLabelledBy="loginDialogTitle"
     >
-      <div className={clsx(
-        defaultDialogPaddingXClass,
-        'py-3',
-        'bg-grey-1'
-      )}>
-        {verificationStep ?
+      <div className={clsx(defaultDialogPaddingXClass, "py-3", "bg-grey-1")}>
+        {verificationStep ? (
           <VerificationCodeForm
             isLoading={loading}
             onSubmit={(code) => {
@@ -467,41 +526,47 @@ const Login: React.FC<LoginProps> = (props) => {
                 email: emailAddress,
                 password: password,
                 rememberMe: persistState,
-                verificationCode: code
-              })
+                verificationCode: code,
+              });
             }}
             onResendVerificationCode={() => {
               if (!resendEnabled) {
-                console.log('resend not enabled, please wait');
+                console.log("resend not enabled, please wait");
                 return;
               }
               resendCode();
             }}
             resendEnabled={!loading && resendEnabled}
             error={errorMessage}
-            clearError={() => setErrorMessage('')}
-          /> :
+            clearError={() => setErrorMessage("")}
+          />
+        ) : (
           <LoginForm
             isLoading={loading}
             email={emailAddress}
             password={password}
             rememberMe={persistState}
             error={errorMessage}
-            clearError={() => setErrorMessage('')}
+            clearError={() => setErrorMessage("")}
             onSubmit={(email, password, rememberMe) => {
               login({
                 email: email,
                 password: password,
                 rememberMe: rememberMe,
                 verificationCode: verificationCode,
-              })
+              });
             }}
             onOpenDialog={(dialog) => {
               handleClose();
-              dispatch(dialogActions.openDialogWithoutPayload({ type: dialog, origin: dialogState.config?.origin }));
+              dispatch(
+                dialogActions.openDialogWithoutPayload({
+                  type: dialog,
+                  origin: dialogState.config?.origin,
+                })
+              );
             }}
           />
-        }
+        )}
       </div>
     </Dialog>
   );
