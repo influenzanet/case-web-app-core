@@ -36,6 +36,9 @@ export interface Profile {
    * of common properties is huge mistake that we
    * cannot correct right now because it would involve a large
    * refactoring
+   *
+   * When adding properties here make sure you remove them
+   * when posting the profile in ../userAPI.ts
    */
   studies: string[];
   activeSurveys: AssignedSurvey[];
