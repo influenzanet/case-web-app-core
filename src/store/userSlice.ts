@@ -101,7 +101,7 @@ const userSlice = createSlice({
 
       const updatedProfiles = state.currentUser.profiles.map((profile) =>
         profile.id === profileId
-          ? { ...profile, studies: union(profile.studies, studyKey) }
+          ? { ...profile, studies: union(profile.studies, [studyKey]) }
           : profile
       );
 
