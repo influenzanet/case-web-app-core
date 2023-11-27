@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { User, ContactPreferences } from "../api/types/user";
 import { TokenResponse } from "../api/types/authAPI";
-import { isEqual, union } from "lodash-es";
+import { union } from "lodash-es";
 import {
   initializeActiveSurveys,
   initializeUserStudies,
@@ -73,12 +73,11 @@ const userSlice = createSlice({
       initializeUserStudies,
       (state, action: PayloadAction<ProfileStudiesMap>) => {
         const updatedProfiles = state.currentUser.profiles.map((profile) => {
-          return { ...profile, studies: action.payload[profile.id] };
+          profile.studies = action.payload[profile.id];
+          return profile;
         });
 
-        if (!isEqual(updatedProfiles, state.currentUser.profiles)) {
-          state.currentUser.profiles = updatedProfiles;
-        }
+        state.currentUser.profiles = updatedProfiles;
       }
     );
 
@@ -87,12 +86,11 @@ const userSlice = createSlice({
       (state, action: PayloadAction<ProfilesSurveysMap>) => {
         const updatedProfiles = state.currentUser.profiles.map((profile) => {
           const surveysForProfile = action.payload[profile.id] || [];
-          return { ...profile, activeSurveys: surveysForProfile };
+          profile.activeSurveys = surveysForProfile;
+          return profile;
         });
 
-        if (!isEqual(state.currentUser.profiles, updatedProfiles)) {
-          state.currentUser.profiles = updatedProfiles;
-        }
+        state.currentUser.profiles = updatedProfiles;
       }
     );
 
@@ -105,9 +103,7 @@ const userSlice = createSlice({
           : profile
       );
 
-      if (!isEqual(updatedProfiles, state.currentUser.profiles)) {
-        state.currentUser.profiles = updatedProfiles;
-      }
+      state.currentUser.profiles = updatedProfiles;
     });
   },
 });
