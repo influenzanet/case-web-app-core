@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { User, ContactPreferences } from "../api/types/user";
+import { User, ContactPreferences, Profile } from "../api/types/user";
 import { TokenResponse } from "../api/types/authAPI";
-import { union } from "lodash-es";
+import { merge, union } from "lodash-es";
 import {
   initializeActiveSurveys,
   initializeUserStudies,
@@ -59,7 +59,16 @@ const userSlice = createSlice({
         action.payload.preferredLanguage;
     },
     setUser: (state, action: PayloadAction<User>) => {
-      state.currentUser = action.payload;
+      state.currentUser = {
+        ...action.payload,
+        profiles: action.payload.profiles.map((profile) => {
+          const existingProfile = state.currentUser.profiles.find(
+            (p) => p.id === profile.id
+          );
+
+          return merge({}, profile, existingProfile ?? {});
+        }),
+      };
     },
     setUserID: (state, action: PayloadAction<string>) => {
       state.currentUser.account.accountId = action.payload;
