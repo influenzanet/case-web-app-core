@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { User, ContactPreferences, Profile } from "../api/types/user";
+import { User, ContactPreferences } from "../api/types/user";
 import { TokenResponse } from "../api/types/authAPI";
 import { merge, union } from "lodash-es";
 import {
@@ -66,7 +66,7 @@ const userSlice = createSlice({
             (p) => p.id === profile.id
           );
 
-          return merge({}, profile, existingProfile ?? {});
+          return merge({}, existingProfile ?? {}, profile);
         }),
       };
     },

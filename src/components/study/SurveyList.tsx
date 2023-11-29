@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
@@ -26,10 +26,6 @@ const SurveyList: React.FC<SurveyListProps> = (props) => {
   const activeSurveyInfos = useSelector(
     (state: RootState) => state.studies.activeSurveyInfos
   );
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  });
 
   const cardInfos: SurveyCardDetails[] = [];
 

@@ -12,11 +12,13 @@ import { initializeUserStudiesThunk } from "../../store/thunks/userThunks";
 
 const DefaultStudiesManager: React.FC = () => {
   const dispatch = useDispatch<ThunkDispatch<RootState, void, Action>>();
-  const currentUser = useSelector((state: RootState) => state.user.currentUser);
+  const currentUserId = useSelector(
+    (state: RootState) => state.user.currentUser.id
+  );
 
   useEffect(() => {
     const initialize = async () => {
-      if (!currentUser.id) {
+      if (!currentUserId) {
         return;
       }
 
@@ -61,9 +63,9 @@ const DefaultStudiesManager: React.FC = () => {
     };
 
     initialize();
-  }, [currentUser.id, dispatch]);
+  }, [currentUserId, dispatch]);
 
-  return <></>;
+  return null;
 };
 
 export default DefaultStudiesManager;
