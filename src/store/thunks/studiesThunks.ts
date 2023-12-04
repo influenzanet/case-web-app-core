@@ -64,10 +64,12 @@ export const enterStudyThunk = createAsyncThunk<
       throw error;
     }
   });
-  await dispatch(initializeActiveSurveysThunk());
 
   const payload = { profileId, studyKey };
+
   dispatch(enterStudy(payload));
+
+  await dispatch(initializeActiveSurveysThunk());
 
   return payload;
 });

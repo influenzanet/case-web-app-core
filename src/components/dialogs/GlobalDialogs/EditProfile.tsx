@@ -55,7 +55,6 @@ const EditProfile: React.FC<EditProfileProps> = (props) => {
       await saveProfileReq(profile);
       await renewToken();
       const user = (await getUserReq()).data;
-      dispatch(userActions.setUser(user));
       // if the profile creation is successful, enter the default studies
       if (defaultStudies.length > 0) {
         defaultStudies.forEach((studyKey) => {
@@ -67,6 +66,7 @@ const EditProfile: React.FC<EditProfileProps> = (props) => {
           );
         });
       }
+      dispatch(userActions.setUser(user));
       setLoading(false);
       close();
     } catch (e) {
