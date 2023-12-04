@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store/rootReducer";
 import { Action, ThunkDispatch, unwrapResult } from "@reduxjs/toolkit";
 import {
+  EnterStudyRequest,
   enterStudyThunk,
   initializeActiveSurveysThunk,
   initializeDefaultStudiesThunk,
@@ -38,6 +39,8 @@ const DefaultStudiesManager: React.FC = () => {
          * to all profiles and if not, we try entering the study
          */
 
+        const enterStudyReqs: EnterStudyRequest[] = [];
+
         Object.keys(profilesStudiesMap).forEach((profileId) => {
           const profileStudies = profilesStudiesMap[profileId];
 
@@ -51,12 +54,20 @@ const DefaultStudiesManager: React.FC = () => {
 
           if (missingDefaultStudies.length > 0) {
             missingDefaultStudies.forEach((studyKey) => {
-              dispatch(enterStudyThunk({ profileId, studyKey }));
+              enterStudyReqs.push({ profileId, studyKey });
             });
           }
         });
 
-        await dispatch(initializeActiveSurveysThunk());
+        if (enterStudyReqs.length > 0) {
+          await Promise.all(
+            enterStudyReqs.map(async (req) => {
+              await dispatch(enterStudyThunk(req));
+            })
+          );
+
+          await dispatch(initializeActiveSurveysThunk());
+        }
       } catch {
         /* empty */
       }
