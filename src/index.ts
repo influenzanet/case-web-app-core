@@ -12,6 +12,11 @@ import InternalNavigator from "./components/misc/InternalNavigator";
 import { signupActions } from "./store/signupActions";
 import { enterStudyThunk } from "./store/thunks/studiesThunks";
 import { studiesActions } from "./store/studiesSlice";
+import { AppConfig } from "./types/appConfig";
+import { HeaderConfig } from './types/headerConfig';
+import { FooterConfig } from './types/footerConfig';
+import { NavbarConfig } from './types/navbarConfig';
+import { PageConfig } from './types/pagesConfig';
 
 const coreReduxActions = {
   appActions,
@@ -38,4 +43,9 @@ export {
   useAuthTokenCheck,
   PreventAccidentalNavigationPrompt,
   InternalNavigator,
+  type AppConfig,
+  type HeaderConfig,
+  type FooterConfig,
+  type NavbarConfig,
+  type PageConfig
 };
