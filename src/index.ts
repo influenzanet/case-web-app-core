@@ -16,7 +16,7 @@ import { AppConfig } from "./types/appConfig";
 import { HeaderConfig } from './types/headerConfig';
 import { FooterConfig } from './types/footerConfig';
 import { NavbarConfig } from './types/navbarConfig';
-import { PageConfig } from './types/pagesConfig';
+import { PageConfig, PagesConfig } from './types/pagesConfig';
 
 const coreReduxActions = {
   appActions,
@@ -47,5 +47,6 @@ export {
   type HeaderConfig,
   type FooterConfig,
   type NavbarConfig,
-  type PageConfig
+  type PageConfig,
+  type PagesConfig
 };
