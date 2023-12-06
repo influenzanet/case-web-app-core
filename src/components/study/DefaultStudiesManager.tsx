@@ -65,9 +65,9 @@ const DefaultStudiesManager: React.FC = () => {
               await dispatch(enterStudyThunk(req));
             })
           );
-
-          await dispatch(initializeActiveSurveysThunk());
         }
+
+        await dispatch(initializeActiveSurveysThunk());
       } catch {
         /* empty */
       }
