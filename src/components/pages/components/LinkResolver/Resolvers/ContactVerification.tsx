@@ -7,7 +7,6 @@ import { DefaultRoutes } from "../../../../../types/routing";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../../store/rootReducer";
 import { useUrlQuery } from "../../../../../hooks/useUrlQuery";
-import { LinkResolverPaths } from "../LinkResolver";
 import { useHistory } from "react-router-dom";
 import { getUserReq, verifyContactReq } from "../../../../../api/userAPI";
 import { autoValidateTemporaryTokenReq } from "../../../../../api/authAPI";
@@ -24,6 +23,7 @@ import {
   TitleBar,
 } from "@influenzanet/case-web-ui";
 import { enterStudyThunk } from "../../../../../store/thunks/studiesThunks";
+import { LinkResolverPaths } from "./LinkResolverConst";
 
 interface ContactVerificationProps {
   defaultRoutes: DefaultRoutes;

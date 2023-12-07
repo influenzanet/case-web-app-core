@@ -26,7 +26,6 @@ import LoginRequiredDialog from "./Dialogs/LoginRequiredDialog";
 import PreventAccidentalNavigationPrompt from "../../../misc/PreventAccidentalNavigationPrompt";
 import { useHistory, useParams } from "react-router-dom";
 import { dialogActions } from "../../../../store/dialogSlice";
-import { studyAPI } from "../../../..";
 import { SurveyAndContextMsg } from "../../../../api/types/studyAPI";
 import { RootState } from "../../../../store/rootReducer";
 import { appActions } from "../../../../store/appSlice";
@@ -34,6 +33,14 @@ import { CustomSurveyResponseComponent } from "@influenzanet/case-web-ui/build/c
 import { useUrlQuery } from "../../../../hooks/useUrlQuery";
 import clsx from "clsx";
 import { initializeActiveSurveysThunk } from "../../../../store/thunks/studiesThunks";
+import {
+  assumeTempParticipantReq,
+  getAssignedSurveyRequest,
+  getSurveyWithoutLoginReq,
+  registerTempParticipantReq,
+  submitSurveyResponseForTempParticipantRequest,
+  submitSurveyResponseRequest,
+} from "../../../../api/studyAPI";
 
 interface SurveyPageProps {
   customResponseComponents?: CustomSurveyResponseComponent[];
@@ -249,7 +256,7 @@ const SurveyPage: React.FC<SurveyPageProps> = (props) => {
           return;
         }
         survey = (
-          await studyAPI.getAssignedSurveyRequest({
+          await getAssignedSurveyRequest({
             studyKey: studyKey,
             surveyKey: surveyKey,
             profileId: selectedProfileID,
@@ -257,7 +264,7 @@ const SurveyPage: React.FC<SurveyPageProps> = (props) => {
         ).data;
       } else {
         survey = (
-          await studyAPI.getSurveyWithoutLoginReq({
+          await getSurveyWithoutLoginReq({
             instance: instanceID,
             study: studyKey,
             survey: surveyKey,
@@ -288,7 +295,7 @@ const SurveyPage: React.FC<SurveyPageProps> = (props) => {
 
   const registerTempParticipant = async () => {
     try {
-      const resp = await studyAPI.registerTempParticipantReq({
+      const resp = await registerTempParticipantReq({
         instance: instanceID,
         study: studyKey,
       });
@@ -322,7 +329,7 @@ const SurveyPage: React.FC<SurveyPageProps> = (props) => {
       return;
     }
     try {
-      await studyAPI.assumeTempParticipantReq({
+      await assumeTempParticipantReq({
         studyKey: studyKey,
         profileId: profileId,
         temporaryParticipantId: tempParticipant.temporaryParticipantId,
@@ -361,16 +368,13 @@ const SurveyPage: React.FC<SurveyPageProps> = (props) => {
         currentTempParticipant = await registerTempParticipant();
       }
 
-      const resp = await studyAPI.submitSurveyResponseForTempParticipantRequest(
-        {
-          studyKey: studyKey,
-          response: response,
-          instanceId: instanceID,
-          temporaryParticipantId:
-            currentTempParticipant?.temporaryParticipantId,
-          temporaryParticipantTimestamp: currentTempParticipant?.timestamp,
-        }
-      );
+      const resp = await submitSurveyResponseForTempParticipantRequest({
+        studyKey: studyKey,
+        response: response,
+        instanceId: instanceID,
+        temporaryParticipantId: currentTempParticipant?.temporaryParticipantId,
+        temporaryParticipantTimestamp: currentTempParticipant?.timestamp,
+      });
       getNextAction(resp);
     } catch (e) {
       console.error(e);
@@ -381,7 +385,7 @@ const SurveyPage: React.FC<SurveyPageProps> = (props) => {
   const submitResponsesWithLogin = async (response: SurveyResponse) => {
     setContentState("submitting");
     try {
-      const resp = await studyAPI.submitSurveyResponseRequest({
+      const resp = await submitSurveyResponseRequest({
         studyKey: studyKey,
         profileId: selectedProfileID,
         response: response,
