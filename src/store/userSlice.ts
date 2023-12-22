@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { User, ContactPreferences } from "../api/types/user";
 import { TokenResponse } from "../api/types/authAPI";
-import { merge, union } from "lodash-es";
+import { isEqual, merge, union } from "lodash-es";
 import {
   initializeActiveSurveys,
   initializeUserStudies,
@@ -58,6 +58,7 @@ const userSlice = createSlice({
       state.currentUser.account.preferredLanguage =
         action.payload.preferredLanguage;
     },
+
     setUser: (state, action: PayloadAction<User>) => {
       state.currentUser = {
         ...action.payload,
@@ -66,7 +67,7 @@ const userSlice = createSlice({
             (p) => p.id === profile.id
           );
 
-          return merge({}, existingProfile ?? {}, profile);
+          return merge(existingProfile ?? {}, profile);
         }),
       };
     },
@@ -93,27 +94,14 @@ const userSlice = createSlice({
     builder.addCase(
       initializeActiveSurveys,
       (state, action: PayloadAction<ProfilesSurveysMap>) => {
-        const updatedProfiles = state.currentUser.profiles.map((profile) => {
-          const surveysForProfile = action.payload[profile.id] || [];
-          profile.activeSurveys = surveysForProfile;
-          return profile;
+        state.currentUser.profiles.forEach((profile) => {
+          const newSurveys = action.payload[profile.id] || [];
+          if (!isEqual(profile.activeSurveys, newSurveys)) {
+            profile.activeSurveys = newSurveys;
+          }
         });
-
-        state.currentUser.profiles = updatedProfiles;
       }
     );
-
-    builder.addCase(enterStudy, (state, action) => {
-      const { profileId, studyKey } = action.payload;
-
-      const updatedProfiles = state.currentUser.profiles.map((profile) =>
-        profile.id === profileId
-          ? { ...profile, studies: union(profile.studies, [studyKey]) }
-          : profile
-      );
-
-      state.currentUser.profiles = updatedProfiles;
-    });
   },
 });
 

@@ -1,6 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { SurveyInfo } from "../api/types/studyAPI";
-import { isEqual } from "lodash-es";
 import { userActions } from "./userSlice";
 import {
   initializeActiveSurveyInfos,
@@ -29,16 +28,12 @@ const studiesSlice = createSlice({
     builder.addCase(
       initializeActiveSurveyInfos,
       (state, action: PayloadAction<SurveyInfo[]>) => {
-        if (!isEqual(state.activeSurveyInfos, action.payload)) {
-          state.activeSurveyInfos = action.payload;
-        }
+        state.activeSurveyInfos = action.payload;
       }
     );
 
     builder.addCase(initializeDefaultStudies, (state, action) => {
-      if (!isEqual(state.defaultStudies, action.payload)) {
-        state.defaultStudies = action.payload;
-      }
+      state.defaultStudies = action.payload;
     });
   },
 });

@@ -16,6 +16,7 @@ import {
   ProfilesSurveysMap,
   initializeActiveSurveys,
 } from "../actions/userActions";
+import { RootState } from "../rootReducer";
 
 export const initializeDefaultStudiesThunk = createAsyncThunk<string[]>(
   initializeDefaultStudies.type,
@@ -109,6 +110,39 @@ export const initializeActiveSurveysThunk = createAsyncThunk(
     dispatch(initializeActiveSurveyInfos(response.data.surveyInfos || []));
   }
 );
+
+export const enterDefaultStudiesThunk = createAsyncThunk<
+  void,
+  undefined,
+  { state: RootState }
+>("studies/enterDefaultStudies", async (_, { dispatch, getState }) => {
+  const state = getState();
+  const defaultStudies = state.studies.defaultStudies;
+
+  const profiles = state.user.currentUser.profiles;
+  if (!profiles || profiles.length === 0) {
+    throw new Error("No profiles found for the current user");
+  }
+
+  const promises = [];
+
+  for (const profile of profiles) {
+    const profileId = profile.id;
+    const joinedStudies = new Set(profile.studies);
+
+    for (const studyKey of defaultStudies) {
+      if (!joinedStudies.has(studyKey)) {
+        const enterStudyRequest: EnterStudyRequest = {
+          profileId,
+          studyKey,
+        };
+        promises.push(dispatch(enterStudyThunk(enterStudyRequest)));
+      }
+    }
+  }
+
+  await Promise.all(promises);
+});
 
 export const {
   pending: initializeDefaultStudiesPending,

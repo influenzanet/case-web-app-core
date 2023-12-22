@@ -22,7 +22,6 @@ import {
   AlertBox,
   TitleBar,
 } from "@influenzanet/case-web-ui";
-import { enterStudyThunk } from "../../../../../store/thunks/studiesThunks";
 import { LinkResolverPaths } from "./LinkResolverConst";
 
 interface ContactVerificationProps {
@@ -48,10 +47,6 @@ const ContactVerification: React.FC<ContactVerificationProps> = (props) => {
   );
   const persistState = useSelector(
     (state: RootState) => state.app.persistState
-  );
-
-  const defaultStudies = useSelector(
-    (state: RootState) => state.studies.defaultStudies
   );
 
   const [error, setError] = useState("");
@@ -85,17 +80,6 @@ const ContactVerification: React.FC<ContactVerificationProps> = (props) => {
             const userResponse = await getUserReq();
             if (userResponse.data) {
               dispatch(userActions.setUser(response.data));
-              // if the user registration is confirmed, enter the default studies
-              if (defaultStudies.length > 0) {
-                defaultStudies.forEach((studyKey) => {
-                  dispatch(
-                    enterStudyThunk({
-                      profileId: userResponse.data.profiles[0].id,
-                      studyKey,
-                    })
-                  );
-                });
-              }
             }
           }
         } else {

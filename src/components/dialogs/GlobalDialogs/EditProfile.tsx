@@ -55,18 +55,23 @@ const EditProfile: React.FC<EditProfileProps> = (props) => {
       await saveProfileReq(profile);
       await renewToken();
       const user = (await getUserReq()).data;
-      // if the profile creation is successful, enter the default studies
-      if (defaultStudies.length > 0) {
-        defaultStudies.forEach((studyKey) => {
-          dispatch(
-            enterStudyThunk({
-              profileId: profile.id,
-              studyKey,
-            })
-          );
-        });
-      }
       dispatch(userActions.setUser(user));
+      // if the profile creation is successful, enter the default studies
+      const profileId = user.profiles.find(
+        (p) => p.alias === profile.alias
+      )?.id;
+      if (defaultStudies.length > 0 && profileId) {
+        await Promise.all(
+          defaultStudies.map((studyKey) => {
+            dispatch(
+              enterStudyThunk({
+                profileId,
+                studyKey,
+              })
+            );
+          })
+        );
+      }
       setLoading(false);
       close();
     } catch (e) {
@@ -87,6 +92,7 @@ const EditProfile: React.FC<EditProfileProps> = (props) => {
       consentConfirmedAt: 0,
       mainProfile: false,
       studies: [],
+
       activeSurveys: [],
     });
     props.onClose();

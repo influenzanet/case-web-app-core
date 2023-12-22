@@ -1,10 +1,9 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store/rootReducer";
-import { Action, ThunkDispatch, unwrapResult } from "@reduxjs/toolkit";
+import { Action, ThunkDispatch } from "@reduxjs/toolkit";
 import {
-  EnterStudyRequest,
-  enterStudyThunk,
+  enterDefaultStudiesThunk,
   initializeActiveSurveysThunk,
   initializeDefaultStudiesThunk,
 } from "../../store/thunks/studiesThunks";
@@ -23,54 +22,18 @@ const DefaultStudiesManager: React.FC = () => {
         return;
       }
 
-      try {
-        const defaultStudies = unwrapResult(
-          await dispatch(initializeDefaultStudiesThunk())
-        );
-        const profilesStudiesMap = unwrapResult(
-          await dispatch(initializeUserStudiesThunk())
-        );
+      await dispatch(initializeDefaultStudiesThunk());
 
-        /**
-         * Backward compatibility with the functionality once present
-         * in the SurveyList component
-         *
-         * We check whether all the default studies are assigned
-         * to all profiles and if not, we try entering the study
-         */
+      await dispatch(initializeUserStudiesThunk());
 
-        const enterStudyReqs: EnterStudyRequest[] = [];
+      /**
+       * This is for backward compatibility with a functionality
+       * once present in the SurveyList component, and works
+       * as a sort of poor man retry logic for joining the default studies.
+       */
+      await dispatch(enterDefaultStudiesThunk());
 
-        Object.keys(profilesStudiesMap).forEach((profileId) => {
-          const profileStudies = profilesStudiesMap[profileId];
-
-          if (!profileStudies) {
-            return;
-          }
-
-          const missingDefaultStudies = defaultStudies.filter(
-            (study) => !profileStudies.includes(study)
-          );
-
-          if (missingDefaultStudies.length > 0) {
-            missingDefaultStudies.forEach((studyKey) => {
-              enterStudyReqs.push({ profileId, studyKey });
-            });
-          }
-        });
-
-        if (enterStudyReqs.length > 0) {
-          await Promise.all(
-            enterStudyReqs.map(async (req) => {
-              await dispatch(enterStudyThunk(req));
-            })
-          );
-        }
-
-        await dispatch(initializeActiveSurveysThunk());
-      } catch {
-        /* empty */
-      }
+      await dispatch(initializeActiveSurveysThunk());
     };
 
     initialize();
