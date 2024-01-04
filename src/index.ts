@@ -10,7 +10,7 @@ import { useAuthTokenCheck } from "./hooks/useAuthTokenCheck";
 import PreventAccidentalNavigationPrompt from "./components/misc/PreventAccidentalNavigationPrompt";
 import InternalNavigator from "./components/misc/InternalNavigator";
 import { signupActions } from "./store/signupActions";
-import { enterStudyThunk } from "./store/thunks/studiesThunks";
+import { enterStudiesThunk } from "./store/thunks/studiesThunks";
 import { studiesActions } from "./store/studiesSlice";
 import { AppConfig } from "./types/appConfig";
 import { HeaderConfig } from './types/headerConfig';
@@ -27,7 +27,7 @@ const coreReduxActions = {
 };
 
 const coreReduxThunks = {
-  enterStudyThunk,
+  enterStudiesThunk,
 };
 
 export {

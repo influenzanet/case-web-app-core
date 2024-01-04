@@ -10,9 +10,11 @@ export const initializeActiveSurveyInfos = createAction<SurveyInfo[]>(
   "studies/activeSurveyInfos/initialize"
 );
 
-export type EnterStudyPayload = {
+export type EnterStudiesPayload = {
   profileId: string;
-  studyKey: string;
+  studyKeys: string[];
 };
 
-export const enterStudy = createAction<EnterStudyPayload>("studies/enterStudy");
+export const enterStudies = createAction<EnterStudiesPayload>(
+  "studies/enterStudies"
+);

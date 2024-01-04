@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { renewToken } from "../../../api/instances/authenticatedApi";
-import { Profile } from "../../../api/types/user";
+import { Profile, User } from "../../../api/types/user";
 import { getUserReq, saveProfileReq } from "../../../api/userAPI";
 import { getErrorMsg } from "../../../api/utils";
 import { userActions } from "../../../store/userSlice";
@@ -17,7 +17,7 @@ import {
   defaultDialogPaddingXClass,
 } from "@influenzanet/case-web-ui";
 import { RootState } from "../../../store/rootReducer";
-import { enterStudyThunk } from "../../../store/thunks/studiesThunks";
+import { enterStudiesThunk } from "../../../store/thunks/studiesThunks";
 
 interface EditProfileProps {
   open: boolean;
@@ -49,6 +49,12 @@ const EditProfile: React.FC<EditProfileProps> = (props) => {
     });
   }, [props.selectedProfile]);
 
+  const enterDefaultStudies = async (profileId: string | undefined) => {
+    if (defaultStudies.length > 0 && profileId) {
+      dispatch(enterStudiesThunk({ profileId, studyKeys: defaultStudies }));
+    }
+  };
+
   const saveProfile = async () => {
     setLoading(true);
     try {
@@ -56,22 +62,13 @@ const EditProfile: React.FC<EditProfileProps> = (props) => {
       await renewToken();
       const user = (await getUserReq()).data;
       dispatch(userActions.setUser(user));
+
       // if the profile creation is successful, enter the default studies
       const profileId = user.profiles.find(
         (p) => p.alias === profile.alias
       )?.id;
-      if (defaultStudies.length > 0 && profileId) {
-        await Promise.all(
-          defaultStudies.map((studyKey) => {
-            dispatch(
-              enterStudyThunk({
-                profileId,
-                studyKey,
-              })
-            );
-          })
-        );
-      }
+      await enterDefaultStudies(profileId);
+
       setLoading(false);
       close();
     } catch (e) {

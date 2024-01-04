@@ -8,7 +8,7 @@ import {
   ProfilesSurveysMap,
   ProfileStudiesMap,
 } from "./actions/userActions";
-import { enterStudy } from "./actions/studiesActions";
+import { enterStudies, EnterStudiesPayload } from "./actions/studiesActions";
 
 export interface UserState {
   currentUser: User;
@@ -67,7 +67,11 @@ const userSlice = createSlice({
             (p) => p.id === profile.id
           );
 
-          return merge(existingProfile ?? {}, profile);
+          return merge(
+            // here we need to initialize the default properties, should actually initialize them all
+            existingProfile ?? { studies: [], activeSurveys: [] },
+            profile
+          );
         }),
       };
     },
@@ -100,6 +104,24 @@ const userSlice = createSlice({
             profile.activeSurveys = newSurveys;
           }
         });
+      }
+    );
+
+    builder.addCase(
+      enterStudies,
+      (state, action: PayloadAction<EnterStudiesPayload>) => {
+        state.currentUser.profiles = state.currentUser.profiles.map(
+          (profile) => {
+            if (profile.id !== action.payload.profileId) {
+              return profile;
+            }
+
+            return {
+              ...profile,
+              studies: union(action.payload.studyKeys, profile.studies),
+            };
+          }
+        );
       }
     );
   },

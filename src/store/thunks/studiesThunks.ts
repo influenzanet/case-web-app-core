@@ -7,8 +7,8 @@ import {
   getAllAvailableStudiesReq,
 } from "../../api/studyAPI";
 import {
-  EnterStudyPayload,
-  enterStudy,
+  EnterStudiesPayload,
+  enterStudies,
   initializeActiveSurveyInfos,
   initializeDefaultStudies,
 } from "../actions/studiesActions";
@@ -33,42 +33,46 @@ export const initializeDefaultStudiesThunk = createAsyncThunk<string[]>(
   }
 );
 
-export type EnterStudyRequest = {
+export type EnterStudiesRequest = {
   profileId: string;
-  studyKey: string;
+  studyKeys: string[];
 };
 
-export const enterStudyThunk = createAsyncThunk<
-  EnterStudyPayload,
-  EnterStudyRequest
->("studies/enterStudy", async ({ profileId, studyKey }, { dispatch }) => {
-  await enterStudyReq(studyKey, profileId).catch((error) => {
-    const errorJson = error.toJSON();
+export const enterStudiesThunk = createAsyncThunk<
+  EnterStudiesPayload,
+  EnterStudiesRequest
+>(enterStudies.type, async ({ profileId, studyKeys }, { dispatch }) => {
+  const results = await Promise.allSettled(
+    studyKeys.map((studyKey) => enterStudyReq(studyKey, profileId))
+  );
 
-    /**
-     * unfortunately the API returns 500 BAD RESPONSE
-     * if the user is already in the study.
-     * In this case tho, we want to treat the request
-     * as if it was successful in order to cover some edge
-     * cases where the request succeeded
-     * but then the user navigated away from the page
-     * before the reducer had the chance to set the state.
-     * If the user then come back and this thunk is dispatched
-     * again, the state would then be set correctly
-     *
-     */
+  const succeeded = results.reduce((acc: string[], result, index) => {
     if (
-      errorJson.response &&
-      errorJson.response.data.error !==
-        "participant already exists for this study"
+      result.status === "fulfilled" ||
+      /**
+       * unfortunately the API returns 500 BAD RESPONSE
+       * if the user is already in the study.
+       * In this case tho, we want to treat the request
+       * as if it was successful in order to cover some edge
+       * cases where the request succeeded
+       * but then the user navigated away from the page
+       * before the reducer had the chance to set the state.
+       * If the user then come back and this thunk is dispatched
+       * again, the state would then be set correctly
+       *
+       */
+      (result.status === "rejected" &&
+        result.reason.toJSON().response.data.error ===
+          "participant already exists for this study")
     ) {
-      throw error;
+      acc.push(studyKeys[index]);
     }
-  });
+    return acc;
+  }, []);
 
-  const payload = { profileId, studyKey };
+  const payload = { profileId, studyKeys: succeeded };
 
-  dispatch(enterStudy(payload));
+  dispatch(enterStudies(payload));
 
   await dispatch(initializeActiveSurveysThunk());
 
@@ -124,24 +128,18 @@ export const enterDefaultStudiesThunk = createAsyncThunk<
     throw new Error("No profiles found for the current user");
   }
 
-  const promises = [];
+  const enterStudiesRequests = profiles
+    .map((profile) => ({
+      profileId: profile.id,
+      studyKeys: defaultStudies.filter(
+        (studyKey) => !profile.studies?.includes(studyKey)
+      ),
+    }))
+    .filter((request) => request.studyKeys.length > 0);
 
-  for (const profile of profiles) {
-    const profileId = profile.id;
-    const joinedStudies = new Set(profile.studies);
-
-    for (const studyKey of defaultStudies) {
-      if (!joinedStudies.has(studyKey)) {
-        const enterStudyRequest: EnterStudyRequest = {
-          profileId,
-          studyKey,
-        };
-        promises.push(dispatch(enterStudyThunk(enterStudyRequest)));
-      }
-    }
-  }
-
-  await Promise.all(promises);
+  await Promise.allSettled(
+    enterStudiesRequests.map((request) => dispatch(enterStudiesThunk(request)))
+  );
 });
 
 export const {
@@ -154,7 +152,7 @@ export const {
   pending: enterStudyPending,
   fulfilled: enterStudyFulfilled,
   rejected: enterStudyRejected,
-} = enterStudyThunk;
+} = enterStudiesThunk;
 
 export const {
   pending: initializeActiveSurveysPending,
