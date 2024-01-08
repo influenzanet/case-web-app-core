@@ -2,12 +2,28 @@
 
 ## 2.7.5 - staging
 
+## Bugfix
+
+- corrected multiple instances of circular reference
+
+## Added
+
+- Thunks available to be used in your application
+  - `enterStudiesThunk` : used to simplify the assignment of a profile to new studies.
+    It also make sure to fetch new surveys associated to the newly assigned studies.
+
 ## Changed
 
 - SurveyList component rework
+
   - profiles are no longer subscribed to default studies inside this component
   - active surveys are now saved in the redux store so it's easy to re render the component
     from your application in case the user is assigned new surveys or studies
+
+- DefaultStudiesManager component
+
+  - initialize store state related to studies and surveys
+  - make sure default studies are assigned to all profiles (backward compatibility)
 
 ## 2.7.4 - 2023-11-20
 
@@ -15,7 +31,7 @@
 
 - on logout, the local storage is emptied and the persistState flag is set to false, preventing the app to save
   an empty state. This fixed an incorrect behavior during the sign up process for users that previously unsubscribed
-  from the platform
+  from the platform and then subscribed again
 
 ## 2.7.3 - 2023-10-25
 
