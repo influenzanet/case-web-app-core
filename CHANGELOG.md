@@ -9,8 +9,13 @@
 ## Added
 
 - Thunks available to be used in your application
+
   - `enterStudiesThunk` : used to simplify the assignment of a profile to new studies.
     It also make sure to fetch new surveys associated to the newly assigned studies.
+
+- `getReportsForUser` : now support the `limit` parameter. NOTE: it only properly works with versions of the
+  study service supporting the parameter server side, otherwise it gets ignored and all results are returned.
+  Check study service changelog to see which version supports this new parameter
 
 ## Changed
 
