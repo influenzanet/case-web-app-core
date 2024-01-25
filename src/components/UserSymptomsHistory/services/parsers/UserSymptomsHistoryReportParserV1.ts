@@ -2,13 +2,14 @@ import { ImageBrowserViewModel } from "../../../ImageBrowser/models/ImageBrowser
 import IUserSymptomsHistoryReportParser from "../../models/IUserSymptomsHistoryReportParser";
 import { SymptomsResult } from "../../models/SymptomsResult";
 import { ParsedReport } from "../../../../utils/Reports/models/ReportModels";
+import { SymptomsConfig } from "../config/SymptomsConfig";
 
 class UserSymptomsHistoryReportParserV1
   implements IUserSymptomsHistoryReportParser
 {
   version = "v1";
 
-  parse = (report: ParsedReport, config: any) => {
+  parse = (report: ParsedReport, config: SymptomsConfig) => {
     const viewModel: ImageBrowserViewModel = {
       date: report.timestamp,
       imageUrl: this.reportDataToImage(
@@ -20,7 +21,7 @@ class UserSymptomsHistoryReportParserV1
     return viewModel;
   };
 
-  private reportDataToImage(data: SymptomsResult, config: any) {
+  private reportDataToImage(data: SymptomsResult, config: SymptomsConfig) {
     const genderConfig = config[data.gender];
 
     for (const symptoms of genderConfig) {
@@ -31,12 +32,15 @@ class UserSymptomsHistoryReportParserV1
       }
     }
 
-    const defaultSymptom = genderConfig.find((element: any) =>
-      Object.prototype.hasOwnProperty.call(element, "default")
-    );
-    if (defaultSymptom) {
-      return defaultSymptom["default"];
+    const defaultSymptom = genderConfig.find((element) => "default" in element);
+
+    if (!defaultSymptom) {
+      throw new Error(
+        "No default symptom found. This should never happen since we have a runtime check"
+      );
     }
+
+    return defaultSymptom.default;
   }
 }
 

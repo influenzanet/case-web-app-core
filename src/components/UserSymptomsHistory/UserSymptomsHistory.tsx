@@ -6,6 +6,8 @@ import ImageBrowser from "../ImageBrowser/ImageBrowser";
 import { ImageBrowserDataReader } from "../ImageBrowser/services/ImageBrowserDataReader";
 import { UserSymptomsHistoryReportReader } from "./services/UserSymptomsHistoryReportReader";
 import { LoadingPlaceholder } from "@influenzanet/case-web-ui";
+import { Profile } from "../../api/types/user";
+import { RootState } from "../../store/rootReducer";
 
 export type UserSymptomsHistoryDataReader = {
   init: (studyId: string, profileId: string) => Promise<ImageBrowserDataReader>;
@@ -15,7 +17,8 @@ export type UserSymptomsHistoryProps = {
   className?: string;
   studyId: string;
   DataReader?: UserSymptomsHistoryDataReader;
-  // TODO the type should be exported from case web app core
+  // TODO this should be a proper type but it's definition is so widespread everywhere
+  // that refactoring would take ages
   dateLocales?: Array<{ code: string; locale: any; format: string }>;
 };
 
@@ -31,8 +34,8 @@ const UserSymptomsHistory: React.FC<UserSymptomsHistoryProps> = (props) => {
 const UserSymptomsHistoryImpl: React.FC<UserSymptomsHistoryProps> = (props) => {
   const DataReaderType = props.DataReader ?? UserSymptomsHistoryReportReader;
 
-  const profiles: Array<any> = useSelector(
-    (state: any) => state.user.currentUser.profiles
+  const profiles: Profile[] = useSelector(
+    (state: RootState) => state.user.currentUser.profiles
   );
   const mainProfileId: string = profiles.filter(
     (profile) => profile.mainProfile

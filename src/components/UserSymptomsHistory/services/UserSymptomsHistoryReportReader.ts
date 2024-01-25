@@ -6,11 +6,15 @@ import defaultConfig from "./config/symptomsConfig.json";
 import { Report } from "../../../api/types/studyAPI";
 import { ParsedReport } from "../../../utils/Reports/models/ReportModels";
 import { getReportsForUser } from "../../../api/studyAPI";
+import {
+  SymptomsConfig,
+  isValidUserSymptomsHistoryConfig,
+} from "./config/SymptomsConfig";
 
 type ReportRequestParameters = Parameters<typeof getReportsForUser>;
 
 export class UserSymptomsHistoryReportReader extends ImageBrowserDataReader {
-  static config: any = defaultConfig;
+  static config: SymptomsConfig = defaultConfig as SymptomsConfig;
   studyId: string;
   profileId: string;
   startingDate: number | undefined = undefined;
@@ -23,13 +27,26 @@ export class UserSymptomsHistoryReportReader extends ImageBrowserDataReader {
   }
 
   static init = async (studyId: string, profileId: string) => {
-    fetch("/assets/configs/userSymptoms/config.json").then((response) => {
-      if (!response.ok) {
-        return;
-      }
+    try {
+      const response = await fetch("/assets/configs/userSymptoms/config.json");
 
-      UserSymptomsHistoryReportReader.config = response.json();
-    });
+      if (response.ok && response.status >= 200 && response.status < 300) {
+        const jsonData = await response.json();
+
+        if (isValidUserSymptomsHistoryConfig(jsonData)) {
+          UserSymptomsHistoryReportReader.config = jsonData;
+        } else {
+          console.error(
+            "UserSymptomsHistoryReportReader: Invalid configuration format, using the default configuration"
+          );
+        }
+      }
+    } catch (error) {
+      console.error(
+        "UserSymptomsHistoryReportReader: Error fetching or processing configuration, using the default configuration:",
+        error
+      );
+    }
 
     return new UserSymptomsHistoryReportReader(studyId, profileId);
   };
@@ -70,8 +87,11 @@ export class UserSymptomsHistoryReportReader extends ImageBrowserDataReader {
       }
 
       this.hasMoreData = reportCount === count;
-    } catch {
-      // there's nothing we can do since we don't have a logger
+    } catch (error) {
+      console.error(
+        "UserSymptomsHistoryReportReader: error fetching reports: ",
+        error
+      );
     }
 
     return symptomsResults;
