@@ -33,7 +33,7 @@ const config = {
       tsconfig: "tsconfig.json",
       useTsconfigDeclarationDir: true,
     }),
-    postcss({ modules: true }),
+    postcss({ autoModules: true }),
     copy({
       targets: [{ src: "src/scss/*", dest: "build/scss" }],
     }),
