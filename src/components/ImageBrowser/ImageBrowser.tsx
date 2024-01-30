@@ -6,13 +6,14 @@ import "./ImageBrowser.scss";
 
 import { format as formatDate } from "date-fns";
 import { useTranslation } from "react-i18next";
+import { t } from "i18next";
 
 export interface ImageBrowserProps {
   className?: string;
   enableAnimations?: boolean;
   dataReader: ImageBrowserDataReader;
-  // TODO the type should be exported from case web app core
   dateLocales?: Array<{ code: string; locale: any; format: string }>;
+  translationNamespace?: string;
 }
 
 const ImageBrowser: React.FC<ImageBrowserProps> = (props) => {
@@ -111,7 +112,7 @@ const ImageBrowser: React.FC<ImageBrowserProps> = (props) => {
     >
       {images.length === 0 ? (
         <>
-          <h5>No reports</h5>
+          <h5>{t(`${props.translationNamespace ?? "imageBrowser"}.noData`)}</h5>
         </>
       ) : (
         <>
