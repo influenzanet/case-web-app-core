@@ -6,6 +6,7 @@ import "./ImageBrowser.scss";
 
 import { format as formatDate } from "date-fns";
 import { useTranslation } from "react-i18next";
+import { LoadingPlaceholder } from "@influenzanet/case-web-ui";
 
 export interface ImageBrowserProps {
   className?: string;
@@ -24,6 +25,7 @@ const ImageBrowser: React.FC<ImageBrowserProps> = (props) => {
   const [imgIndex, setImgIndex] = useState(index);
 
   const [images, setImages] = useState(new Array<ImageBrowserViewModel>());
+  const [isLoading, setIsLoading] = useState(false);
 
   const transitionDivRef = useRef<HTMLDivElement>(null);
 
@@ -48,16 +50,31 @@ const ImageBrowser: React.FC<ImageBrowserProps> = (props) => {
 
   useEffect(() => {
     let isMounted = true;
-
-    // handle loading
+    let timer: ReturnType<typeof setTimeout>;
 
     if (index < images.length - 2) return;
 
     async function retrieveData() {
-      const data = await props.dataReader.next(5);
+      timer = setTimeout(() => {
+        if (isMounted) {
+          setIsLoading(true);
+        }
+      }, 300);
 
-      if (isMounted && data.length > 0) {
-        setImages(images.concat(data));
+      try {
+        const data = await props.dataReader.next(5);
+
+        clearTimeout(timer);
+
+        if (isMounted && data.length > 0) {
+          setImages(images.concat(data));
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
     }
 
@@ -65,6 +82,7 @@ const ImageBrowser: React.FC<ImageBrowserProps> = (props) => {
 
     return () => {
       isMounted = false;
+      clearTimeout(timer);
     };
   }, [props.dataReader, index, images]);
 
@@ -88,7 +106,7 @@ const ImageBrowser: React.FC<ImageBrowserProps> = (props) => {
     // https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Animations/Tips#run_an_animation_again
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        transitionDivRef.current!.classList.add(transitionClass);
+        transitionDivRef.current?.classList.add(transitionClass);
         return true;
       });
       return true;
@@ -111,7 +129,9 @@ const ImageBrowser: React.FC<ImageBrowserProps> = (props) => {
     <div
       className={`symptoms-history ${props.className} d-flex flex-column flex-grow-1 align-items-center p-2`}
     >
-      {images.length === 0 ? (
+      {isLoading ? (
+        <LoadingPlaceholder color="white" minHeight={150} />
+      ) : images.length === 0 ? (
         <>
           <h5>{t("noData")}</h5>
         </>
@@ -135,14 +155,14 @@ const ImageBrowser: React.FC<ImageBrowserProps> = (props) => {
                 <div className="image-slot-small position-relative">
                   {imgIndex > 0 && (
                     <img
-                      src={images[imgIndex - 1]!.imageUrl}
+                      src={images[imgIndex - 1]?.imageUrl}
                       className="img-thumbnail"
                       id="prev-week"
                     ></img>
                   )}
                   {imgIndex > 1 && (
                     <img
-                      src={images[imgIndex - 2]!.imageUrl}
+                      src={images[imgIndex - 2]?.imageUrl}
                       className="img-thumbnail"
                       id="new-prev-week"
                     ></img>
@@ -153,7 +173,7 @@ const ImageBrowser: React.FC<ImageBrowserProps> = (props) => {
               <div className="image-slot">
                 <div className="position-relative">
                   <img
-                    src={images[imgIndex]!.imageUrl}
+                    src={images[imgIndex]?.imageUrl}
                     className="img-thumbnail"
                     id="current-week"
                   ></img>
@@ -164,14 +184,14 @@ const ImageBrowser: React.FC<ImageBrowserProps> = (props) => {
                 <div className="image-slot-small position-relative">
                   {images.length - imgIndex > 1 && (
                     <img
-                      src={images[imgIndex + 1]!.imageUrl}
+                      src={images[imgIndex + 1]?.imageUrl}
                       className="img-thumbnail"
                       id="next-week"
                     ></img>
                   )}
                   {images.length - imgIndex > 2 && (
                     <img
-                      src={images[imgIndex + 2]!.imageUrl}
+                      src={images[imgIndex + 2]?.imageUrl}
                       className="img-thumbnail"
                       id="new-next-week"
                     ></img>

@@ -84,7 +84,7 @@ const UserSymptomsHistoryImpl: React.FC<UserSymptomsHistoryProps> = (props) => {
   const errorContent = null;
 
   const loadingContent = (
-    <LoadingPlaceholder color="secondary" minHeight={300} />
+    <LoadingPlaceholder color="secondary" minHeight={200} />
   );
 
   const userProfileContent = (
