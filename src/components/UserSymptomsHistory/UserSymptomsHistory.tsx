@@ -17,6 +17,7 @@ export type UserSymptomsHistoryProps = {
   className?: string;
   studyId: string;
   DataReader?: UserSymptomsHistoryDataReader;
+  translationNamespace?: string;
   // TODO this should be a proper type but it's definition is so widespread everywhere
   // that refactoring would take ages
   dateLocales?: Array<{ code: string; locale: any; format: string }>;
@@ -101,6 +102,7 @@ const UserSymptomsHistoryImpl: React.FC<UserSymptomsHistoryProps> = (props) => {
           dataReader={dataReader}
           key={selectedProfileId}
           dateLocales={props.dateLocales}
+          translationNamespace={props.translationNamespace}
         />
       )}
     </div>

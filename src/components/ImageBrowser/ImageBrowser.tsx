@@ -6,7 +6,6 @@ import "./ImageBrowser.scss";
 
 import { format as formatDate } from "date-fns";
 import { useTranslation } from "react-i18next";
-import { t } from "i18next";
 
 export interface ImageBrowserProps {
   className?: string;
@@ -17,12 +16,14 @@ export interface ImageBrowserProps {
 }
 
 const ImageBrowser: React.FC<ImageBrowserProps> = (props) => {
+  const { t, i18n } = useTranslation([
+    `${props.translationNamespace ?? "imageBrowser"}`,
+  ]);
+
   const [index, setIndex] = useState(0);
   const [imgIndex, setImgIndex] = useState(index);
 
   const [images, setImages] = useState(new Array<ImageBrowserViewModel>());
-
-  const { i18n } = useTranslation();
 
   const transitionDivRef = useRef<HTMLDivElement>(null);
 
@@ -112,7 +113,7 @@ const ImageBrowser: React.FC<ImageBrowserProps> = (props) => {
     >
       {images.length === 0 ? (
         <>
-          <h5>{t(`${props.translationNamespace ?? "imageBrowser"}.noData`)}</h5>
+          <h5>{t("noData")}</h5>
         </>
       ) : (
         <>
