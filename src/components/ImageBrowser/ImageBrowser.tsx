@@ -135,7 +135,7 @@ const ImageBrowser: React.FC<ImageBrowserProps> = (props) => {
         <LoadingPlaceholder color="white" minHeight={150} />
       ) : images.length === 0 ? (
         <>
-          <h5>{t("noData")}</h5>
+          <p className="no-data">{t("noData")}</p>
         </>
       ) : (
         <>

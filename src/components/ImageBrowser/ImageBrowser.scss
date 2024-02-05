@@ -171,4 +171,11 @@
     top: 0;
     z-index: 2;
   }
+
+    .no-data {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+    }
 }
