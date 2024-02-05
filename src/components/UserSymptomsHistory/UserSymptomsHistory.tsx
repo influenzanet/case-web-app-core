@@ -9,6 +9,9 @@ import { LoadingPlaceholder } from "@influenzanet/case-web-ui";
 import { Profile } from "../../api/types/user";
 import { RootState } from "../../store/rootReducer";
 
+import clsx from "clsx";
+import { useTranslation } from "react-i18next";
+
 export type UserSymptomsHistoryDataReader = {
   init: (studyId: string, profileId: string) => Promise<ImageBrowserDataReader>;
 };
@@ -41,6 +44,12 @@ const UserSymptomsHistoryImpl: React.FC<UserSymptomsHistoryProps> = (props) => {
   const mainProfileId: string = profiles.filter(
     (profile) => profile.mainProfile
   )[0].id;
+
+  const translationNamespace = `${
+    props.translationNamespace ?? "userSymptomsHistory"
+  }`;
+
+  const { t } = useTranslation([translationNamespace]);
 
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
@@ -102,9 +111,13 @@ const UserSymptomsHistoryImpl: React.FC<UserSymptomsHistoryProps> = (props) => {
           dataReader={dataReader}
           key={selectedProfileId}
           dateLocales={props.dateLocales}
-          translationNamespace={props.translationNamespace}
+          translationNamespace={translationNamespace}
         />
       )}
+
+      <div className={clsx("p-2 mb-2", { "text-white": true })}>
+        <p className="fst-italic">{t("description")}</p>
+      </div>
     </div>
   );
 

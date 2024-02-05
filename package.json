@@ -21,9 +21,8 @@
     "@influenzanet/case-web-ui": "1.15.0-staging.1",
     "@reduxjs/toolkit": "1.8.1",
     "@rollup/plugin-commonjs": "25.0.7",
-    "@rollup/plugin-node-resolve": "15.2.3",
     "@rollup/plugin-json": "6.0.1",
-    "rollup-plugin-typescript2": "0.36.0",
+    "@rollup/plugin-node-resolve": "15.2.3",
     "@storybook/addon-actions": "^6.5.12",
     "@storybook/builder-webpack5": "^6.5.12",
     "@storybook/manager-webpack5": "^6.5.12",
@@ -74,6 +73,7 @@
     "rollup-plugin-copy": "3.5.0",
     "rollup-plugin-peer-deps-external": "2.2.4",
     "rollup-plugin-postcss": "4.0.2",
+    "rollup-plugin-typescript2": "0.36.0",
     "sass": "^1.49.9",
     "sass-loader": "^12.4.0",
     "storybook-react-router": "^1.0.8",
@@ -92,5 +92,8 @@
     "react-redux": "^7.2.2",
     "redux": "^4.0.5",
     "survey-engine": "^1.2.1"
+  },
+  "dependencies": {
+    "react-bootstrap-icons": "^1.10.3"
   }
 }

@@ -8,6 +8,8 @@ import { format as formatDate } from "date-fns";
 import { useTranslation } from "react-i18next";
 import { LoadingPlaceholder } from "@influenzanet/case-web-ui";
 
+import { ArrowLeftCircle, ArrowRightCircle } from "react-bootstrap-icons";
+
 export interface ImageBrowserProps {
   className?: string;
   enableAnimations?: boolean;
@@ -146,10 +148,7 @@ const ImageBrowser: React.FC<ImageBrowserProps> = (props) => {
           <div ref={transitionDivRef} id="transition-div">
             <div className="d-flex align-items-center">
               <div id="left_arrow" className="d-sm-none">
-                <i
-                  className="bi-arrow-left-circle"
-                  style={{ fontSize: "300%" }}
-                ></i>
+                <ArrowLeftCircle />
               </div>
               <div className="image-slot d-flex align-items-center justify-content-center position-relative">
                 <div className="image-slot-small position-relative">
@@ -202,10 +201,7 @@ const ImageBrowser: React.FC<ImageBrowserProps> = (props) => {
                 </div>
               </div>
               <div id="right_arrow" className="d-sm-none">
-                <i
-                  className="bi-arrow-right-circle"
-                  style={{ fontSize: "300%" }}
-                ></i>
+                <ArrowRightCircle />
               </div>
             </div>
           </div>
