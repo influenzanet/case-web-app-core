@@ -1,7 +1,7 @@
 {
   "name": "@influenzanet/case-web-app-core",
   "description": "Common logic and components for the participant web-app",
-  "version": "2.7.5-staging.25",
+  "version": "2.7.5-staging.26",
   "scripts": {
     "build": "rollup -c",
     "storybook": "start-storybook -p 6007",

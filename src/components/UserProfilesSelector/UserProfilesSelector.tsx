@@ -34,7 +34,13 @@ const UserProfilesSelector: React.FC<UserProfilesSelectorProps> = (props) => {
           isSelected ? "selected" : ""
         } d-flex flex-wrap align-items-center justify-content-center`}
         key={profile.id}
-        onClick={async () => await props.onProfileChange(profile.id)}
+        onClick={async () => {
+          if (props.selectedProfileId === profile.id) {
+            return;
+          }
+
+          await props.onProfileChange(profile.id);
+        }}
       >
         <img src={avatarUri} alt={profile.alias} title={profile.alias} />
       </li>
