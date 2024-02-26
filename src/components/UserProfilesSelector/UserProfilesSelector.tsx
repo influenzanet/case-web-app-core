@@ -19,7 +19,6 @@ const UserProfilesSelector: React.FC<UserProfilesSelectorProps> = (props) => {
   )[0];
 
   function avatarImg(avatarId: string) {
-    if (avatarId === "default") avatarId = "unknown";
     const avatarName = avatarId.charAt(0).toUpperCase() + avatarId.slice(1);
     return `${avatarName}_Bunt.png`;
   }
