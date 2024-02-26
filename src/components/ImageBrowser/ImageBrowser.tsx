@@ -147,8 +147,14 @@ const ImageBrowser: React.FC<ImageBrowserProps> = (props) => {
           </h5>
           <div ref={transitionDivRef} id="transition-div">
             <div className="d-flex align-items-center">
-              <div id="left_arrow" className="d-sm-none">
-                <ArrowLeftCircle />
+              <div
+                id="left_arrow"
+                className="d-sm-none"
+                style={{
+                  visibility: index > 0 ? "visible" : "hidden",
+                }}
+              >
+                <ArrowLeftCircle size={40} />
               </div>
               <div className="image-slot d-flex align-items-center justify-content-center position-relative">
                 <div className="image-slot-small position-relative">
@@ -200,8 +206,14 @@ const ImageBrowser: React.FC<ImageBrowserProps> = (props) => {
                   )}
                 </div>
               </div>
-              <div id="right_arrow" className="d-sm-none">
-                <ArrowRightCircle />
+              <div
+                id="right_arrow"
+                className="d-sm-none"
+                style={{
+                  visibility: images.length - index > 1 ? "visible" : "hidden",
+                }}
+              >
+                <ArrowRightCircle size={40} />
               </div>
             </div>
           </div>
