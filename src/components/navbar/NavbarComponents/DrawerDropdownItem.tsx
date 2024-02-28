@@ -1,4 +1,4 @@
-import { ChevronDown, ChevronUp } from 'case-web-ui';
+import { ChevronDown, ChevronUp } from '@influenzanet/case-web-ui';
 import clsx from 'clsx';
 import React, { useState } from 'react';
 import { Collapse } from 'react-bootstrap';

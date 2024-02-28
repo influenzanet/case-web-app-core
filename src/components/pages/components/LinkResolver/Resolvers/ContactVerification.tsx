@@ -1,34 +1,34 @@
-import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useAuthTokenCheck } from '../../../../../hooks/useAuthTokenCheck';
-import { useIsAuthenticated } from '../../../../../hooks/useIsAuthenticated';
-import { useLogout } from '../../../../../hooks/useLogout';
-import { DefaultRoutes } from '../../../../../types/routing';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../../../../store/rootReducer';
-import { useUrlQuery } from '../../../../../hooks/useUrlQuery';
-import { LinkResolverPaths } from '../LinkResolver';
-import { useHistory } from 'react-router-dom';
-import { getUserReq, verifyContactReq } from '../../../../../api/userAPI';
-import { autoValidateTemporaryTokenReq } from '../../../../../api/authAPI';
-import { renewToken } from '../../../../../api/instances/authenticatedApi';
-import { userActions } from '../../../../../store/userSlice';
-import { signupActions } from '../../../../../store/signupActions';
+import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useAuthTokenCheck } from "../../../../../hooks/useAuthTokenCheck";
+import { useIsAuthenticated } from "../../../../../hooks/useIsAuthenticated";
+import { useLogout } from "../../../../../hooks/useLogout";
+import { DefaultRoutes } from "../../../../../types/routing";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../../../../store/rootReducer";
+import { useUrlQuery } from "../../../../../hooks/useUrlQuery";
+import { useHistory } from "react-router-dom";
+import { getUserReq, verifyContactReq } from "../../../../../api/userAPI";
+import { autoValidateTemporaryTokenReq } from "../../../../../api/authAPI";
+import { renewToken } from "../../../../../api/instances/authenticatedApi";
+import { userActions } from "../../../../../store/userSlice";
+import { signupActions } from "../../../../../store/signupActions";
 
-import { getErrorMsg } from '../../../../../api/utils';
-import { dialogActions } from '../../../../../store/dialogSlice';
+import { getErrorMsg } from "../../../../../api/utils";
+import { dialogActions } from "../../../../../store/dialogSlice";
 
 import {
   containerClassName,
   AlertBox,
   TitleBar,
-} from 'case-web-ui';
+} from "@influenzanet/case-web-ui";
+import { LinkResolverPaths } from "./LinkResolverConst";
 
 interface ContactVerificationProps {
   defaultRoutes: DefaultRoutes;
 }
 
-const translationRootKey = 'verifyEmail';
+const translationRootKey = "verifyEmail";
 
 const ContactVerification: React.FC<ContactVerificationProps> = (props) => {
   const { t } = useTranslation(["linkresolvers"]);
@@ -42,15 +42,22 @@ const ContactVerification: React.FC<ContactVerificationProps> = (props) => {
   const dispatch = useDispatch();
   const logout = useLogout();
 
-  const logedInUser = useSelector((state: RootState) => state.user.currentUser.account.accountId);
-  const persistState = useSelector((state: RootState) => state.app.persistState);
+  const logedInUser = useSelector(
+    (state: RootState) => state.user.currentUser.account.accountId
+  );
+  const persistState = useSelector(
+    (state: RootState) => state.app.persistState
+  );
 
   const [error, setError] = useState("");
-  const [loginData, setLoginData] = useState({ accountId: '', verificationCode: '' });
+  const [loginData, setLoginData] = useState({
+    accountId: "",
+    verificationCode: "",
+  });
 
   useEffect(() => {
     const token = query.get("token");
-    let replaceUrl = LinkResolverPaths.ContactVerification;
+    const replaceUrl = LinkResolverPaths.ContactVerification;
     history.replace(replaceUrl);
     verifyEmail(token);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -62,6 +69,7 @@ const ContactVerification: React.FC<ContactVerificationProps> = (props) => {
     try {
       const response = await verifyContactReq(token);
       if (response.status === 200) {
+        dispatch(dialogActions.closeDialog());
         dispatch(signupActions.contactVerified());
         if (hasToken) {
           if (logedInUser !== response.data.account.accountId) {
@@ -94,9 +102,12 @@ const ContactVerification: React.FC<ContactVerificationProps> = (props) => {
     setLoading(true);
     if (!token) return;
     try {
-      const response = await autoValidateTemporaryTokenReq(token, '');
+      const response = await autoValidateTemporaryTokenReq(token, "");
       if (response.status === 200) {
-        setLoginData({ accountId: response.data.accountId, verificationCode: response.data.verificationCode });
+        setLoginData({
+          accountId: response.data.accountId,
+          verificationCode: response.data.verificationCode,
+        });
       }
     } catch (e) {
       const err = getErrorMsg(e);
@@ -109,84 +120,102 @@ const ContactVerification: React.FC<ContactVerificationProps> = (props) => {
 
   const handleError = (error?: string) => {
     switch (error) {
-      case 'no user found':
+      case "no user found":
         setError(t(`${translationRootKey}.errors.wrongToken`));
         break;
-      case 'wrong token':
+      case "wrong token":
         setError(t(`${translationRootKey}.errors.wrongToken`));
         break;
-      case 'token expired':
+      case "token expired":
         setError(t(`${translationRootKey}.errors.wrongToken`));
         break;
-      case 'wrong token purpose':
+      case "wrong token purpose":
         setError(t(`${translationRootKey}.errors.wrongToken`));
         break;
       default:
         setError(t(`${translationRootKey}.errors.wrongToken`));
         break;
     }
-  }
+  };
 
-  const loadingContent = <div className="spinner-border text-primary" style={{ width: '3rem', height: '3rem' }} role="status">
-    <span className="visually-hidden">Loading...</span>
-  </div>
+  const loadingContent = (
+    <div
+      className="spinner-border text-primary"
+      style={{ width: "3rem", height: "3rem" }}
+      role="status"
+    >
+      <span className="visually-hidden">Loading...</span>
+    </div>
+  );
 
   const infoText = t(`${translationRootKey}.content.info`);
   const successText = t(`${translationRootKey}.content.success`);
 
-  const resolvedContent = <div className="bg-grey-1 p-2" style={{ width: 500 }}>
-    {infoText ? <AlertBox
-      className="mb-2"
-      type="info"
-      content={infoText}
-    /> : null}
+  const resolvedContent = (
+    <div className="bg-grey-1 p-2" style={{ width: 500 }}>
+      {infoText ? (
+        <AlertBox className="mb-2" type="info" content={infoText} />
+      ) : null}
 
-    <AlertBox
-      className="mb-2"
-      type="success"
-      hide={error.length > 0}
-      content={successText}
-    />
+      <AlertBox
+        className="mb-2"
+        type="success"
+        hide={error.length > 0}
+        content={successText}
+      />
 
-    <AlertBox
-      className="mb-2"
-      type="danger"
-      hide={!error}
-      useIcon={true}
-      content={error}
-    />
-    <div className="">
-      <button className="btn btn-primary"
-        onClick={() => {
-          if (isLoggedIn) {
-            history.replace(props.defaultRoutes.auth);
-          } else {
-            dispatch(dialogActions.openLoginDialog({
-              payload: {
-                email: loginData.accountId,
-                password: '',
-                verificationCode: loginData.verificationCode,
-                rememberMe: persistState,
-              },
-              type: 'login',
-            }));
-          }
-        }}
-      >
-        {!error ? t(`${translationRootKey}.content.btn.successWith${isLoggedIn ? 'Auth' : 'outAuth'}`)
-          : t(`${translationRootKey}.content.btn.errorWith${isLoggedIn ? 'Auth' : 'outAuth'}`)}
-      </button>
+      <AlertBox
+        className="mb-2"
+        type="danger"
+        hide={!error}
+        useIcon={true}
+        content={error}
+      />
+      <div className="">
+        <button
+          className="btn btn-primary"
+          onClick={() => {
+            if (isLoggedIn) {
+              history.replace(props.defaultRoutes.auth);
+            } else {
+              dispatch(
+                dialogActions.openLoginDialog({
+                  payload: {
+                    email: loginData.accountId,
+                    password: "",
+                    verificationCode: loginData.verificationCode,
+                    rememberMe: persistState,
+                  },
+                  type: "login",
+                })
+              );
+            }
+          }}
+        >
+          {!error
+            ? t(
+                `${translationRootKey}.content.btn.successWith${
+                  isLoggedIn ? "Auth" : "outAuth"
+                }`
+              )
+            : t(
+                `${translationRootKey}.content.btn.errorWith${
+                  isLoggedIn ? "Auth" : "outAuth"
+                }`
+              )}
+        </button>
+      </div>
     </div>
-  </div>
-
+  );
 
   return (
     <React.Fragment>
-      <TitleBar
-        content={t(`${translationRootKey}.title`)}
-      />
+      <TitleBar content={t(`${translationRootKey}.title`)} />
       <div className={containerClassName}>
-        <div className="d-flex align-items-center my-3 justify-content-center h-100" style={{ minHeight: '60vh' }}>
+        <div
+          className="d-flex align-items-center my-3 justify-content-center h-100"
+          style={{ minHeight: "60vh" }}
+        >
           {loading ? loadingContent : resolvedContent}
         </div>
       </div>

@@ -14,7 +14,7 @@ import {
   defaultDialogPaddingXClass,
   Dialog,
   ConfirmDialog,
-} from 'case-web-ui';
+} from '@influenzanet/case-web-ui';
 
 
 interface ChangeEmailProps {

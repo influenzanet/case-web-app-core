@@ -1,4 +1,4 @@
-import { AlertBox, defaultDialogPaddingXClass, Dialog, DialogBtn } from 'case-web-ui';
+import { AlertBox, defaultDialogPaddingXClass, Dialog, DialogBtn } from '@influenzanet/case-web-ui';
 import clsx from 'clsx';
 import React from 'react';
 

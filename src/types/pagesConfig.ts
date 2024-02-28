@@ -6,7 +6,7 @@ export interface PagesConfig {
 }
 
 export interface HelmetPageConfig {
-  override: 'global' | 'local';
+  override: "global" | "local";
   ignoreTitle?: boolean;
   ignoreDescription?: boolean;
 }
@@ -14,7 +14,7 @@ export interface HelmetPageConfig {
 export interface PageConfig {
   path: string;
   pageKey: string;
-  hideWhen?: 'auth' | 'unauth';
+  hideWhen?: "auth" | "unauth";
   rows: Array<PageRow>;
   subPages?: PagesConfig; // to use for sub-router components without wrapper
   hideTitleBar?: boolean;
@@ -26,40 +26,60 @@ export interface PageRow {
   containerClassName?: string;
   rowClassNameOverride?: string;
   fullWidth?: boolean;
-  hideWhen?: 'auth' | 'unauth';
+  hideWhen?: "auth" | "unauth";
   columns: Array<PageColumn>;
 }
 
 export interface PageColumn {
   key?: string;
   className?: string;
-  hideWhen?: 'auth' | 'unauth';
+  hideWhen?: "auth" | "unauth";
   items: Array<PageItem>;
 }
 
 export interface PageItem {
   itemKey: string;
   className?: string;
-  hideWhen?: 'auth' | 'unauth';
+  hideWhen?: "auth" | "unauth";
   config: PageItemConfig;
 }
 
-type PageItemConfig = TeaserImageConfig | RouterComponentConfig |
-  MarkdownComponentConfig | ImageCardConfig | LoginCardConfig | VideoConfig | ImageConfig |
-  AccordionListConfig | SimpleCard | SystemInfoConfig | AccountSettingsConfig |
-  CommunicationSettingsConfig | DeleteAccountConfig | LogoCreditsConfig |
-  SurveyListConfig | LinkListConfig | MapDataSeriesConfig | LineWithScatterChartConfig | ContainerConfig | PlaceholderComponentConfig | ExtensionComponent |
-  ActionCardConfig | ReportListConfig | HelmetConfig | IframeConfig
-
+type PageItemConfig =
+  | TeaserImageConfig
+  | RouterComponentConfig
+  | MarkdownComponentConfig
+  | ImageCardConfig
+  | LoginCardConfig
+  | VideoConfig
+  | ImageConfig
+  | AccordionListConfig
+  | SimpleCard
+  | SystemInfoConfig
+  | AccountSettingsConfig
+  | CommunicationSettingsConfig
+  | DeleteAccountConfig
+  | LogoCreditsConfig
+  | UserSymptomsHistoryConfig
+  | SurveyListConfig
+  | LinkListConfig
+  | MapDataSeriesConfig
+  | LineWithScatterChartConfig
+  | ContainerConfig
+  | PlaceholderComponentConfig
+  | ExtensionComponent
+  | ActionCardConfig
+  | ReportListConfig
+  | HelmetConfig
+  | IframeConfig;
 
 export interface MarkdownComponentConfig {
-  type: 'markdown';
+  type: "markdown";
   markdownUrl: string;
-  flavor?: 'chart-renderer';
+  flavor?: "chart-renderer";
 }
 
 export interface ImageConfig {
-  type: 'image';
+  type: "image";
   url?: string;
   urlKey?: string;
   altKey?: string;
@@ -68,7 +88,7 @@ export interface ImageConfig {
 }
 
 export interface VideoConfig {
-  type: 'video';
+  type: "video";
   minHeight?: number;
   posterUrlKey?: string;
   videoSources: Array<{
@@ -86,24 +106,24 @@ export interface VideoConfig {
 }
 
 export interface TeaserImageConfig {
-  type: 'teaserImage',
+  type: "teaserImage";
   image: {
     url: string;
     height?: number;
     className?: string;
     backgroundPosition?: string;
     copyrightNotice?: string;
-    copyrightNoticeXAlignment?: 'start' | 'end';
-  }
+    copyrightNoticeXAlignment?: "start" | "end";
+  };
   textBox?: {
     className?: string;
-  }
+  };
 }
 
 export interface ImageCardConfig {
-  type: 'imageCard';
+  type: "imageCard";
   action?: {
-    type: 'navigate' | 'openDialog';
+    type: "navigate" | "openDialog";
     value: string;
   };
   imageSrc?: string;
@@ -112,21 +132,21 @@ export interface ImageCardConfig {
 }
 
 export interface ActionCardConfig {
-  type: 'actionCard';
+  type: "actionCard";
   action?: {
-    type: 'navigate' | 'openDialog';
+    type: "navigate" | "openDialog";
     value: string;
   };
   image?: {
     url: string;
-    as?: 'div' | 'img'; // defaults to 'div'
+    as?: "div" | "img"; // defaults to 'div'
     alt?: string;
     className?: string;
     copyrightNotice?: string;
-    copyrightNoticeXAlignment?: 'start' | 'end';
+    copyrightNoticeXAlignment?: "start" | "end";
     backgroundPosition?: string;
     backgroundSize?: string;
-    placement: 'top' | 'left';
+    placement: "top" | "left";
     height?: string;
     width?: string;
     minWidth?: string | number;
@@ -146,51 +166,51 @@ export interface ActionCardConfig {
 }
 
 interface LoginCardConfig {
-  type: 'loginCard';
+  type: "loginCard";
   showInfoText: boolean;
 }
 
 export interface AccordionListConfig {
-  type: 'accordionList';
+  type: "accordionList";
   accordionCtrlsKey: string;
 }
 
 export interface SimpleCard {
-  type: 'simpleCard';
-  variant?: 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+  type: "simpleCard";
+  variant?: "h2" | "h3" | "h4" | "h5" | "h6";
 }
 
 export interface LinkListConfig {
-  type: 'linkList';
+  type: "linkList";
   links: Array<{
     linkKey: string;
-    type: 'internal' | 'external' | 'language' | 'dialog';
+    type: "internal" | "external" | "language" | "dialog";
     value: string;
   }>;
 }
 
 export interface SystemInfoConfig {
-  type: 'systemInfo';
+  type: "systemInfo";
   showBrowserInfo: boolean;
 }
 
 export interface AccountSettingsConfig {
-  type: 'accountSettings';
+  type: "accountSettings";
   hideProfileSettings?: boolean;
 }
 
 export interface CommunicationSettingsConfig {
-  type: 'communicationSettings';
+  type: "communicationSettings";
   hideLanguageSelector?: boolean;
 }
 
 export interface DeleteAccountConfig {
-  type: 'deleteAccount';
+  type: "deleteAccount";
   // TODO: delete only account, delete data as well
 }
 
 export interface LogoCreditsConfig {
-  type: 'logoCredits';
+  type: "logoCredits";
   useTitle?: boolean;
   className?: string;
   images: Array<{
@@ -204,22 +224,27 @@ export interface LogoCreditsConfig {
 }
 
 export interface MapDataSeriesConfig {
-  type: 'mapDataSeries';
+  type: "mapDataSeries";
   mapUrl: string;
   dataUrl: string;
 }
 
 export interface LineWithScatterChartConfig {
-  type: 'lineWithScatterChart';
+  type: "lineWithScatterChart";
   dataUrl: string;
 }
 
+export interface UserSymptomsHistoryConfig {
+  type: "userSymptomsHistory";
+  studyId: string;
+}
+
 export interface SurveyListConfig {
-  type: 'surveyList';
+  type: "surveyList";
 }
 
 export interface ReportListConfig {
-  type: 'reportList';
+  type: "reportList";
   studyKeys?: string[];
   reportKey?: string;
   cardBgOverride?: string;
@@ -230,29 +255,29 @@ export interface ReportListConfig {
 }
 
 export interface ContainerConfig {
-  type: 'container';
+  type: "container";
   items: PageItem[];
 }
 
 export interface PlaceholderComponentConfig {
-  type: 'placeholder';
+  type: "placeholder";
   label: string;
   height?: number;
 }
 
 export interface RouterComponentConfig {
-  type: 'router';
+  type: "router";
   pagesConfig: PagesConfig;
 }
 
 export interface HelmetConfig {
-  type: 'helmet';
+  type: "helmet";
   updateTitle?: boolean;
   updateDescription?: boolean;
 }
 
 export interface IframeConfig {
-  type: 'iframe';
+  type: "iframe";
   url: string;
   scrolling?: boolean;
   height?: string | number;
@@ -260,6 +285,6 @@ export interface IframeConfig {
 }
 
 export interface ExtensionComponent {
-  type: 'extension';
+  type: "extension";
   config: any;
 }

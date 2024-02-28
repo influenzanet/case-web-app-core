@@ -1,0 +1,181 @@
+
+
+// TODO: maybe introduce a width variable for controllig the width of the images
+
+.symptoms-history {
+  #next-week,
+  #prev-week,
+  #current-week,
+  #new-week {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+  }
+
+  #next-week,
+  #prev-week {
+    opacity: 0.5;
+  }
+
+  #new-next-week,
+  #new-prev-week {
+    opacity: 0;
+  }
+
+  @media (max-width: 576px) {
+    #next-week {
+      opacity: 0;
+    }
+
+    #prev-week {
+      opacity: 0;
+    }
+  }
+
+  @media (max-width: 576px) {
+    #prev-week {
+      opacity: 0;
+    }
+  }
+
+  /* transition left (click the arrow on the right) */
+  /* next week is on the right */
+  /* prev week is on the left */
+  .transition-left {
+    #new-next-week {
+      position: absolute;
+      right: 0px;
+      opacity: 0.5;
+      transition: 0.7s;
+    }
+
+    #current-week {
+      transition: 0.7s;
+      transform: translate(-135px) scale(0.75);
+      opacity: 0.5;
+    }
+
+    #next-week {
+      transition: 0.7s;
+      transform: translate(-135px) scale(1.35);
+      opacity: 1;
+    }
+
+    #prev-week {
+      transition: 0.7s;
+      opacity: 0;
+    }
+
+    #new-next-week {
+      transition: 0.7s;
+      opacity: 0.5;
+      transform: scale(1);
+    }
+
+    @media (max-width: 576px) {
+      #next-week {
+        opacity: 1;
+      }
+
+      #new-next-week {
+        opacity: 0 !important;
+      }
+
+      #current-week {
+        opacity: 0 !important;
+      }
+    }
+  }
+
+  /* transition right (click the arrow on the left) */
+  /* next week is on the right */
+  /* prev week is on the left */
+  .transition-right {
+    #new-prev-week {
+      position: absolute;
+      right: 0px;
+      opacity: 0.5;
+      transition: 0.7s;
+    }
+
+    #current-week {
+      transition: 0.7s;
+      transform: translate(135px) scale(0.75);
+      opacity: 0.5;
+    }
+
+    #next-week {
+      transition: 0.7s;
+      /* transform: translate(150px) scale(1.35); */
+      opacity: 0;
+    }
+
+    #prev-week {
+      transition: 0.7s;
+      transform: translate(135px) scale(1.35);
+      opacity: 1;
+    }
+    @media (max-width: 576px) {
+      #prev-week {
+        opacity: 1;
+      }
+
+      #new-prev-week {
+        opacity: 0 !important;
+      }
+
+      #current-week {
+        opacity: 0 !important;
+      }
+    }
+  }
+
+  // image cards styling
+
+  .image-slot {
+    height: 135px;
+    width: 135px;
+  }
+
+  .image-slot-small {
+    height: 100px;
+    width: 100px;
+  }
+
+  // prev / next arrows on small screens
+
+  #right_arrow {
+    margin-left: -90px;
+    z-index: 1;
+  }
+
+  #left_arrow {
+    margin-right: -90px;
+    z-index: 1;
+  }
+
+  @media (max-width: 576px) {
+    #right_arrow {
+      margin-left: -120px;
+    }
+    #left_arrow {
+      margin-right: -120px;
+    }
+  }
+
+  // click layers, always on top
+  .click-layer {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    z-index: 2;
+  }
+
+    .no-data {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+    }
+}

@@ -8,7 +8,7 @@ import {
   AlertBox,
   TextField,
   ConsentDialog,
-} from 'case-web-ui';
+} from '@influenzanet/case-web-ui';
 import { useSelector, useDispatch } from 'react-redux'
 import { RootState } from '../../../store/rootReducer';
 import { dialogActions } from '../../../store/dialogSlice';

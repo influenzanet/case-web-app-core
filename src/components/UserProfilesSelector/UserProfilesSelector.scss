@@ -1,0 +1,47 @@
+
+.profile-selector {
+  ul {
+    list-style-type: none;
+    margin: 0px;
+    padding: 0px;
+    width: 100%;
+    gap: 2%;
+  }
+
+  li:before {
+    content: "";
+    padding-top: 100%;
+  }
+
+  li {
+    position: relative;
+    background-color: gray;
+    opacity: 0.4;
+    margin: 0px;
+    border-radius: 50%;
+    flex: 1 1 32%;
+    max-width: 115px;
+    margin-bottom: 2%;
+  }
+
+  li:nth-child(n + 3) {
+    flex: 0 0 32%;
+  }
+
+  li img {
+    position: absolute;
+    height: 70%;
+  }
+
+  li::before {
+    content: "";
+    display: block;
+    padding-top: 100%;
+  }
+
+  li.selected {
+    opacity: 1;
+    border: 3px dashed white;
+    border-radius: 100px;
+  }
+}

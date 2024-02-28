@@ -8,7 +8,7 @@ import {
   AlertBox,
   Dialog,
   defaultDialogPaddingXClass,
-} from 'case-web-ui';
+} from '@influenzanet/case-web-ui';
 
 interface AlertDialogProps {
 }

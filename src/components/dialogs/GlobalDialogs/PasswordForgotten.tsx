@@ -11,7 +11,7 @@ import {
   DialogBtn,
   AlertBox,
   TextField,
-} from 'case-web-ui';
+} from '@influenzanet/case-web-ui';
 
 
 const PasswordForgotten: React.FC = () => {

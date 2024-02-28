@@ -1,5 +1,5 @@
 import React from 'react';
-import { Footer } from 'case-web-ui';
+import { Footer } from '@influenzanet/case-web-ui';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';

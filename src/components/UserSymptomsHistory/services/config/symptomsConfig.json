@@ -1,0 +1,17 @@
+{
+  "0": [
+    { "0": "assets/images/feedback/feedback_bene_m_icon.jpg" },
+    { "1": "assets/images/feedback/feedback_influ_icon.jpg" },
+    { "3": "assets/images/feedback/feedback_raffr_icon.jpg" },
+    { "default": "assets/images/feedback/feedback_male_m_icon.jpg" }
+  ],
+  "1": [
+    { "0": "assets/images/feedback/feedback_bene_f_icon.jpg" },
+    { "17": "assets/images/feedback/feedback_grastro_icon.jpg" },
+    { "default": "assets/images/feedback/feedback_male_f_icon.jpg" }
+  ],
+  "2": [
+    { "0": "assets/images/feedback/feedback_bene_n_icon.jpg" },
+    { "default": "assets/images/feedback/feedback_male_n_icon.jpg" }
+  ]
+}

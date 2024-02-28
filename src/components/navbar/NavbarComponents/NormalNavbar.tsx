@@ -1,6 +1,6 @@
-import { Avatar, containerClassName } from 'case-web-ui';
-import { AvatarConfig } from 'case-web-ui/build/types/avatars';
-import { Profile } from 'case-web-ui/build/types/profile';
+import { Avatar, containerClassName } from '@influenzanet/case-web-ui';
+import { AvatarConfig } from '@influenzanet/case-web-ui/build/types/avatars';
+import { Profile } from '@influenzanet/case-web-ui/build/types/profile';
 import clsx from 'clsx';
 import React, { useState } from 'react';
 import { Dropdown, Navbar, NavItem } from 'react-bootstrap';
