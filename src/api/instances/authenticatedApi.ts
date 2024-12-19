@@ -3,6 +3,7 @@ import store, { resetStore } from "../../store/store";
 import { minuteToMillisecondFactor } from "../../constants";
 import { setAppAuth } from "../../store/appSlice";
 import { TokenResponse } from "../types/authAPI";
+import axiosLock from "./AxiosLock";
 
 const renewThreshold = 1 * minuteToMillisecondFactor;
 
@@ -37,17 +38,27 @@ export const renewToken = async (): Promise<string> => {
   return response.data.accessToken;
 };
 
-const renewTokenIfNecessary = async (): Promise<string | undefined> => {
+const renewTokenIfNecessary = async (config: any): Promise<string | undefined> => {
+
   const expiresAt = store.getState().app.auth?.expiresAt;
   if (!expiresAt) {
     return;
   }
 
   if (expiresAt < new Date().getTime() + renewThreshold) {
-    const accessToken = await renewToken();
-    return accessToken;
+    if(axiosLock.isLocked) {
+      await axiosLock.waitForUnlock();
+      config.headers.Authorization = getDefaultAccessTokenHeader();
+      return;
+    }
+
+    axiosLock.lock();
+
+    await renewToken();
+    config.headers.Authorization = getDefaultAccessTokenHeader();
+
+    axiosLock.unlock();
   }
-  return;
 };
 
 authApiInstance.interceptors.request.use(
@@ -56,10 +67,7 @@ authApiInstance.interceptors.request.use(
       return config;
     }
     try {
-      const newAccessToken = await renewTokenIfNecessary();
-      if (newAccessToken && newAccessToken.length && config.headers) {
-        config.headers.Authorization = "Bearer " + newAccessToken;
-      }
+      await renewTokenIfNecessary(config);
     } catch (e: any) {
       resetApiAuth();
       if (e.response) {
@@ -76,6 +84,8 @@ authApiInstance.interceptors.request.use(
     return Promise.reject(error);
   }
 );
+
+const getDefaultAccessTokenHeader = () => authApiInstance.defaults.headers.common["Authorization"];
 
 export const setDefaultAccessTokenHeader = (token: string) => {
   authApiInstance.defaults.headers.common["Authorization"] = "Bearer " + token;
