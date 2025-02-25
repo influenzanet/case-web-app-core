@@ -1,12 +1,14 @@
 import React from 'react';
 
 import { blurEmail } from '../../utils/blurEmail';
+import { blurPhone } from '../../utils/blurPhone';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from "../../store/rootReducer";
 import { useTranslation } from 'react-i18next';
 import { EditBtn } from '@influenzanet/case-web-ui';
 import { dialogActions } from '../../store/dialogSlice';
 import { useIsAuthenticated } from '../../hooks/useIsAuthenticated';
+import { PhoneContactInfo } from '../../api/types/user';
 
 
 interface AccountSettingsProps {
@@ -25,6 +27,10 @@ const AccountSettings: React.FC<AccountSettingsProps> = (props) => {
       {'authentication needed'}
     </div>
   }
+
+  const phoneInfo = currentUser.contactInfos.find(
+    (info): info is PhoneContactInfo => info.type === 'phone'
+  );
 
   const renderProfileSettings = () => {
     if (props.hideProfileSettings === true) {
@@ -64,6 +70,46 @@ const AccountSettings: React.FC<AccountSettingsProps> = (props) => {
       >
         {blurEmail(currentUser.account.accountId)}
       </EditBtn>
+
+      {/** phone */}
+      <h4 className="fw-bold mt-2">
+        {t(`${props.itemKey}.phone.title`)}
+      </h4>
+      {phoneInfo ? (
+      <p className="mb-1 text-grey-7">
+        {t(`${props.itemKey}.phone.info`)}
+      </p>  ) : (
+        <p className="mb-1 text-grey-7">
+        {t(`${props.itemKey}.phone.infoAdd`)}
+      </p> 
+        )}
+      <div className="m-0 d-flex align-items-center py-2">
+        {phoneInfo ? (
+          <EditBtn
+            onClick={() => dispatch(dialogActions.openDialogWithoutPayload({ type: 'changePhone' }))}
+          >
+            {blurPhone(phoneInfo.phone)}
+          </EditBtn>
+        ) : (
+          <EditBtn
+            onClick={() => dispatch(dialogActions.openDialogWithoutPayload({ type: 'addPhone' }))}
+          >
+            {t(`${props.itemKey}.phone.btn`)}
+          </EditBtn>
+        )}
+
+        {phoneInfo && (
+          <button
+            className="btn btn-danger-light"
+            onClick={() => {
+              dispatch(dialogActions.openDialogWithoutPayload({ type: 'deletePhone' }))
+            }}
+          >
+              <i className="fas fa-trash text-grey-5"></i>
+          </button>
+        )}
+      </div>
+      
 
       {/** password */}
       <h4 className="fw-bold mt-2">

@@ -42,6 +42,23 @@ export const changeAccountEmailReq = (
     keepOldEmail,
     password,
   });
+
+  export const changeAccountPhoneReq = (
+    newPhone: string
+  ) =>
+    authApiInstance.post<User>("/v1/user/change-account-phone", {
+      newPhone
+    });
+
+    export const newAccountPhoneReq = (
+      newPhone: string
+    ) =>
+      authApiInstance.post<User>("/v1/user/new-account-phone", {
+        newPhone
+      });
+
+
+  
 export const setPreferredLanguageReq = (languageCode: string) =>
   authApiInstance.post<User>("/v1/user/set-language", { languageCode });
 // Profiles:
@@ -86,3 +103,8 @@ export const revokeAllRefreshTokensReq = () =>
   authApiInstance.post<ServiceStatus>("/v1/user/revoke-refresh-tokens", {});
 export const deleteAccountReq = (userId: string) =>
   authApiInstance.post<ServiceStatus>("/v1/user/delete", { userId });
+
+
+export const deletePhoneReq = (userId: string) =>
+  authApiInstance.post<ServiceStatus>("/v1/user/delete-phone", { userId });
+
