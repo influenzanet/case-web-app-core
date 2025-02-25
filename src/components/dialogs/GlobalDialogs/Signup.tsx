@@ -253,7 +253,7 @@ const SignupForm: React.FC<SignupFormProps> = (props) => {
           value={signupData.phone}
           required={false}
           errorMsg={t("dialogs:signup.errors.phone")}
-          hasError={!checkPhoneFormat(signupData.phone) && showConfirmPasswordError}
+          hasError={!checkPhoneFormat(signupData.phone) && showPhoneError}
           onBlur={() => {
             setShowPhoneError(true)
           }}
