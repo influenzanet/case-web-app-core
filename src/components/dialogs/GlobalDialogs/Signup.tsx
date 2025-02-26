@@ -33,6 +33,7 @@ const marginBottomClass = "mb-2";
 interface SignupFormData {
   email: string;
   password: string;
+  phone: string;
   confirmPassword: string;
   infoCheck: string;
   captchaToken?: string;
@@ -48,9 +49,12 @@ interface SignupFormProps {
 }
 
 const emailFormatRegexp = new RegExp(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
-
+const phoneFormatRegexp = new RegExp(/^\+\d{1,3}[-\s]?(\(?\d+\)?[-\s]?)*\d{4,}$/);
 const checkEmailFormat = (email: string): boolean => {
   return emailFormatRegexp.test(email);
+}
+const checkPhoneFormat = (phone: string): boolean => {
+  return phoneFormatRegexp.test(phone);
 }
 
 const signUpInfoCheckStyle: React.CSSProperties = {
@@ -80,6 +84,7 @@ const SignupForm: React.FC<SignupFormProps> = (props) => {
   const [signupData, setSignupData] = useState(props.initialSignupData ? props.initialSignupData : {
     email: '',
     password: '',
+    phone: '',
     confirmPassword: '',
     infoCheck: '',
   });
@@ -96,6 +101,7 @@ const SignupForm: React.FC<SignupFormProps> = (props) => {
   const [showEmailError, setShowEmailError] = useState(false);
   const [showPasswordError, setShowPasswordError] = useState(false);
   const [showConfirmPasswordError, setShowConfirmPasswordError] = useState(false);
+  const [showPhoneError, setShowPhoneError] = useState(false);
 
   const reCaptchaSiteKey = process.env.REACT_APP_RECAPTCHA_SITEKEY ? process.env.REACT_APP_RECAPTCHA_SITEKEY : '';
   const useRecaptcha = process.env.REACT_APP_USE_RECAPTCHA === 'true';
@@ -106,6 +112,7 @@ const SignupForm: React.FC<SignupFormProps> = (props) => {
     setSignupData(props.initialSignupData ? props.initialSignupData : {
       email: '',
       password: '',
+      phone: '',
       confirmPassword: '',
       infoCheck: '',
     });
@@ -119,8 +126,9 @@ const SignupForm: React.FC<SignupFormProps> = (props) => {
 
   const isDisabled = (): boolean => {
     const emailOk = checkEmailFormat(signupData.email);
+    const phoneOk = checkPhoneFormat(signupData.phone);
     const passwordRuleOk = checkPasswordRules(signupData.password);
-    return !(!props.isLoading && (!useRecaptcha || reCaptchaAccepted) && acceptedPrivacyPolicy && emailOk && passwordRuleOk && passwordsMatch());
+    return !(!props.isLoading && (!useRecaptcha || reCaptchaAccepted) && acceptedPrivacyPolicy && emailOk && passwordRuleOk && phoneOk && passwordsMatch());
   }
 
   const submit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -151,6 +159,8 @@ const SignupForm: React.FC<SignupFormProps> = (props) => {
   const passwordInputPlaceholder = t('signup.passwordInputPlaceholder');
   const confirmPasswordInputLabel = t('signup.confirmPasswordInputLabel');
   const confirmPasswordPlaceholder = t('signup.confirmPasswordInputLabel');
+  const phoneInputLabel = t('signup.phoneInputLabel');
+  const phoneInputPlaceholder = t('signup.phoneInputPlaceholder');
 
   const dialogSize = consentDialogSize();
   return (
@@ -231,6 +241,25 @@ const SignupForm: React.FC<SignupFormProps> = (props) => {
           onChange={(event) => {
             const value = event.target.value;
             setSignupData(prev => { return { ...prev, confirmPassword: value } })
+          }}
+        />
+       <TextField
+          id="signupPhone"
+          label={phoneInputLabel}
+          placeholder={phoneInputPlaceholder}
+          type="text"
+          name="phone"
+          className={marginBottomClass}
+          value={signupData.phone}
+          required={false}
+          errorMsg={t("dialogs:signup.errors.phone")}
+          hasError={!checkPhoneFormat(signupData.phone) && showPhoneError}
+          onBlur={() => {
+            setShowPhoneError(true)
+          }}
+          onChange={(event) => {
+            const value = event.target.value;
+            setSignupData(prev => { return { ...prev, phone: value } })
           }}
         />
 
@@ -432,6 +461,7 @@ const Signup: React.FC = () => {
       const response = await signupWithEmailRequest({
         email: data.email,
         password: data.password,
+        phone: data.phone,
         infoCheck: data.infoCheck,
         instanceId: instanceId,
         preferredLanguage: i18n.language,

@@ -7,6 +7,7 @@ export interface SignupMsg {
   infoCheck: string;
   preferredLanguage: string;
   wantsNewsletter: boolean;
+  phone?: string;
   use2fa: boolean;
 }
 

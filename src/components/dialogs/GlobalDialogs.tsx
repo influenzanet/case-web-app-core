@@ -13,6 +13,9 @@ import ManageProfiles from './GlobalDialogs/ManageProfiles';
 import PasswordForgotten from './GlobalDialogs/PasswordForgotten';
 import { useAuthTokenCheck } from '../../hooks/useAuthTokenCheck';
 import { DefaultRoutes } from '../../types/routing';
+import ChangePhone from './GlobalDialogs/ChangePhone';
+import DeletePhone from './GlobalDialogs/DeletePhone';
+import AddPhone from './GlobalDialogs/AddPhone';
 
 
 interface GlobalDialogsProps {
@@ -27,12 +30,15 @@ const GlobalDialogs: React.FC<GlobalDialogsProps> = (props) => {
   const authDialogs = () => {
     return <React.Fragment>
       <ChangeEmail />
+      <ChangePhone />
+      <AddPhone />
       <ChangePassword />
       <ChangeLanguage
         onChangeLanguage={props.onChangeLanguage}
       />
       <ChangeNotifications />
       <DeleteAccount />
+      <DeletePhone />
     </React.Fragment>
   }
 
