@@ -37,7 +37,7 @@ const DeletePhone: React.FC<DeletePhoneProps> = (props) => {
   const onDeletePhone = async () => {
     setLoading(true);
     try {
-      await deletePhoneReq(user.currentUser.id);
+      await deletePhoneReq();
       dispatch(dialogActions.openAlertDialog({
         type: 'alertDialog',
         payload: {

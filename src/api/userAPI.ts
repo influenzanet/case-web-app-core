@@ -105,6 +105,6 @@ export const deleteAccountReq = (userId: string) =>
   authApiInstance.post<ServiceStatus>("/v1/user/delete", { userId });
 
 
-export const deletePhoneReq = (userId: string) =>
-  authApiInstance.post<ServiceStatus>("/v1/user/delete-phone", { userId });
+export const deletePhoneReq = () =>
+  authApiInstance.delete<ServiceStatus>("/v1/user/delete-phone");
 
