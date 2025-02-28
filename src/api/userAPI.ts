@@ -46,16 +46,16 @@ export const changeAccountEmailReq = (
   export const changeAccountPhoneReq = (
     newPhone: string
   ) =>
-    authApiInstance.post<User>("/v1/user/change-account-phone", {
+    authApiInstance.post<User>("/v1/user/contact/change-phone", {
       newPhone
-    });
+  });
 
-    export const newAccountPhoneReq = (
+  export const newAccountPhoneReq = (
       newPhone: string
     ) =>
-      authApiInstance.post<User>("/v1/user/new-account-phone", {
+      authApiInstance.post<User>("/v1/user/contact/add-phone", {
         newPhone
-      });
+   });
 
 
   
@@ -106,5 +106,5 @@ export const deleteAccountReq = (userId: string) =>
 
 
 export const deletePhoneReq = () =>
-  authApiInstance.delete<ServiceStatus>("/v1/user/delete-phone");
+  authApiInstance.delete<User>("/v1/user/contact/delete-phone");
 

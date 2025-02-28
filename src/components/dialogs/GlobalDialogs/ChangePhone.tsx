@@ -55,11 +55,14 @@ const ChangePhone: React.FC<ChangePhoneProps> = (props) => {
     setLoading(true);
     setError("");
     try {
-        await changeAccountPhoneReq(formData.newPhone);
-        const userData = (await getUserReq()).data;
-        dispatch(userActions.setUser(userData));
-
-        dispatch(dialogActions.openAlertDialog({
+      const response =  await changeAccountPhoneReq(formData.newPhone);
+      if (response.status === 200) {
+            renewToken();
+            if (response.data) {
+                dispatch(userActions.setUser(response.data));
+            }
+      }
+      dispatch(dialogActions.openAlertDialog({
           type: 'alertDialog',
           payload: {
             color: 'success',
