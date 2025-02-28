@@ -10,16 +10,16 @@ import {
   AlertBox,
   defaultDialogPaddingXClass,
 } from '@influenzanet/case-web-ui';
-import { useLogout } from '../../../hooks/useLogout';
-import { deletePhoneReq } from '../../../api/userAPI';
+import { deletePhoneReq, getUserReq } from '../../../api/userAPI';
 import { getErrorMsg } from '../../../api/utils';
+import { renewToken } from '../../../api/instances/authenticatedApi';
+import { userActions } from '../../../store/userSlice';
 
 interface DeletePhoneProps {
 }
 
 const DeletePhone: React.FC<DeletePhoneProps> = (props) => {
   const { t } = useTranslation(['dialogs']);
-  const logout = useLogout();
   const dispatch = useDispatch();
   const dialogState = useSelector((state: RootState) => state.dialog)
   const open = dialogState.config?.type === 'deletePhone';
@@ -47,7 +47,8 @@ const DeletePhone: React.FC<DeletePhoneProps> = (props) => {
           btn: t('dialogs:deletePhone.successDialog.btn'),
         }
       }))
-      logout();
+       const userData = (await getUserReq()).data;
+       dispatch(userActions.setUser(userData));
     } catch (e) {
       const err = getErrorMsg(e);
       setError(err);

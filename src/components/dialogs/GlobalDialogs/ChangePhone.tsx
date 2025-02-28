@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { renewToken } from '../../../api/instances/authenticatedApi';
-import { changeAccountPhoneReq } from '../../../api/userAPI';
+import { changeAccountPhoneReq, getUserReq } from '../../../api/userAPI';
 import { dialogActions } from '../../../store/dialogSlice';
 import { RootState } from '../../../store/rootReducer';
 import { userActions } from '../../../store/userSlice';
@@ -55,12 +55,10 @@ const ChangePhone: React.FC<ChangePhoneProps> = (props) => {
     setLoading(true);
     setError("");
     try {
-      const response = await changeAccountPhoneReq(formData.newPhone);
-      if (response.status === 200) {
-        renewToken();
-        if (response.data) {
-          dispatch(userActions.setUser(response.data));
-        }
+        await changeAccountPhoneReq(formData.newPhone);
+        const userData = (await getUserReq()).data;
+        dispatch(userActions.setUser(userData));
+
         dispatch(dialogActions.openAlertDialog({
           type: 'alertDialog',
           payload: {
@@ -70,7 +68,6 @@ const ChangePhone: React.FC<ChangePhoneProps> = (props) => {
             btn: t('changePhone.successDialog.btn'),
           }
         }))
-      }
     } catch (e: any) {
       console.error(e.response);
       handleError(e.response.data.error);
