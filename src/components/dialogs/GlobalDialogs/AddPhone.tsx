@@ -60,6 +60,9 @@ const AddPhone: React.FC<AddPhoneProps> = (props) => {
         renewToken();
         if (response.data) {
           dispatch(userActions.setUser(response.data));
+        }else{
+          const userData = (await getUserReq()).data;
+          dispatch(userActions.setUser(userData));
         }
         dispatch(dialogActions.openAlertDialog({
           type: 'alertDialog',
@@ -70,8 +73,7 @@ const AddPhone: React.FC<AddPhoneProps> = (props) => {
             btn: t('addPhone.successDialog.btn'),
           }
         }))
-        const userData = (await getUserReq()).data;
-        dispatch(userActions.setUser(userData));
+
       }
     } catch (e: any) {
       console.error(e.response);

@@ -59,7 +59,10 @@ const ChangePhone: React.FC<ChangePhoneProps> = (props) => {
       if (response.status === 200) {
             renewToken();
             if (response.data) {
-                dispatch(userActions.setUser(response.data));
+              dispatch(userActions.setUser(response.data));
+            }else{
+              const userData = (await getUserReq()).data;
+              dispatch(userActions.setUser(userData));
             }
       }
       dispatch(dialogActions.openAlertDialog({
