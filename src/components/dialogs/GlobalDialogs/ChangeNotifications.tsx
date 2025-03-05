@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
-import { ContactPreferences } from '../../../api/types/user';
+import { ContactPreferences, PhoneContactInfo } from '../../../api/types/user';
 import { getUserReq, updateContactPreferencesReq } from '../../../api/userAPI';
 import { dialogActions } from '../../../store/dialogSlice';
 import { RootState } from '../../../store/rootReducer';
@@ -14,6 +14,7 @@ import {
   Checkbox,
   defaultDialogPaddingXClass,
 } from '@influenzanet/case-web-ui';
+import { Button } from 'react-bootstrap';
 
 
 interface ChangeNotificationsProps {
@@ -32,8 +33,14 @@ const ChangeNotifications: React.FC<ChangeNotificationsProps> = (props) => {
   const [changed, setChanged] = useState(false);
 
   const [weeklyEnabled, setWeeklyEnabled] = useState(false);
+  const [weeklyPhone, setWeeklyPhone] = useState(false);
   const [newsletterEnabled, setNewsletterEnabled] = useState(false);
 
+  const phoneInfo = currentUser.contactInfos.find(
+      (info): info is PhoneContactInfo => info.type === 'phone'
+  );
+  const isPhonePresent = phoneInfo ? true : false;
+  const confirmedPhone = (phoneInfo?.confirmedAt ?? 0) > 0 ? true : false;
 
   useEffect(() => {
     if (open) {
@@ -45,6 +52,7 @@ const ChangeNotifications: React.FC<ChangeNotificationsProps> = (props) => {
   useEffect(() => {
     setNewsletterEnabled(currentUser.contactPreferences.subscribedToNewsletter ? true : false);
     setWeeklyEnabled(currentUser.contactPreferences.subscribedToWeekly ? true : false);
+    setWeeklyPhone(currentUser.contactPreferences.sendNewsletterTo.includes(phoneInfo?.id ?? '') ? true : false);
   }, [currentUser]);
 
   const fetchUser = async () => {
@@ -75,6 +83,9 @@ const ChangeNotifications: React.FC<ChangeNotificationsProps> = (props) => {
       subscribedToWeekly: weeklyEnabled,
       subscribedToNewsletter: newsletterEnabled
     };
+    if (weeklyPhone && isPhonePresent && confirmedPhone && phoneInfo?.id) {
+      contactPreferences.sendNewsletterTo = [...contactPreferences.sendNewsletterTo, phoneInfo.id];
+    }
 
     try {
       const user = (await updateContactPreferencesReq(contactPreferences)).data;
@@ -128,6 +139,50 @@ const ChangeNotifications: React.FC<ChangeNotificationsProps> = (props) => {
               t('dialogs:changeNotifications.weeklyReminder.on') :
               t('dialogs:changeNotifications.weeklyReminder.off')}
           </Checkbox>
+
+          <label
+            className="mb-1 form-label mt-2"
+            htmlFor="weeklyPhone">
+            {t('dialogs:changeNotifications.weeklyReminderPhone.label')}
+          </label>
+          {confirmedPhone && (
+          <Checkbox
+            id="weeklyPhone"
+            name="weeklyPhone"
+            checked={weeklyPhone}
+            onChange={
+              (value: boolean) => {
+                setChanged(true);
+                setWeeklyPhone(value);
+              }
+            }
+          >
+            {weeklyPhone ?
+              t('dialogs:changeNotifications.weeklyReminderPhone.on') :
+              t('dialogs:changeNotifications.weeklyReminderPhone.off')}
+           </Checkbox>
+          )}
+          {(!confirmedPhone && !isPhonePresent) && (
+            <Button
+              className="mt-2"
+              onClick={() => dispatch(dialogActions.openDialogWithoutPayload({ type: 'addPhone' }))}
+              variant="link"
+            >
+              {t('dialogs:changeNotifications.addPhone')}
+            </Button>
+          )}
+        {(!confirmedPhone && isPhonePresent) && (
+          <AlertBox className="mt-2" type="info" content={t('changeNotifications.phoneNotConfirmed')} />
+         )}
+        {(!confirmedPhone && isPhonePresent) && (
+            <Button
+              className="mt-2"
+              onClick={() => dispatch(dialogActions.openDialogWithoutPayload({ type: 'addPhone' }))}
+              variant="link"
+            >
+              {t('dialogs:changeNotifications.verifyPhone')}
+            </Button>
+          )}
 
           <label
             className="mt-2 mb-1 form-label"
