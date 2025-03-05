@@ -13,6 +13,7 @@ import {
   AlertBox,
   Checkbox,
   defaultDialogPaddingXClass,
+  EditBtn,
 } from '@influenzanet/case-web-ui';
 import { Button } from 'react-bootstrap';
 
@@ -85,6 +86,9 @@ const ChangeNotifications: React.FC<ChangeNotificationsProps> = (props) => {
     };
     if (weeklyPhone && isPhonePresent && confirmedPhone && phoneInfo?.id) {
       contactPreferences.sendNewsletterTo = [...contactPreferences.sendNewsletterTo, phoneInfo.id];
+    }
+    if (!weeklyPhone && isPhonePresent && confirmedPhone && phoneInfo?.id) {
+      contactPreferences.sendNewsletterTo = contactPreferences.sendNewsletterTo.filter((id) => id !== phoneInfo.id);
     }
 
     try {
@@ -163,13 +167,10 @@ const ChangeNotifications: React.FC<ChangeNotificationsProps> = (props) => {
            </Checkbox>
           )}
           {(!confirmedPhone && !isPhonePresent) && (
-            <Button
-              className="mt-2"
-              onClick={() => dispatch(dialogActions.openDialogWithoutPayload({ type: 'addPhone' }))}
-              variant="link"
-            >
-              {t('dialogs:changeNotifications.addPhone')}
-            </Button>
+            <EditBtn
+             onClick={() => dispatch(dialogActions.openDialogWithoutPayload({ type: 'addPhone' }))}>
+                          {t('dialogs:changeNotifications.addPhone')}
+            </EditBtn>
           )}
         {(!confirmedPhone && isPhonePresent) && (
           <AlertBox className="mt-2" type="info" content={t('changeNotifications.phoneNotConfirmed')} />
