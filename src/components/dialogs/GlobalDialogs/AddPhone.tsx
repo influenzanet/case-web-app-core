@@ -17,10 +17,7 @@ import {
 } from '@influenzanet/case-web-ui';
 
 
-interface AddPhoneProps {
-}
-
-const AddPhone: React.FC<AddPhoneProps> = (props) => {
+const AddPhone: React.FC = () => {
   const { t } = useTranslation(['dialogs']);
   const dispatch = useDispatch();
   const dialogState = useSelector((state: RootState) => state.dialog)
@@ -60,24 +57,22 @@ const AddPhone: React.FC<AddPhoneProps> = (props) => {
         renewToken();
         if (response.data) {
           dispatch(userActions.setUser(response.data));
-        }else{
+        } else {
           const userData = (await getUserReq()).data;
           dispatch(userActions.setUser(userData));
         }
-        dispatch(dialogActions.openAlertDialog({
-          type: 'alertDialog',
+        dispatch(dialogActions.openVerifyWhatsAppDialog({
+          type: 'verifyWhatsApp',
           payload: {
-            color: 'success',
-            title: t('addPhone.successDialog.title'),
-            content: t('addPhone.successDialog.content'),
-            btn: t('addPhone.successDialog.btn'),
+            phoneNumber: formData.newPhone,
           }
         }))
 
       }
-    } catch (e: any) {
-      console.error(e.response);
-      handleError(e.response.data.error);
+    } catch (e: unknown) {
+      console.error(e);
+      const errorResponse = e as { response?: { data?: { error?: string } } };
+      handleError(errorResponse.response?.data?.error);
     } finally {
       setLoading(false);
     }
@@ -103,7 +98,7 @@ const AddPhone: React.FC<AddPhoneProps> = (props) => {
   };
 
   const buttonDisabled = (): boolean => {
-    return loading || formData.newPhone.length < 8 ;
+    return loading || formData.newPhone.length < 8;
   }
 
 

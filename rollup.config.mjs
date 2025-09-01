@@ -6,7 +6,9 @@ import postcss from "rollup-plugin-postcss";
 import copy from "rollup-plugin-copy";
 import json from "@rollup/plugin-json";
 
-import packageJson from "./package.json" assert { type: "json" };
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
+const packageJson = require("./package.json");
 
 const config = {
   input: "src/index.ts",

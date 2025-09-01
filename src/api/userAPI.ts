@@ -43,22 +43,22 @@ export const changeAccountEmailReq = (
     password,
   });
 
-  export const changeAccountPhoneReq = (
-    newPhone: string
-  ) =>
-    authApiInstance.post<User>("/v1/user/contact/change-phone", {
-      newPhone
+export const changeAccountPhoneReq = (
+  newPhone: string
+) =>
+  authApiInstance.post<User>("/v1/user/contact/change-phone", {
+    newPhone
   });
 
-  export const newAccountPhoneReq = (
-      newPhone: string
-    ) =>
-      authApiInstance.post<User>("/v1/user/contact/add-phone", {
-        newPhone
-   });
+export const newAccountPhoneReq = (
+  newPhone: string
+) =>
+  authApiInstance.post<User>("/v1/user/contact/add-phone", {
+    newPhone
+  });
 
 
-  
+
 export const setPreferredLanguageReq = (languageCode: string) =>
   authApiInstance.post<User>("/v1/user/set-language", { languageCode });
 // Profiles:
@@ -107,4 +107,10 @@ export const deleteAccountReq = (userId: string) =>
 
 export const deletePhoneReq = () =>
   authApiInstance.delete<User>("/v1/user/contact/delete-phone");
+
+// WhatsApp Verification API
+export const verifyWhatsAppCodeReq = (code: string) =>
+  authApiInstance.post<User>("/v1/user/contact/verify-whatsapp", {
+    code,
+  });
 

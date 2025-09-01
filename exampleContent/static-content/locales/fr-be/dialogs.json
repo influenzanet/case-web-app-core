@@ -204,7 +204,7 @@
     }
   },
   "deleteAccount": {
-    "title": "Se désabonner de l’étude.",
+    "title": "Se désabonner de l'étude.",
     "info": "Êtes-vous certain(e) de vouloir supprimer votre compte ? \n Il s'agit d'une action irréversible.",
     "cancelBtn": "Annuler",
     "confirmBtn": "Se désabonner",
@@ -212,6 +212,22 @@
       "title": "Compte supprimé",
       "content": "Réussi ! Votre compte a été supprimé. Nous vous remercions pour votre contribution. Vous pouvez toujours vous réinscrire et participer à nouveau à cette étude en créant un nouveau compte.",
       "btn": "Ok"
+    }
+  },
+  "verifyWhatsApp": {
+    "title": "Vérifier le numéro WhatsApp",
+    "description": "Nous avons envoyé un code de vérification à {{phoneNumber}} via WhatsApp. Veuillez saisir le code ci-dessous.",
+    "codeInputLabel": "Code de vérification",
+    "codeInputPlaceholder": "Saisir le code à 6 chiffres",
+    "verifyBtn": "Vérifier",
+    "resendBtn": "Renvoyer le code",
+    "cancelBtn": "Annuler",
+    "verifying": "Vérification...",
+    "resending": "Renvoi...",
+    "errors": {
+      "codeRequired": "Veuillez saisir le code de vérification",
+      "verificationFailed": "La vérification a échoué. Veuillez réessayer.",
+      "resendFailed": "Échec du renvoi du code. Veuillez réessayer."
     }
   }
 }

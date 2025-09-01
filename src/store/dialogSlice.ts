@@ -30,11 +30,20 @@ export interface AlertDialog {
   }
 }
 
-export interface DialogState {
-  config?: DialogWithoutPayload | LoginDialog | AlertDialog
+export interface VerifyWhatsAppDialog {
+  type: 'verifyWhatsApp'
+  origin?: DialogOrigin;
+  payload: {
+    phoneNumber: string
+    token?: string
+  }
 }
 
-export let initialState: DialogState = {
+export interface DialogState {
+  config?: DialogWithoutPayload | LoginDialog | AlertDialog | VerifyWhatsAppDialog
+}
+
+export const initialState: DialogState = {
   config: undefined
 }
 
@@ -63,6 +72,13 @@ const dialogSlice = createSlice({
       }
     },
     openAlertDialog(state, action: PayloadAction<AlertDialog>) {
+      state.config = {
+        type: action.payload.type,
+        origin: action.payload.origin,
+        payload: action.payload.payload
+      }
+    },
+    openVerifyWhatsAppDialog(state, action: PayloadAction<VerifyWhatsAppDialog>) {
       state.config = {
         type: action.payload.type,
         origin: action.payload.origin,

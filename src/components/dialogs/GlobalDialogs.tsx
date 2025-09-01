@@ -16,6 +16,7 @@ import { DefaultRoutes } from '../../types/routing';
 import ChangePhone from './GlobalDialogs/ChangePhone';
 import DeletePhone from './GlobalDialogs/DeletePhone';
 import AddPhone from './GlobalDialogs/AddPhone';
+import VerifyWhatsApp from './GlobalDialogs/VerifyWhatsApp';
 
 
 interface GlobalDialogsProps {
@@ -32,6 +33,7 @@ const GlobalDialogs: React.FC<GlobalDialogsProps> = (props) => {
       <ChangeEmail />
       <ChangePhone />
       <AddPhone />
+      <VerifyWhatsApp />
       <ChangePassword />
       <ChangeLanguage
         onChangeLanguage={props.onChangeLanguage}

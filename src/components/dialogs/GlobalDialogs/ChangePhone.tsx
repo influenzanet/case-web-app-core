@@ -17,10 +17,7 @@ import {
 } from '@influenzanet/case-web-ui';
 
 
-interface ChangePhoneProps {
-}
-
-const ChangePhone: React.FC<ChangePhoneProps> = (props) => {
+const ChangePhone: React.FC = () => {
   const { t } = useTranslation(['dialogs']);
   const dispatch = useDispatch();
   const dialogState = useSelector((state: RootState) => state.dialog)
@@ -55,28 +52,26 @@ const ChangePhone: React.FC<ChangePhoneProps> = (props) => {
     setLoading(true);
     setError("");
     try {
-      const response =  await changeAccountPhoneReq(formData.newPhone);
+      const response = await changeAccountPhoneReq(formData.newPhone);
       if (response.status === 200) {
-            renewToken();
-            if (response.data) {
-              dispatch(userActions.setUser(response.data));
-            }else{
-              const userData = (await getUserReq()).data;
-              dispatch(userActions.setUser(userData));
-            }
+        renewToken();
+        if (response.data) {
+          dispatch(userActions.setUser(response.data));
+        } else {
+          const userData = (await getUserReq()).data;
+          dispatch(userActions.setUser(userData));
+        }
       }
-      dispatch(dialogActions.openAlertDialog({
-          type: 'alertDialog',
-          payload: {
-            color: 'success',
-            title: t('changePhone.successDialog.title'),
-            content: t('changePhone.successDialog.content'),
-            btn: t('changePhone.successDialog.btn'),
-          }
-        }))
-    } catch (e: any) {
-      console.error(e.response);
-      handleError(e.response.data.error);
+      dispatch(dialogActions.openVerifyWhatsAppDialog({
+        type: 'verifyWhatsApp',
+        payload: {
+          phoneNumber: formData.newPhone,
+        }
+      }))
+    } catch (e: unknown) {
+      console.error(e);
+      const errorResponse = e as { response?: { data?: { error?: string } } };
+      handleError(errorResponse.response?.data?.error);
     } finally {
       setLoading(false);
     }
@@ -102,7 +97,7 @@ const ChangePhone: React.FC<ChangePhoneProps> = (props) => {
   };
 
   const buttonDisabled = (): boolean => {
-    return loading || formData.newPhone.length < 8 ;
+    return loading || formData.newPhone.length < 8;
   }
 
 

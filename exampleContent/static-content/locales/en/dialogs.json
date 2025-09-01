@@ -240,5 +240,21 @@
       "content": "Done! Your account has been deleted. Thank you for your contribution. You can always participate again by creating a new account.",
       "btn": "Ok"
     }
+  },
+  "verifyWhatsApp": {
+    "title": "Verify WhatsApp Number",
+    "description": "We sent a verification code to {{phoneNumber}} via WhatsApp. Please enter the code below.",
+    "codeInputLabel": "Verification Code",
+    "codeInputPlaceholder": "Enter 6-digit code",
+    "verifyBtn": "Verify",
+    "resendBtn": "Resend Code",
+    "cancelBtn": "Cancel",
+    "verifying": "Verifying...",
+    "resending": "Resending...",
+    "errors": {
+      "codeRequired": "Please enter the verification code",
+      "verificationFailed": "Verification failed. Please try again.",
+      "resendFailed": "Failed to resend code. Please try again."
+    }
   }
 }
