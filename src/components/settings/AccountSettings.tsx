@@ -76,13 +76,13 @@ const AccountSettings: React.FC<AccountSettingsProps> = (props) => {
         {t(`${props.itemKey}.phone.title`)}
       </h4>
       {phoneInfo ? (
-      <p className="mb-1 text-grey-7">
-        {t(`${props.itemKey}.phone.info`)}
-      </p>  ) : (
         <p className="mb-1 text-grey-7">
-        {t(`${props.itemKey}.phone.infoAdd`)}
-      </p> 
-        )}
+          {t(`${props.itemKey}.phone.info`)}
+        </p>) : (
+        <p className="mb-1 text-grey-7">
+          {t(`${props.itemKey}.phone.infoAdd`)}
+        </p>
+      )}
       <div className="m-0 d-flex align-items-center py-2">
         {phoneInfo ? (
           <EditBtn
@@ -105,11 +105,11 @@ const AccountSettings: React.FC<AccountSettingsProps> = (props) => {
               dispatch(dialogActions.openDialogWithoutPayload({ type: 'deletePhone' }))
             }}
           >
-              <i className="fas fa-trash text-grey-5"></i>
+            <i className="fas fa-trash text-grey-5"></i>
           </button>
         )}
       </div>
-      
+
 
       {/** password */}
       <h4 className="fw-bold mt-2">

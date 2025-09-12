@@ -17,6 +17,9 @@ import { HeaderConfig } from './types/headerConfig';
 import { FooterConfig } from './types/footerConfig';
 import { NavbarConfig } from './types/navbarConfig';
 import { PageConfig, PagesConfig } from './types/pagesConfig';
+import AccountSettings from './components/settings/AccountSettings';
+import CommunicationSettings from './components/settings/CommunicationSettings';
+import { PhoneNumberInput } from './components/inputs';
 
 const coreReduxActions = {
   appActions,
@@ -43,6 +46,9 @@ export {
   useAuthTokenCheck,
   PreventAccidentalNavigationPrompt,
   InternalNavigator,
+  AccountSettings,
+  CommunicationSettings,
+  PhoneNumberInput,
   type AppConfig,
   type HeaderConfig,
   type FooterConfig,

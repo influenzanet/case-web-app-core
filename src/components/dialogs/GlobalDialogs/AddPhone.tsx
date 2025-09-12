@@ -11,10 +11,35 @@ import {
   DialogBtn,
   AlertBox,
   TextField,
+  SelectField,
   defaultDialogPaddingXClass,
   Dialog,
   ConfirmDialog,
 } from '@influenzanet/case-web-ui';
+
+// Lista dei prefissi internazionali più comuni
+const COUNTRY_CODES = [
+  { code: '+39', country: 'IT', name: 'Italy' },
+  { code: '+1', country: 'US', name: 'United States' },
+  { code: '+44', country: 'GB', name: 'United Kingdom' },
+  { code: '+33', country: 'FR', name: 'France' },
+  { code: '+49', country: 'DE', name: 'Germany' },
+  { code: '+34', country: 'ES', name: 'Spain' },
+  { code: '+31', country: 'NL', name: 'Netherlands' },
+  { code: '+41', country: 'CH', name: 'Switzerland' },
+  { code: '+43', country: 'AT', name: 'Austria' },
+  { code: '+32', country: 'BE', name: 'Belgium' },
+  { code: '+351', country: 'PT', name: 'Portugal' },
+  { code: '+30', country: 'GR', name: 'Greece' },
+  { code: '+46', country: 'SE', name: 'Sweden' },
+  { code: '+47', country: 'NO', name: 'Norway' },
+  { code: '+45', country: 'DK', name: 'Denmark' },
+  { code: '+358', country: 'FI', name: 'Finland' },
+  { code: '+48', country: 'PL', name: 'Poland' },
+  { code: '+420', country: 'CZ', name: 'Czech Republic' },
+  { code: '+36', country: 'HU', name: 'Hungary' },
+  { code: '+40', country: 'RO', name: 'Romania' },
+];
 
 
 const AddPhone: React.FC = () => {
@@ -27,7 +52,9 @@ const AddPhone: React.FC = () => {
   const [error, setError] = useState('');
   const [openConfirm, setOpenConfirm] = useState(false);
   const [formData, setFormData] = useState({
-    newPhone: ''
+    countryCode: '+39', // Default Italia
+    phoneNumber: '', // Solo il numero senza prefisso
+    newPhone: '' // Numero completo con prefisso
   });
 
   useEffect(() => {
@@ -40,9 +67,32 @@ const AddPhone: React.FC = () => {
     setLoading(false);
     setError('');
     setFormData({
+      countryCode: '+39',
+      phoneNumber: '',
       newPhone: ''
     });
   }
+
+  const updateFullPhoneNumber = (countryCode: string, phoneNumber: string) => {
+    const cleanNumber = phoneNumber.replace(/[^\d\s-]/g, '');
+    const fullPhone = countryCode + cleanNumber;
+    setFormData(prev => ({
+      ...prev,
+      countryCode,
+      phoneNumber: cleanNumber,
+      newPhone: fullPhone
+    }));
+  };
+
+  const handleCountryCodeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const newCountryCode = event.target.value;
+    updateFullPhoneNumber(newCountryCode, formData.phoneNumber);
+  };
+
+  const handlePhoneNumberChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const newPhoneNumber = event.target.value;
+    updateFullPhoneNumber(formData.countryCode, newPhoneNumber);
+  };
 
   const handleClose = () => {
     dispatch(dialogActions.closeDialog());
@@ -98,7 +148,7 @@ const AddPhone: React.FC = () => {
   };
 
   const buttonDisabled = (): boolean => {
-    return loading || formData.newPhone.length < 8;
+    return loading || formData.phoneNumber.length < 8;
   }
 
 
@@ -115,21 +165,42 @@ const AddPhone: React.FC = () => {
         'bg-grey-1'
       )}>
         <form onSubmit={onSubmit}>
-          <TextField
-            className="mb-2"
-            id="newPhone"
-            name="newPhone"
-            type="text"
-            label={t('dialogs:addPhone.phoneInputLabel')}
-            placeholder={t('dialogs:addPhone.phoneInputPlaceholder')}
-            value={formData.newPhone}
-            autoFocus
-            autoComplete="off"
-            onChange={(event) => {
-              const value = event.target.value;
-              setFormData(prev => { return { ...prev, newPhone: value } });
-            }}
-          />
+          {/* Label per il campo */}
+          <label className="form-label mb-1">
+            {t('dialogs:addPhone.phoneInputLabel')}
+          </label>
+
+          {/* Container per dropdown + input */}
+          <div className="d-flex mb-2">
+            {/* Dropdown per il prefisso */}
+            <SelectField
+              className="me-2"
+              style={{ width: '120px', flexShrink: 0 }}
+              value={formData.countryCode}
+              onChange={handleCountryCodeChange}
+              values={COUNTRY_CODES.map((country) => ({
+                code: country.code,
+                label: `${country.code} ${country.country}`
+              }))}
+            />
+
+            {/* Campo del numero */}
+            <TextField
+              type="text"
+              placeholder={t('dialogs:addPhone.phoneInputPlaceholder')}
+              value={formData.phoneNumber}
+              autoFocus
+              autoComplete="tel"
+              className="flex-grow-1"
+              onChange={handlePhoneNumberChange}
+              style={{ marginBottom: 0 }}
+            />
+          </div>
+
+          {/* Mostra il numero completo */}
+          <small className="text-muted mb-2 d-block">
+            {t('dialogs:addPhone.completeNumber')}: {formData.newPhone}
+          </small>
 
           <AlertBox
             type="info"

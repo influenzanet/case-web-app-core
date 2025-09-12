@@ -110,7 +110,10 @@ export const deletePhoneReq = () =>
 
 // WhatsApp Verification API
 export const verifyWhatsAppCodeReq = (code: string) =>
-  authApiInstance.post<User>("/v1/user/contact/verify-whatsapp", {
+  authApiInstance.post<User>("/v1/user/contact/verify-whatsapp-code", {
     code,
   });
+
+export const resendWhatsAppCodeReq = () =>
+  authApiInstance.post<ServiceStatus>("/v1/user/contact/resend-whatsapp-code", {});
 

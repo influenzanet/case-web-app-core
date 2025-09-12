@@ -10,11 +10,11 @@ import { userActions } from '../../../store/userSlice';
 import {
   DialogBtn,
   AlertBox,
-  TextField,
   defaultDialogPaddingXClass,
   Dialog,
   ConfirmDialog,
 } from '@influenzanet/case-web-ui';
+import PhoneNumberInput from '../../inputs/PhoneNumberInput';
 
 
 const ChangePhone: React.FC = () => {
@@ -114,19 +114,14 @@ const ChangePhone: React.FC = () => {
         'bg-grey-1'
       )}>
         <form onSubmit={onSubmit}>
-          <TextField
+          <PhoneNumberInput
             className="mb-2"
-            id="newPhone"
-            name="newPhone"
-            type="text"
+            value={formData.newPhone}
             label={t('dialogs:changePhone.phoneInputLabel')}
             placeholder={t('dialogs:changePhone.phoneInputPlaceholder')}
-            value={formData.newPhone}
             autoFocus
-            autoComplete="off"
-            onChange={(event) => {
-              const value = event.target.value;
-              setFormData(prev => { return { ...prev, newPhone: value } });
+            onChange={(fullPhoneNumber) => {
+              setFormData(prev => { return { ...prev, newPhone: fullPhoneNumber } });
             }}
           />
 
