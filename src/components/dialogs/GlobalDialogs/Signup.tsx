@@ -27,6 +27,7 @@ import { setDefaultAccessTokenHeader } from '../../../api/instances/authenticate
 import { userActions } from '../../../store/userSlice';
 import { getErrorMsg } from '../../../api/utils';
 import { parseBooleanFlag } from '../../../utils/parseBooleanFlag';
+import { PhoneNumberInput } from '../../inputs';
 
 const marginBottomClass = "mb-2";
 
@@ -71,7 +72,7 @@ type DialogSize = 'sm' | 'lg' | 'xl';
 
 const consentDialogSize = (): DialogSize | undefined => {
   const s = process.env.REACT_APP_CONSENT_DIALOG_WIDTH ?? undefined;
-  if(s === 'sm' || s === 'lg' || s === 'xl') {
+  if (s === 'sm' || s === 'lg' || s === 'xl') {
     return s;
   }
   return undefined;
@@ -243,24 +244,19 @@ const SignupForm: React.FC<SignupFormProps> = (props) => {
             setSignupData(prev => { return { ...prev, confirmPassword: value } })
           }}
         />
-       <TextField
-          id="signupPhone"
-          label={phoneInputLabel}
-          placeholder={phoneInputPlaceholder}
-          type="text"
-          name="phone"
+        <PhoneNumberInput
           className={marginBottomClass}
           value={signupData.phone}
-          required={false}
-          errorMsg={t("dialogs:signup.errors.phone")}
-          hasError={!checkPhoneFormat(signupData.phone) && showPhoneError}
+          label={phoneInputLabel}
+          placeholder={phoneInputPlaceholder}
+          autoFocus={false}
+          onChange={(fullPhoneNumber) => {
+            setSignupData(prev => { return { ...prev, phone: fullPhoneNumber } })
+          }}
           onBlur={() => {
             setShowPhoneError(true)
           }}
-          onChange={(event) => {
-            const value = event.target.value;
-            setSignupData(prev => { return { ...prev, phone: value } })
-          }}
+          error={!checkPhoneFormat(signupData.phone) && showPhoneError ? t("dialogs:signup.errors.phone") : undefined}
         />
 
         {/* additional input to check signup validity --> */}
@@ -489,7 +485,7 @@ const Signup: React.FC = () => {
           lastTokenRefresh: 0,
         },
       })
-      let tokenRefreshedAt = new Date().getTime();
+      const tokenRefreshedAt = new Date().getTime();
 
       dispatch(setAppAuth({
         accessToken: response.data.accessToken,
@@ -503,7 +499,7 @@ const Signup: React.FC = () => {
       setLoading(false);
       closeWithSuccess();
     } catch (e: any) {
-      console.log(e.response);
+      // Error handled through error state mechanism
       if (!e.response) {
         handleError('request failed');
       } else if (e.response.status === 404) {

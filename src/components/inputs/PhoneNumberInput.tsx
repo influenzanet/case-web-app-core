@@ -41,6 +41,7 @@ interface PhoneNumberInputProps {
   autoFocus?: boolean;
   disabled?: boolean;
   error?: string;
+  onBlur?: () => void;
 }
 
 const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
@@ -51,7 +52,8 @@ const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
   className,
   autoFocus,
   disabled,
-  error
+  error,
+  onBlur
 }) => {
   const { t } = useTranslation(['dialogs']);
 
@@ -111,6 +113,7 @@ const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
           disabled={disabled}
           className="flex-grow-1"
           onChange={(event) => handlePhoneNumberChange(event.target.value)}
+          onBlur={onBlur}
           style={{ marginBottom: 0 }}
         />
       </div>
