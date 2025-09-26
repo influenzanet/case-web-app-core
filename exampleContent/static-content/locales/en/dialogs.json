@@ -2,6 +2,7 @@
   "loadingMsg": "Loading",
   "login": {
     "credentials": {
+      "successMsg": "You are almost signed up for Infectieradar.be! \n\n First confirm your email address by clicking on the link in the confirmation email that we have sent you. \n\n If you provided a phone number, you will also receive a WhatsApp verification code after email confirmation. \n\n If you can't find the email, first check your spam folder. You can also request a new email below.",
       "title": "Login",
       "info": "",
       "emailInputLabel": "Email",
@@ -113,7 +114,7 @@
     }
   },
   "changePhone": {
-    "title" : "Change phone number",
+    "title": "Change phone number",
     "phoneInputLabel": "New phone number",
     "phoneInputPlaceholder": "New phone number",
     "info": "Do you want to use a different phone number? Change your phone number by clicking on the button below.",
@@ -134,7 +135,7 @@
       "content": "Success! Your phone number has been changed.",
       "btn": "Ok"
     }
-  }, 
+  },
   "changePassword": {
     "title": "Change password",
     "currentPasswordInputLabel": "Current password",

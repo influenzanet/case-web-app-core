@@ -127,7 +127,7 @@ const SignupForm: React.FC<SignupFormProps> = (props) => {
 
   const isDisabled = (): boolean => {
     const emailOk = checkEmailFormat(signupData.email);
-    const phoneOk = checkPhoneFormat(signupData.phone);
+    const phoneOk = signupData.phone === "" || checkPhoneFormat(signupData.phone); // Phone is optional
     const passwordRuleOk = checkPasswordRules(signupData.password);
     return !(!props.isLoading && (!useRecaptcha || reCaptchaAccepted) && acceptedPrivacyPolicy && emailOk && passwordRuleOk && phoneOk && passwordsMatch());
   }
@@ -247,8 +247,8 @@ const SignupForm: React.FC<SignupFormProps> = (props) => {
         <PhoneNumberInput
           className={marginBottomClass}
           value={signupData.phone}
-          label={phoneInputLabel}
-          placeholder={phoneInputPlaceholder}
+          label={phoneInputLabel + " (opzionale)"}
+          placeholder={phoneInputPlaceholder + " (opzionale per notifiche WhatsApp)"}
           autoFocus={false}
           onChange={(fullPhoneNumber) => {
             setSignupData(prev => { return { ...prev, phone: fullPhoneNumber } })
@@ -256,7 +256,7 @@ const SignupForm: React.FC<SignupFormProps> = (props) => {
           onBlur={() => {
             setShowPhoneError(true)
           }}
-          error={!checkPhoneFormat(signupData.phone) && showPhoneError ? t("dialogs:signup.errors.phone") : undefined}
+          error={signupData.phone !== "" && !checkPhoneFormat(signupData.phone) && showPhoneError ? t("dialogs:signup.errors.phone") : undefined}
         />
 
         {/* additional input to check signup validity --> */}
