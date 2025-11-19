@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { blurEmail } from '../../utils/blurEmail';
 import { blurPhone } from '../../utils/blurPhone';
@@ -9,6 +9,7 @@ import { EditBtn } from '@influenzanet/case-web-ui';
 import { dialogActions } from '../../store/dialogSlice';
 import { useIsAuthenticated } from '../../hooks/useIsAuthenticated';
 import { PhoneContactInfo } from '../../api/types/user';
+import { resendWhatsAppCodeReq } from '../../api/userAPI';
 
 
 interface AccountSettingsProps {
@@ -21,6 +22,8 @@ const AccountSettings: React.FC<AccountSettingsProps> = (props) => {
   const isAuth = useIsAuthenticated();
   const dispatch = useDispatch();
   const currentUser = useSelector((state: RootState) => state.user.currentUser);
+  const [isResending, setIsResending] = useState(false);
+  const [resendMessage, setResendMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
 
   if (!isAuth) {
     return <div className="bg-warning-light p-3">
@@ -34,6 +37,27 @@ const AccountSettings: React.FC<AccountSettingsProps> = (props) => {
 
   console.log('phoneInfo:', phoneInfo);
   console.log('confirmedAt:', phoneInfo?.confirmedAt);
+
+  const handleResendCode = async () => {
+    setIsResending(true);
+    setResendMessage(null);
+    try {
+      await resendWhatsAppCodeReq();
+      setResendMessage({
+        type: 'success',
+        text: t(`${props.itemKey}.phone.resendSuccess`, 'Codice inviato con successo!')
+      });
+    } catch (error) {
+      console.error('Error resending WhatsApp code:', error);
+      setResendMessage({
+        type: 'error',
+        text: t(`${props.itemKey}.phone.resendError`, 'Errore nell\'invio del codice. Riprova.')
+      });
+    } finally {
+      setIsResending(false);
+      setTimeout(() => setResendMessage(null), 5000); // Clear message after 5 seconds
+    }
+  };
 
   const renderProfileSettings = () => {
     if (props.hideProfileSettings === true) {
@@ -107,6 +131,25 @@ const AccountSettings: React.FC<AccountSettingsProps> = (props) => {
             >
               {blurPhone(phoneInfo.phone)}
             </EditBtn>
+            {phoneInfo.confirmedAt === 0 && (
+              <button
+                className="btn btn-sm btn-primary ms-2"
+                onClick={handleResendCode}
+                disabled={isResending}
+              >
+                {isResending ? (
+                  <>
+                    <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    {t(`${props.itemKey}.phone.resending`, 'Invio...')}
+                  </>
+                ) : (
+                  <>
+                    <i className="fas fa-paper-plane me-2"></i>
+                    {t(`${props.itemKey}.phone.resendBtn`, 'Invia di nuovo codice')}
+                  </>
+                )}
+              </button>
+            )}
           </>
         ) : (
           <EditBtn
@@ -127,6 +170,11 @@ const AccountSettings: React.FC<AccountSettingsProps> = (props) => {
           </button>
         )}
       </div>
+      {resendMessage && (
+        <div className={`alert alert-${resendMessage.type === 'success' ? 'success' : 'danger'} mt-2`}>
+          {resendMessage.text}
+        </div>
+      )}
 
 
       {/** password */}
