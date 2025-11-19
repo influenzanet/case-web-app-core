@@ -32,6 +32,9 @@ const AccountSettings: React.FC<AccountSettingsProps> = (props) => {
     (info): info is PhoneContactInfo => info.type === 'phone'
   );
 
+  console.log('phoneInfo:', phoneInfo);
+  console.log('confirmedAt:', phoneInfo?.confirmedAt);
+
   const renderProfileSettings = () => {
     if (props.hideProfileSettings === true) {
       return null;
@@ -72,9 +75,22 @@ const AccountSettings: React.FC<AccountSettingsProps> = (props) => {
       </EditBtn>
 
       {/** phone */}
-      <h4 className="fw-bold mt-2">
-        {t(`${props.itemKey}.phone.title`)}
-      </h4>
+      <div className="d-flex align-items-center mt-2">
+        <h4 className="fw-bold mb-0">
+          {t(`${props.itemKey}.phone.title`)}
+        </h4>
+        {phoneInfo && (!phoneInfo.confirmedAt || phoneInfo.confirmedAt === 0) && (
+          <span className="badge bg-warning text-dark ms-2">
+            {t(`${props.itemKey}.phone.notConfirmed`)}
+          </span>
+        )}
+        {phoneInfo && phoneInfo.confirmedAt && phoneInfo.confirmedAt > 0 && (
+          <span className="badge bg-success ms-2">
+            <i className="fas fa-check me-1"></i>
+            {t(`${props.itemKey}.phone.confirmed`)}
+          </span>
+        )}
+      </div>
       {phoneInfo ? (
         <p className="mb-1 text-grey-7">
           {t(`${props.itemKey}.phone.info`)}
@@ -85,11 +101,13 @@ const AccountSettings: React.FC<AccountSettingsProps> = (props) => {
       )}
       <div className="m-0 d-flex align-items-center py-2">
         {phoneInfo ? (
-          <EditBtn
-            onClick={() => dispatch(dialogActions.openDialogWithoutPayload({ type: 'changePhone' }))}
-          >
-            {blurPhone(phoneInfo.phone)}
-          </EditBtn>
+          <>
+            <EditBtn
+              onClick={() => dispatch(dialogActions.openDialogWithoutPayload({ type: 'changePhone' }))}
+            >
+              {blurPhone(phoneInfo.phone)}
+            </EditBtn>
+          </>
         ) : (
           <EditBtn
             onClick={() => dispatch(dialogActions.openDialogWithoutPayload({ type: 'addPhone' }))}
@@ -100,7 +118,7 @@ const AccountSettings: React.FC<AccountSettingsProps> = (props) => {
 
         {phoneInfo && (
           <button
-            className="btn btn-danger-light"
+            className="btn btn-danger-light ms-2"
             onClick={() => {
               dispatch(dialogActions.openDialogWithoutPayload({ type: 'deletePhone' }))
             }}

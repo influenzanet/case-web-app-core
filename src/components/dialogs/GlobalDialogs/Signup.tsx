@@ -20,8 +20,8 @@ import { checkPasswordRules } from '../../../utils/passwordRules';
 import ReCAPTCHA from 'react-google-recaptcha';
 import { useLogout } from '../../../hooks/useLogout';
 import { signupWithEmailRequest } from '../../../api/authAPI';
+import { getUserReq } from '../../../api/userAPI';
 import { minuteToMillisecondFactor } from '../../../constants';
-import { useSetAuthState } from '../../../hooks/useSetAuthState';
 import { setAppAuth } from '../../../store/appSlice';
 import { setDefaultAccessTokenHeader } from '../../../api/instances/authenticatedApi';
 import { userActions } from '../../../store/userSlice';
@@ -426,7 +426,6 @@ const Signup: React.FC = () => {
   const [error, setError] = useState('');
 
   const dispatch = useDispatch();
-  const setAuthState = useSetAuthState();
   const logout = useLogout();
 
 
@@ -465,28 +464,8 @@ const Signup: React.FC = () => {
         use2fa: use2FA
       }, data.captchaToken);
 
-      // TODO: update user correctly
-      setAuthState(response.data, {
-        id: '',
-        account: {
-          type: 'email',
-          accountId: data.email,
-          accountConfirmedAt: 0,
-          preferredLanguage: "en",
-        },
-        roles: [],
-        contactPreferences: { subscribedToNewsletter: false, sendNewsletterTo: [], subscribedToWeekly: true, receiveWeeklyMessageDayOfWeek: 0 },
-        contactInfos: [],
-        profiles: response.data.profiles,
-        timestamps: {
-          createdAt: 0,
-          updatedAt: 0,
-          lastLogin: 0,
-          lastTokenRefresh: 0,
-        },
-      })
+      // Set authentication state
       const tokenRefreshedAt = new Date().getTime();
-
       dispatch(setAppAuth({
         accessToken: response.data.accessToken,
         refreshToken: response.data.refreshToken,
@@ -495,7 +474,13 @@ const Signup: React.FC = () => {
 
       setDefaultAccessTokenHeader(response.data.accessToken);
 
+      // Fetch complete user data including contactInfos
+      const userResponse = await getUserReq();
+
+      // Set user data with contactInfos
+      dispatch(userActions.setUser(userResponse.data));
       dispatch(userActions.setFromTokenResponse(response.data));
+
       setLoading(false);
       closeWithSuccess();
     } catch (e: any) {
@@ -523,6 +508,12 @@ const Signup: React.FC = () => {
         break;
       case 'not found':
         setError(t("dialogs:signup.errors.noRegistrationAllowed"));
+        break;
+      case 'phone number already registered':
+        setError(t("dialogs:signup.errors.phoneAlreadyRegistered"));
+        break;
+      case 'phone not valid':
+        setError(t("dialogs:signup.errors.invalidPhone"));
         break;
       default:
         setError(t("dialogs:signup.errors.unknown"));
