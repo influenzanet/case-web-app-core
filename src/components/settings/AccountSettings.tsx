@@ -43,19 +43,22 @@ const AccountSettings: React.FC<AccountSettingsProps> = (props) => {
     setResendMessage(null);
     try {
       await resendWhatsAppCodeReq();
-      setResendMessage({
-        type: 'success',
-        text: t(`${props.itemKey}.phone.resendSuccess`, 'Codice inviato con successo!')
-      });
-      // Open the verify WhatsApp dialog with phone number after a small delay
-      setTimeout(() => {
+      console.log('Opening dialog with phone:', phoneInfo?.phone);
+
+      // Use requestAnimationFrame to wait for React to finish rendering
+      requestAnimationFrame(() => {
         dispatch(dialogActions.openVerifyWhatsAppDialog({
           type: 'verifyWhatsApp',
           payload: {
             phoneNumber: phoneInfo?.phone || '',
           }
         }));
-      }, 100);
+      });
+
+      setResendMessage({
+        type: 'success',
+        text: t(`${props.itemKey}.phone.resendSuccess`, 'Codice inviato con successo!')
+      });
     } catch (error) {
       console.error('Error resending WhatsApp code:', error);
       setResendMessage({
@@ -64,7 +67,6 @@ const AccountSettings: React.FC<AccountSettingsProps> = (props) => {
       });
     } finally {
       setIsResending(false);
-      setTimeout(() => setResendMessage(null), 5000); // Clear message after 5 seconds
     }
   };
 
@@ -141,10 +143,10 @@ const AccountSettings: React.FC<AccountSettingsProps> = (props) => {
               {blurPhone(phoneInfo.phone)}
             </EditBtn>
             {(phoneInfo.confirmedAt === undefined || !phoneInfo.confirmedAt || phoneInfo.confirmedAt === 0) && (
-              <EditBtn
+              <button
+                className="btn btn-primary d-flex align-items-center ms-2"
                 onClick={handleResendCode}
                 disabled={isResending}
-                className="ms-2"
               >
                 {isResending ? (
                   <>
@@ -153,11 +155,11 @@ const AccountSettings: React.FC<AccountSettingsProps> = (props) => {
                   </>
                 ) : (
                   <>
-                    <i className="fas fa-paper-plane me-2"></i>
                     {t(`${props.itemKey}.phone.resendBtn`, 'Invia di nuovo codice')}
+                    <span className="material-icons ms-1" style={{ fontSize: 'inherit' }}>send</span>
                   </>
                 )}
-              </EditBtn>
+              </button>
             )}
           </>
         ) : (
