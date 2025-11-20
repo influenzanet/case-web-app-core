@@ -47,6 +47,13 @@ const AccountSettings: React.FC<AccountSettingsProps> = (props) => {
         type: 'success',
         text: t(`${props.itemKey}.phone.resendSuccess`, 'Codice inviato con successo!')
       });
+      // Open the verify WhatsApp dialog with phone number
+      dispatch(dialogActions.openVerifyWhatsAppDialog({
+        type: 'verifyWhatsApp',
+        payload: {
+          phoneNumber: phoneInfo?.phone || '',
+        }
+      }));
     } catch (error) {
       console.error('Error resending WhatsApp code:', error);
       setResendMessage({
@@ -103,7 +110,7 @@ const AccountSettings: React.FC<AccountSettingsProps> = (props) => {
         <h4 className="fw-bold mb-0">
           {t(`${props.itemKey}.phone.title`)}
         </h4>
-        {phoneInfo && (!phoneInfo.confirmedAt || phoneInfo.confirmedAt === 0) && (
+        {phoneInfo && (phoneInfo.confirmedAt === undefined || !phoneInfo.confirmedAt || phoneInfo.confirmedAt === 0) && (
           <span className="badge bg-warning text-dark ms-2">
             {t(`${props.itemKey}.phone.notConfirmed`)}
           </span>
@@ -131,7 +138,7 @@ const AccountSettings: React.FC<AccountSettingsProps> = (props) => {
             >
               {blurPhone(phoneInfo.phone)}
             </EditBtn>
-            {phoneInfo.confirmedAt === 0 && (
+            {(phoneInfo.confirmedAt === undefined || !phoneInfo.confirmedAt || phoneInfo.confirmedAt === 0) && (
               <button
                 className="btn btn-sm btn-primary ms-2"
                 onClick={handleResendCode}
