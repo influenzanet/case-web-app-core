@@ -161,6 +161,8 @@ const SignupForm: React.FC<SignupFormProps> = (props) => {
   const confirmPasswordInputLabel = t('signup.confirmPasswordInputLabel');
   const confirmPasswordPlaceholder = t('signup.confirmPasswordInputLabel');
   const phoneInputLabel = t('signup.phoneInputLabel');
+  const phoneOptional = t('signup.phoneOptional');
+  const phoneOptionalWithExplanation = t('signup.phoneOptionalWithExplanation');
   const phoneInputPlaceholder = t('signup.phoneInputPlaceholder');
 
   const dialogSize = consentDialogSize();
@@ -247,8 +249,8 @@ const SignupForm: React.FC<SignupFormProps> = (props) => {
         <PhoneNumberInput
           className={marginBottomClass}
           value={signupData.phone}
-          label={phoneInputLabel + " (opzionale)"}
-          placeholder={phoneInputPlaceholder + " (opzionale per notifiche WhatsApp)"}
+          label={phoneInputLabel + (phoneOptional)}
+          placeholder={phoneInputPlaceholder + (phoneOptionalWithExplanation)}
           autoFocus={false}
           onChange={(fullPhoneNumber) => {
             setSignupData(prev => { return { ...prev, phone: fullPhoneNumber } })
