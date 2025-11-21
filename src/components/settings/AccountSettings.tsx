@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { blurEmail } from '../../utils/blurEmail';
 import { blurPhone } from '../../utils/blurPhone';
@@ -22,18 +22,33 @@ const AccountSettings: React.FC<AccountSettingsProps> = (props) => {
   const isAuth = useIsAuthenticated();
   const dispatch = useDispatch();
   const currentUser = useSelector((state: RootState) => state.user.currentUser);
+  const dialogState = useSelector((state: RootState) => state.dialog);
   const [isResending, setIsResending] = useState(false);
   const [resendMessage, setResendMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+
+  const phoneInfo = currentUser?.contactInfos.find(
+    (info): info is PhoneContactInfo => info.type === 'phone'
+  );
+
+  // Clear success message when phone is verified
+  useEffect(() => {
+    if (phoneInfo && phoneInfo.confirmedAt && phoneInfo.confirmedAt > 0) {
+      setResendMessage(null);
+    }
+  }, [phoneInfo]);
+
+  // Clear success message when dialog closes
+  useEffect(() => {
+    if (dialogState.config === undefined && resendMessage?.type === 'success') {
+      setResendMessage(null);
+    }
+  }, [dialogState.config, resendMessage?.type]);
 
   if (!isAuth) {
     return <div className="bg-warning-light p-3">
       {'authentication needed'}
     </div>
   }
-
-  const phoneInfo = currentUser.contactInfos.find(
-    (info): info is PhoneContactInfo => info.type === 'phone'
-  );
 
   console.log('phoneInfo:', phoneInfo);
   console.log('confirmedAt:', phoneInfo?.confirmedAt);

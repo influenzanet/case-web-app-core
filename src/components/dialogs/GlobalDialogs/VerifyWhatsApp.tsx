@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
@@ -29,6 +29,14 @@ const VerifyWhatsApp: FC = () => {
   const [verificationCode, setVerificationCode] = useState('');
 
   const phoneNumber = dialogContent?.phoneNumber || '';
+
+  // Reset verification code when dialog opens
+  useEffect(() => {
+    if (open) {
+      setVerificationCode('');
+      setError('');
+    }
+  }, [open]);
 
   const close = () => {
     dispatch(dialogActions.closeDialog());
