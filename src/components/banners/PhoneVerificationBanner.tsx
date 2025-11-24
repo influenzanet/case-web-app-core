@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import { useIsAuthenticated } from '../../hooks/useIsAuthenticated';
 import { PhoneContactInfo } from '../../api/types/user';
+import { DialogBtn } from '@influenzanet/case-web-ui';
 
 const PhoneVerificationBanner: React.FC = () => {
   const { t } = useTranslation();
@@ -49,12 +50,12 @@ const PhoneVerificationBanner: React.FC = () => {
             {t('phoneVerificationBanner.message')}
           </div>
           <div className="col-12 col-md-3 text-md-end mt-2 mt-md-0">
-            <button
-              className="btn btn-sm btn-dark"
+            <DialogBtn
+              type="button"
+              color="danger"
               onClick={handleGoToProfile}
-            >
-              {t('phoneVerificationBanner.button')}
-            </button>
+              label={t('phoneVerificationBanner.button')}
+            />
           </div>
         </div>
       </div>
