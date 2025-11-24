@@ -52,7 +52,7 @@ const PhoneVerificationBanner: React.FC = () => {
           <div className="col-12 col-md-3 text-md-end mt-2 mt-md-0">
             <DialogBtn
               type="button"
-              color="danger"
+              color="primary"
               onClick={handleGoToProfile}
               label={t('phoneVerificationBanner.button')}
             />
