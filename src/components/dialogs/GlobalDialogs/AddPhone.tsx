@@ -136,6 +136,9 @@ const AddPhone: React.FC = () => {
       case 'phone not valid':
         setError(t('addPhone.errors.wrongPhoneFormat'));
         break;
+      case 'phone number already taken':
+        setError(t('addPhone.errors.phoneAlreadyTaken'));
+        break;
       default:
         setError(t('addPhone.errors.unknown'));
         break;

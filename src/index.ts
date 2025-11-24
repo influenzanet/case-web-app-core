@@ -20,6 +20,7 @@ import { PageConfig, PagesConfig } from './types/pagesConfig';
 import AccountSettings from './components/settings/AccountSettings';
 import CommunicationSettings from './components/settings/CommunicationSettings';
 import { PhoneNumberInput } from './components/inputs';
+import PhoneVerificationBanner from './components/banners/PhoneVerificationBanner';
 
 const coreReduxActions = {
   appActions,
@@ -49,6 +50,7 @@ export {
   AccountSettings,
   CommunicationSettings,
   PhoneNumberInput,
+  PhoneVerificationBanner,
   type AppConfig,
   type HeaderConfig,
   type FooterConfig,

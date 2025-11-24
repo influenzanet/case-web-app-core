@@ -85,6 +85,9 @@ const ChangePhone: React.FC = () => {
       case 'phone not valid':
         setError(t('changePhone.errors.wrongPhoneFormat'));
         break;
+      case 'phone number already taken':
+        setError(t('changePhone.errors.phoneAlreadyTaken'));
+        break;
       default:
         setError(t('changePhone.errors.unknown'));
         break;
