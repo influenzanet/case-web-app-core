@@ -7,12 +7,18 @@ import { useIsAuthenticated } from '../../hooks/useIsAuthenticated';
 import { PhoneContactInfo } from '../../api/types/user';
 
 const PhoneVerificationBanner: React.FC = () => {
-  const { t } = useTranslation(['banner']);
+  const { t } = useTranslation();
   const isAuth = useIsAuthenticated();
   const history = useHistory();
   const currentUser = useSelector((state: RootState) => state.user.currentUser);
 
-  if (!isAuth) {
+  // Early returns for safety
+  if (!isAuth || !currentUser) {
+    return null;
+  }
+
+  // Safely check for contactInfos
+  if (!currentUser.contactInfos || !Array.isArray(currentUser.contactInfos)) {
     return null;
   }
 
@@ -38,16 +44,16 @@ const PhoneVerificationBanner: React.FC = () => {
             <span className="material-icons align-middle me-2" style={{ fontSize: '1.5rem' }}>
               warning
             </span>
-            <strong>{t('banner:phoneVerification.title', 'Attenzione!')}</strong>
+            <strong>{t('phoneVerification.title')}</strong>
             {' '}
-            {t('banner:phoneVerification.message', 'Il tuo numero di telefono non è ancora stato verificato.')}
+            {t('phoneVerification.message')}
           </div>
           <div className="col-12 col-md-3 text-md-end mt-2 mt-md-0">
             <button
               className="btn btn-sm btn-dark"
               onClick={handleGoToProfile}
             >
-              {t('banner:phoneVerification.button', 'Verifica ora')}
+              {t('phoneVerification.button')}
             </button>
           </div>
         </div>

@@ -286,5 +286,6 @@ export interface IframeConfig {
 
 export interface ExtensionComponent {
   type: "extension";
-  config: any;
+  componentName: string;
+  config?: any;
 }

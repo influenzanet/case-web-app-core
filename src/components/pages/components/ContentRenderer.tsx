@@ -99,10 +99,20 @@ const ContentRenderer: React.FC<ContentRendererProps> = (props) => {
     }
     const itemConfig = item.config as ExtensionComponent;
 
+    if (!itemConfig || !itemConfig.componentName) {
+      console.warn(
+        `Extension item config is invalid: ${JSON.stringify(item)}`
+      );
+      return null;
+    }
+
     const currentExtensionComponent = props.extensions.filter(
-      (ext) => ext.name === itemConfig.config.type
+      (ext) => ext.name === itemConfig.componentName
     );
     if (!currentExtensionComponent || currentExtensionComponent.length < 1) {
+      console.warn(
+        `No extension found with name: ${itemConfig.componentName}`
+      );
       return null;
     }
 
@@ -152,10 +162,10 @@ const ContentRenderer: React.FC<ContentRendererProps> = (props) => {
             textBox={
               item.config.textBox
                 ? {
-                    className: item.config.textBox.className,
-                    title: t(`${item.itemKey}.title`),
-                    content: t(`${item.itemKey}.content`),
-                  }
+                  className: item.config.textBox.className,
+                  title: t(`${item.itemKey}.title`),
+                  content: t(`${item.itemKey}.content`),
+                }
                 : undefined
             }
           />
@@ -239,7 +249,7 @@ const ContentRenderer: React.FC<ContentRendererProps> = (props) => {
         return (
           <ImageContainer
             key={item.itemKey}
-            // className={item.className}
+          // className={item.className}
           />
         );
       case "video":
@@ -517,8 +527,8 @@ const ContentRenderer: React.FC<ContentRendererProps> = (props) => {
         const notFoundRoute = dRoutes.notFound
           ? dRoutes.notFound
           : props.isAuthenticated
-          ? dRoutes.auth
-          : dRoutes.unauth;
+            ? dRoutes.auth
+            : dRoutes.unauth;
         return (
           <Switch key={item.itemKey}>
             {item.config.pagesConfig.pages.map((pageConfig) => {
@@ -560,8 +570,7 @@ const ContentRenderer: React.FC<ContentRendererProps> = (props) => {
           {props.helmet.ignoreTitle ? null : (
             <title>
               {t(
-                `${
-                  props.helmet.override === "local" ? props.pageKey : "global"
+                `${props.helmet.override === "local" ? props.pageKey : "global"
                 }:helmet.title`
               )}
             </title>
@@ -570,8 +579,7 @@ const ContentRenderer: React.FC<ContentRendererProps> = (props) => {
             <meta
               name="description"
               content={t(
-                `${
-                  props.helmet.override === "local" ? props.pageKey : "global"
+                `${props.helmet.override === "local" ? props.pageKey : "global"
                 }:helmet.description`
               )}
             />
