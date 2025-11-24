@@ -112,11 +112,10 @@ const VerifyWhatsApp: FC = () => {
       title={t('verifyWhatsApp.title')}
       ariaLabelledBy="verify-whatsapp-title"
       onClose={close}
-      size="sm"
     >
-      <div className={`${defaultDialogPaddingXClass} py-3`}>
-        <div className="mb-3">
-          <p className="mb-2 small">{t("verifyWhatsApp.info")}</p>
+      <div className={`${defaultDialogPaddingXClass} py-4`}>
+        <div className="mb-4">
+          <p className="mb-2">{t("verifyWhatsApp.info")}</p>
         </div>
 
         {error && (
@@ -141,22 +140,20 @@ const VerifyWhatsApp: FC = () => {
         </div>
       </div>
 
-      <div className="d-flex justify-content-between align-items-center gap-2 p-3 border-top">
+      <div className="d-flex justify-content-between align-items-center gap-3 p-3 border-top">
         <DialogBtn
           type="button"
           onClick={resendCode}
           label={t('verifyWhatsApp.resendBtn')}
           loading={resendLoading}
           disabled={loading || !phoneNumber}
-          className="btn-sm"
         />
-        <div className="d-flex gap-2">
+        <div className="d-flex gap-3">
           <DialogBtn
             type="button"
             onClick={close}
             label={t('verifyWhatsApp.cancelBtn')}
             disabled={loading || resendLoading}
-            className="btn-sm"
           />
           <DialogBtn
             type="button"
@@ -165,7 +162,6 @@ const VerifyWhatsApp: FC = () => {
             label={t('verifyWhatsApp.submitBtn')}
             loading={loading}
             disabled={!verificationCode.trim() || resendLoading}
-            className="btn-sm"
           />
         </div>
       </div>

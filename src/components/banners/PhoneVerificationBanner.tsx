@@ -12,22 +12,22 @@ const PhoneVerificationBanner: React.FC = () => {
   const history = useHistory();
   const currentUser = useSelector((state: RootState) => state.user.currentUser);
 
-  // Early returns for safety
+
   if (!isAuth || !currentUser) {
     return null;
   }
 
-  // Safely check for contactInfos
+
   if (!currentUser.contactInfos || !Array.isArray(currentUser.contactInfos)) {
     return null;
   }
 
-  // Check if user has an unverified phone number
+
   const phoneInfo = currentUser.contactInfos.find(
     (info): info is PhoneContactInfo => info.type === 'phone'
   );
 
-  // Don't show banner if no phone or phone is already verified
+
   if (!phoneInfo || (phoneInfo.confirmedAt && phoneInfo.confirmedAt > 0)) {
     return null;
   }
@@ -44,16 +44,16 @@ const PhoneVerificationBanner: React.FC = () => {
             <span className="material-icons align-middle me-2" style={{ fontSize: '1.5rem' }}>
               warning
             </span>
-            <strong>{t('phoneVerification.title')}</strong>
+            <strong>{t('phoneVerificationBanner.title')}</strong>
             {' '}
-            {t('phoneVerification.message')}
+            {t('phoneVerificationBanner.message')}
           </div>
           <div className="col-12 col-md-3 text-md-end mt-2 mt-md-0">
             <button
               className="btn btn-sm btn-dark"
               onClick={handleGoToProfile}
             >
-              {t('phoneVerification.button')}
+              {t('phoneVerificationBanner.button')}
             </button>
           </div>
         </div>
