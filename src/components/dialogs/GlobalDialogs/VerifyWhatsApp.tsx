@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { RootState } from '../../../store/rootReducer';
 import { dialogActions, VerifyWhatsAppDialog } from '../../../store/dialogSlice';
 import { userActions } from '../../../store/userSlice';
-import { verifyWhatsAppCodeReq, getUserReq, deletePhoneReq, newAccountPhoneReq } from '../../../api/userAPI';
+import { verifyWhatsAppCodeReq, getUserReq, resendWhatsAppCodeReq } from '../../../api/userAPI';
 import { renewToken } from '../../../api/instances/authenticatedApi';
 import {
   DialogBtn,
@@ -48,10 +48,7 @@ const VerifyWhatsApp: FC = () => {
     setResendLoading(true);
     setError('');
     try {
-      // First delete existing phone number
-      await deletePhoneReq();
-      // Then re-add it (this will send the WhatsApp code)
-      await newAccountPhoneReq(phoneNumber);
+      await resendWhatsAppCodeReq();
       setError('');
     } catch (e: unknown) {
       console.error(e);
