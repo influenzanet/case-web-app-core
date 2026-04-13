@@ -50,15 +50,11 @@ const AccountSettings: React.FC<AccountSettingsProps> = (props) => {
     </div>
   }
 
-  console.log('phoneInfo:', phoneInfo);
-  console.log('confirmedAt:', phoneInfo?.confirmedAt);
-
   const handleResendCode = async () => {
     setIsResending(true);
     setResendMessage(null);
     try {
       await resendWhatsAppCodeReq();
-      console.log('Opening dialog with phone:', phoneInfo?.phone);
 
       // Use requestAnimationFrame to wait for React to finish rendering
       requestAnimationFrame(() => {
