@@ -1,36 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TextField, SelectField } from '@influenzanet/case-web-ui';
-
-// Lista dei prefissi internazionali più comuni
-export const COUNTRY_CODES = [
-  { code: '+39', country: 'IT', name: 'Italy' },
-  { code: '+1', country: 'US', name: 'United States' },
-  { code: '+44', country: 'GB', name: 'United Kingdom' },
-  { code: '+33', country: 'FR', name: 'France' },
-  { code: '+49', country: 'DE', name: 'Germany' },
-  { code: '+34', country: 'ES', name: 'Spain' },
-  { code: '+31', country: 'NL', name: 'Netherlands' },
-  { code: '+41', country: 'CH', name: 'Switzerland' },
-  { code: '+43', country: 'AT', name: 'Austria' },
-  { code: '+32', country: 'BE', name: 'Belgium' },
-  { code: '+351', country: 'PT', name: 'Portugal' },
-  { code: '+30', country: 'GR', name: 'Greece' },
-  { code: '+46', country: 'SE', name: 'Sweden' },
-  { code: '+47', country: 'NO', name: 'Norway' },
-  { code: '+45', country: 'DK', name: 'Denmark' },
-  { code: '+358', country: 'FI', name: 'Finland' },
-  { code: '+48', country: 'PL', name: 'Poland' },
-  { code: '+420', country: 'CZ', name: 'Czech Republic' },
-  { code: '+36', country: 'HU', name: 'Hungary' },
-  { code: '+40', country: 'RO', name: 'Romania' },
-  { code: '+359', country: 'BG', name: 'Bulgaria' },
-  { code: '+385', country: 'HR', name: 'Croatia' },
-  { code: '+386', country: 'SI', name: 'Slovenia' },
-  { code: '+372', country: 'EE', name: 'Estonia' },
-  { code: '+371', country: 'LV', name: 'Latvia' },
-  { code: '+370', country: 'LT', name: 'Lithuania' },
-];
+import COUNTRY_CODES from '../../configs/countryCodes.json';
 
 interface PhoneNumberInputProps {
   value: string;
