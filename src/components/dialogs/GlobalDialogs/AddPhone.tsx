@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { renewToken } from '../../../api/instances/authenticatedApi';
 import { getUserReq, newAccountPhoneReq } from '../../../api/userAPI';
+import { BACKEND_ERRORS } from '../../../api/errorMessages';
 import { dialogActions } from '../../../store/dialogSlice';
 import { RootState } from '../../../store/rootReducer';
 import { userActions } from '../../../store/userSlice';
@@ -107,13 +108,13 @@ const AddPhone: React.FC = () => {
 
   const handleError = (errorMsg?: string) => {
     switch (errorMsg) {
-      case 'action failed':
+      case BACKEND_ERRORS.ACTION_FAILED:
         setError(t('addPhone.errors.wrongPasswordOrAccountId'));
         break;
-      case 'phone not valid':
+      case BACKEND_ERRORS.PHONE_NOT_VALID:
         setError(t('addPhone.errors.wrongPhoneFormat'));
         break;
-      case 'phone number already taken':
+      case BACKEND_ERRORS.PHONE_ALREADY_TAKEN:
         setError(t('addPhone.errors.phoneAlreadyTaken'));
         break;
       default:
