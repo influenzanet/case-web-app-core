@@ -28,15 +28,13 @@ const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
 }) => {
   const { t } = useTranslation(['dialogs']);
 
-  // Estrai il prefisso e il numero dal valore completo
+  // Extract country code and number from the full value
   const [countryCode, setCountryCode] = useState(() => {
-    // Cerca quale prefisso corrisponde al valore attuale
     const matchingCode = COUNTRY_CODES.find(country => value.startsWith(country.code));
-    return matchingCode?.code || '+39'; // Default Italia
+    return matchingCode?.code || '+39';
   });
 
   const [phoneNumber, setPhoneNumber] = useState(() => {
-    // Rimuovi il prefisso dal numero
     const matchingCode = COUNTRY_CODES.find(country => value.startsWith(country.code));
     return matchingCode ? value.substring(matchingCode.code.length) : value;
   });
@@ -47,7 +45,7 @@ const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
   };
 
   const handlePhoneNumberChange = (newNumber: string) => {
-    // Rimuovi caratteri non numerici (eccetto spazi e trattini per leggibilità)
+    // Strip non-numeric characters (keep spaces and hyphens for readability)
     const cleanNumber = newNumber.replace(/[^\d\s-]/g, '');
     setPhoneNumber(cleanNumber);
     onChange(countryCode + cleanNumber);
@@ -61,7 +59,6 @@ const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
         </label>
       )}
       <div className="d-flex">
-        {/* Dropdown per il prefisso */}
         <SelectField
           className="me-2"
           style={{ width: '120px', flexShrink: 0 }}
@@ -74,7 +71,6 @@ const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
           }))}
         />
 
-        {/* Campo del numero */}
         <TextField
           type="text"
           placeholder={placeholder || t('addPhone.phoneInputPlaceholder')}
@@ -89,7 +85,6 @@ const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
         />
       </div>
 
-      {/* Mostra il numero completo per debug */}
       <small className="text-muted mt-1 d-block">
         {t('addPhone.completeNumber')}: {countryCode + phoneNumber}
       </small>

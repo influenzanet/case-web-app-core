@@ -30,9 +30,9 @@ const AddPhone: React.FC = () => {
   const [error, setError] = useState('');
   const [openConfirm, setOpenConfirm] = useState(false);
   const [formData, setFormData] = useState({
-    countryCode: '+39', // Default Italia
-    phoneNumber: '', // Solo il numero senza prefisso
-    newPhone: '' // Numero completo con prefisso
+    countryCode: '+39',
+    phoneNumber: '',
+    newPhone: ''
   });
 
   useEffect(() => {
@@ -146,14 +146,11 @@ const AddPhone: React.FC = () => {
         'bg-grey-1'
       )}>
         <form onSubmit={onSubmit}>
-          {/* Label per il campo */}
           <label className="form-label mb-1">
             {t('dialogs:addPhone.phoneInputLabel')}
           </label>
 
-          {/* Container per dropdown + input */}
           <div className="d-flex mb-2">
-            {/* Dropdown per il prefisso */}
             <SelectField
               className="me-2"
               style={{ width: '120px', flexShrink: 0 }}
@@ -165,7 +162,6 @@ const AddPhone: React.FC = () => {
               }))}
             />
 
-            {/* Campo del numero */}
             <TextField
               type="text"
               placeholder={t('dialogs:addPhone.phoneInputPlaceholder')}
@@ -178,7 +174,6 @@ const AddPhone: React.FC = () => {
             />
           </div>
 
-          {/* Mostra il numero completo */}
           <small className="text-muted mb-2 d-block">
             {t('dialogs:addPhone.completeNumber')}: {formData.newPhone}
           </small>
