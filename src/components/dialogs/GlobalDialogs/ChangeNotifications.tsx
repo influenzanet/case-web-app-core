@@ -13,9 +13,7 @@ import {
   AlertBox,
   Checkbox,
   defaultDialogPaddingXClass,
-  EditBtn,
 } from '@influenzanet/case-web-ui';
-import { Button } from 'react-bootstrap';
 
 
 interface ChangeNotificationsProps {
@@ -30,18 +28,17 @@ const ChangeNotifications: React.FC<ChangeNotificationsProps> = (props) => {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-
   const [changed, setChanged] = useState(false);
 
   const [weeklyEnabled, setWeeklyEnabled] = useState(false);
-  const [weeklyPhone, setWeeklyPhone] = useState(false);
   const [newsletterEnabled, setNewsletterEnabled] = useState(false);
+  const [channelEmail, setChannelEmail] = useState(true);
+  const [channelWhatsapp, setChannelWhatsapp] = useState(false);
 
   const phoneInfo = currentUser.contactInfos.find(
-      (info): info is PhoneContactInfo => info.type === 'phone'
+    (info): info is PhoneContactInfo => info.type === 'phone'
   );
-  const isPhonePresent = phoneInfo ? true : false;
-  const confirmedPhone = (phoneInfo?.confirmedAt ?? 0) > 0 ? true : false;
+  const confirmedPhone = (phoneInfo?.confirmedAt ?? 0) > 0;
 
   useEffect(() => {
     if (open) {
@@ -53,7 +50,14 @@ const ChangeNotifications: React.FC<ChangeNotificationsProps> = (props) => {
   useEffect(() => {
     setNewsletterEnabled(currentUser.contactPreferences.subscribedToNewsletter ? true : false);
     setWeeklyEnabled(currentUser.contactPreferences.subscribedToWeekly ? true : false);
-    setWeeklyPhone(currentUser.contactPreferences.sendNewsletterTo.includes(phoneInfo?.id ?? '') ? true : false);
+    const channels = currentUser.contactPreferences.preferredChannels ?? [];
+    if (channels.length === 0) {
+      setChannelEmail(true);
+      setChannelWhatsapp(false);
+    } else {
+      setChannelEmail(channels.includes('email'));
+      setChannelWhatsapp(channels.includes('whatsapp'));
+    }
   }, [currentUser]);
 
   const fetchUser = async () => {
@@ -64,7 +68,7 @@ const ChangeNotifications: React.FC<ChangeNotificationsProps> = (props) => {
       dispatch(userActions.setUser(user));
       setLoading(false);
     } catch (e: any) {
-      console.log(e.respomse);
+      console.error(e.response);
       setLoading(false);
     }
   }
@@ -75,21 +79,33 @@ const ChangeNotifications: React.FC<ChangeNotificationsProps> = (props) => {
     dispatch(dialogActions.closeDialog());
   }
 
+  const handleChannelEmail = (value: boolean) => {
+    if (!value && !channelWhatsapp) return;
+    setChanged(true);
+    setChannelEmail(value);
+  }
+
+  const handleChannelWhatsapp = (value: boolean) => {
+    if (!value && !channelEmail) return;
+    setChanged(true);
+    setChannelWhatsapp(value);
+  }
+
   const submitForm = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setLoading(true);
     setError("");
+
+    const preferredChannels: string[] = [];
+    if (channelEmail) preferredChannels.push('email');
+    if (channelWhatsapp) preferredChannels.push('whatsapp');
+
     const contactPreferences: ContactPreferences = {
       ...currentUser.contactPreferences,
       subscribedToWeekly: weeklyEnabled,
-      subscribedToNewsletter: newsletterEnabled
+      subscribedToNewsletter: newsletterEnabled,
+      preferredChannels: preferredChannels,
     };
-    if (weeklyPhone && isPhonePresent && confirmedPhone && phoneInfo?.id) {
-      contactPreferences.sendNewsletterTo = [...contactPreferences.sendNewsletterTo, phoneInfo.id];
-    }
-    if (!weeklyPhone && isPhonePresent && confirmedPhone && phoneInfo?.id) {
-      contactPreferences.sendNewsletterTo = contactPreferences.sendNewsletterTo.filter((id) => id !== phoneInfo.id);
-    }
 
     try {
       const user = (await updateContactPreferencesReq(contactPreferences)).data;
@@ -132,58 +148,15 @@ const ChangeNotifications: React.FC<ChangeNotificationsProps> = (props) => {
             id="weeklyEmail"
             name="weeklyEmail"
             checked={weeklyEnabled}
-            onChange={
-              (value: boolean) => {
-                setChanged(true);
-                setWeeklyEnabled(value);
-              }
-            }
+            onChange={(value: boolean) => {
+              setChanged(true);
+              setWeeklyEnabled(value);
+            }}
           >
-            {weeklyEnabled ?
-              t('dialogs:changeNotifications.weeklyReminder.on') :
-              t('dialogs:changeNotifications.weeklyReminder.off')}
+            {weeklyEnabled
+              ? t('dialogs:changeNotifications.weeklyReminder.on')
+              : t('dialogs:changeNotifications.weeklyReminder.off')}
           </Checkbox>
-
-          <label
-            className="mb-1 form-label mt-2"
-            htmlFor="weeklyPhone">
-            {t('dialogs:changeNotifications.weeklyReminderPhone.label')}
-          </label>
-          {confirmedPhone && (
-          <Checkbox
-            id="weeklyPhone"
-            name="weeklyPhone"
-            checked={weeklyPhone}
-            onChange={
-              (value: boolean) => {
-                setChanged(true);
-                setWeeklyPhone(value);
-              }
-            }
-          >
-            {weeklyPhone ?
-              t('dialogs:changeNotifications.weeklyReminderPhone.on') :
-              t('dialogs:changeNotifications.weeklyReminderPhone.off')}
-           </Checkbox>
-          )}
-          {(!confirmedPhone && !isPhonePresent) && (
-            <EditBtn
-             onClick={() => dispatch(dialogActions.openDialogWithoutPayload({ type: 'addPhone' }))}>
-                          {t('dialogs:changeNotifications.addPhone')}
-            </EditBtn>
-          )}
-        {(!confirmedPhone && isPhonePresent) && (
-          <AlertBox className="mt-2" type="info" content={t('changeNotifications.phoneNotConfirmed')} />
-         )}
-        {(!confirmedPhone && isPhonePresent) && (
-            <Button
-              className="mt-2"
-              onClick={() => dispatch(dialogActions.openDialogWithoutPayload({ type: 'addPhone' }))}
-              variant="link"
-            >
-              {t('dialogs:changeNotifications.verifyPhone')}
-            </Button>
-          )}
 
           <label
             className="mt-2 mb-1 form-label"
@@ -194,23 +167,53 @@ const ChangeNotifications: React.FC<ChangeNotificationsProps> = (props) => {
             id="newsletter"
             name="newsletter"
             checked={newsletterEnabled}
-            onChange={
-              (value: boolean) => {
-                setChanged(true);
-                setNewsletterEnabled(value);
-              }
-            }
+            onChange={(value: boolean) => {
+              setChanged(true);
+              setNewsletterEnabled(value);
+            }}
           >
-            {newsletterEnabled ?
-              t('dialogs:changeNotifications.newsletter.on') :
-              t('dialogs:changeNotifications.newsletter.off')}
+            {newsletterEnabled
+              ? t('dialogs:changeNotifications.newsletter.on')
+              : t('dialogs:changeNotifications.newsletter.off')}
           </Checkbox>
 
-          <AlertBox
-            type="info"
-            className="mt-2"
-            content={t('changeNotifications.info')}
-          />
+          <hr className="my-3" />
+
+          <label className="mb-1 form-label">
+            {t('dialogs:changeNotifications.channels.label')}
+          </label>
+          <Checkbox
+            id="channelEmail"
+            name="channelEmail"
+            checked={channelEmail}
+            disabled={!confirmedPhone && channelEmail}
+            onChange={handleChannelEmail}
+          >
+            {t('dialogs:changeNotifications.channels.email')}
+          </Checkbox>
+          <Checkbox
+            id="channelWhatsapp"
+            name="channelWhatsapp"
+            checked={channelWhatsapp}
+            disabled={!confirmedPhone}
+            onChange={handleChannelWhatsapp}
+          >
+            {t('dialogs:changeNotifications.channels.whatsapp')}
+          </Checkbox>
+
+          {!confirmedPhone && (
+            <AlertBox
+              type="warning"
+              className="mt-2"
+              content={t('dialogs:changeNotifications.channels.whatsappDisabled')}
+            />
+          )}
+
+          {confirmedPhone && (
+            <p className="mt-1" style={{ fontSize: '0.8rem', color: '#888', fontStyle: 'italic' }}>
+              {t('dialogs:changeNotifications.channels.note')}
+            </p>
+          )}
 
           <AlertBox
             type="danger"

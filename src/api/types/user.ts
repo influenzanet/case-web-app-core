@@ -49,6 +49,7 @@ export interface ContactPreferences {
   sendNewsletterTo: string[];
   subscribedToWeekly: boolean;
   receiveWeeklyMessageDayOfWeek: number;
+  preferredChannels?: string[];
 }
 
 interface ContactInfoBase {
