@@ -2019,8 +2019,10 @@
   resolved "https://registry.npmjs.org/@humanwhocodes/object-schema/-/object-schema-1.2.1.tgz"
   integrity sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==
 
-"@influenzanet/case-web-ui@file:.yalc/@influenzanet/case-web-ui":
-  version "1.15.2"
+"@influenzanet/case-web-ui@1.15.1":
+  version "1.15.1"
+  resolved "https://registry.yarnpkg.com/@influenzanet/case-web-ui/-/case-web-ui-1.15.1.tgz#aaeb0473ac8cd5e9d4dd985858dbf493c73f2292"
+  integrity sha512-pZYrjkvmhasvlFhfibgI3RM/tP19XLHEbUej0Kjv9WKiaWn4pt6Chnkw6kweMmWMlU4KTPPmJJxbksxT+x+wWw==
   dependencies:
     "@fortawesome/fontawesome-free" "^5.15.4"
 
