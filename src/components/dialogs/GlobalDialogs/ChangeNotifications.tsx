@@ -16,10 +16,7 @@ import {
 } from '@influenzanet/case-web-ui';
 
 
-interface ChangeNotificationsProps {
-}
-
-const ChangeNotifications: React.FC<ChangeNotificationsProps> = (props) => {
+const ChangeNotifications = () => {
   const { t } = useTranslation(['dialogs']);
   const dispatch = useDispatch();
   const dialogState = useSelector((state: RootState) => state.dialog)

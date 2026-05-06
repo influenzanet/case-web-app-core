@@ -1,0 +1,32 @@
+{
+  "name": "@influenzanet/case-web-ui",
+  "version": "1.15.2",
+  "description": "React components for CASE",
+  "scripts": {
+    "build": "rollup -c",
+    "storybook": "start-storybook -p 6006 -s ./exampleContent ",
+    "storybook:export": "build-storybook",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "prepublishOnly": "yarn build"
+  },
+  "main": "build/index.js",
+  "module": "build/index.es.js",
+  "files": [
+    "build"
+  ],
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.15.4"
+  },
+  "peerDependencies": {
+    "bootstrap": "^5.1.0",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "survey-engine": "^1.2.1"
+  },
+  "resolutions": {
+    "@types/react": "17.0.2",
+    "@types/react-dom": "17.0.2"
+  },
+  "yalcSig": "a6200c515ab364ce41eb00b02d8a08ef"
+}
