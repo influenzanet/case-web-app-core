@@ -1,7 +1,7 @@
 {
   "name": "@influenzanet/case-web-app-core",
   "description": "Common logic and components for the participant web-app",
-  "version": "2.9.4-staging",
+  "version": "2.9.5-staging",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/influenzanet/case-web-app-core.git"

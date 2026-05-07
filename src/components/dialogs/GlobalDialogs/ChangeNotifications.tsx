@@ -179,24 +179,30 @@ const ChangeNotifications = () => {
           <label className="mb-1 form-label">
             {t('dialogs:changeNotifications.channels.label')}
           </label>
-          <Checkbox
-            id="channelEmail"
-            name="channelEmail"
-            checked={channelEmail}
-            {...({ disabled: !confirmedPhone && channelEmail } as const)}
-            onChange={handleChannelEmail}
-          >
-            {t('dialogs:changeNotifications.channels.email')}
-          </Checkbox>
-          <Checkbox
-            id="channelWhatsapp"
-            name="channelWhatsapp"
-            checked={channelWhatsapp}
-            {...({ disabled: !confirmedPhone } as const)}
-            onChange={handleChannelWhatsapp}
-          >
-            {t('dialogs:changeNotifications.channels.whatsapp')}
-          </Checkbox>
+
+          <div className="mb-2">
+            <Checkbox
+              id="channelEmail"
+              name="channelEmail"
+              checked={channelEmail}
+              {...({ disabled: !confirmedPhone && channelEmail } as const)}
+              onChange={handleChannelEmail}
+            >
+              {t('dialogs:changeNotifications.channels.email')}
+            </Checkbox>
+          </div>
+
+          <div className="mb-2">
+            <Checkbox
+              id="channelWhatsapp"
+              name="channelWhatsapp"
+              checked={channelWhatsapp}
+              {...({ disabled: !confirmedPhone } as const)}
+              onChange={handleChannelWhatsapp}
+            >
+              {t('dialogs:changeNotifications.channels.whatsapp')}
+            </Checkbox>
+          </div>
 
           {!confirmedPhone && (
             <AlertBox
