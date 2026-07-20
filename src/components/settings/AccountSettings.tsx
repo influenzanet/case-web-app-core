@@ -10,6 +10,7 @@ import { dialogActions } from '../../store/dialogSlice';
 import { useIsAuthenticated } from '../../hooks/useIsAuthenticated';
 import { PhoneContactInfo } from '../../api/types/user';
 import { resendWhatsAppCodeReq } from '../../api/userAPI';
+import { BACKEND_ERRORS } from '../../api/errorMessages';
 
 
 interface AccountSettingsProps {
@@ -72,10 +73,27 @@ const AccountSettings: React.FC<AccountSettingsProps> = (props) => {
       });
     } catch (error) {
       console.error('Error resending WhatsApp code:', error);
-      setResendMessage({
-        type: 'error',
-        text: t(`${props.itemKey}.phone.resendError`, 'Errore nell\'invio del codice. Riprova.')
-      });
+      const errorResponse = error as { response?: { data?: { error?: string } } };
+      switch (errorResponse.response?.data?.error) {
+        case BACKEND_ERRORS.RECIPIENT_NOT_ALLOWED:
+          setResendMessage({
+            type: 'error',
+            text: t(`${props.itemKey}.phone.recipientNotAllowedError`, 'Questo numero non \u00e8 abilitato a ricevere messaggi WhatsApp. Controlla il numero inserito.')
+          });
+          break;
+        case BACKEND_ERRORS.RATE_LIMITED:
+          setResendMessage({
+            type: 'error',
+            text: t(`${props.itemKey}.phone.rateLimitError`, 'Hai richiesto troppi codici di verifica. Riprova pi\u00f9 tardi.')
+          });
+          break;
+        default:
+          setResendMessage({
+            type: 'error',
+            text: t(`${props.itemKey}.phone.resendError`, 'Errore nell\'invio del codice. Riprova.')
+          });
+          break;
+      }
     } finally {
       setIsResending(false);
     }
