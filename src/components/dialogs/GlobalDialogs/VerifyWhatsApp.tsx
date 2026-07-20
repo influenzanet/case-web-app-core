@@ -6,6 +6,7 @@ import { RootState } from '../../../store/rootReducer';
 import { dialogActions, VerifyWhatsAppDialog } from '../../../store/dialogSlice';
 import { userActions } from '../../../store/userSlice';
 import { verifyWhatsAppCodeReq, getUserReq, resendWhatsAppCodeReq } from '../../../api/userAPI';
+import { BACKEND_ERRORS } from '../../../api/errorMessages';
 import { renewToken } from '../../../api/instances/authenticatedApi';
 import {
   DialogBtn,
@@ -53,7 +54,18 @@ const VerifyWhatsApp: FC = () => {
     } catch (e: unknown) {
       console.error(e);
       const errorResponse = e as { response?: { data?: { error?: string } } };
-      setError(errorResponse.response?.data?.error || t('verifyWhatsApp.errors.unknown'));
+      const backendError = errorResponse.response?.data?.error;
+      switch (backendError) {
+        case BACKEND_ERRORS.RATE_LIMITED:
+          setError(t('verifyWhatsApp.errors.rateLimit'));
+          break;
+        case BACKEND_ERRORS.RECIPIENT_NOT_ALLOWED:
+          setError(t('verifyWhatsApp.errors.recipientNotAllowed'));
+          break;
+        default:
+          setError(backendError || t('verifyWhatsApp.errors.unknown'));
+          break;
+      }
     } finally {
       setResendLoading(false);
     }

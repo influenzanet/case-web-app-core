@@ -117,6 +117,12 @@ const AddPhone: React.FC = () => {
       case BACKEND_ERRORS.PHONE_ALREADY_TAKEN:
         setError(t('addPhone.errors.phoneAlreadyTaken'));
         break;
+      case BACKEND_ERRORS.RECIPIENT_NOT_ALLOWED:
+        setError(t('addPhone.errors.recipientNotAllowed'));
+        break;
+      case BACKEND_ERRORS.RATE_LIMITED:
+        setError(t('addPhone.errors.rateLimit'));
+        break;
       default:
         setError(t('addPhone.errors.unknown'));
         break;

@@ -79,6 +79,24 @@ describe('VerifyWhatsApp dialog', () => {
     expect(changeAccountPhoneReq).not.toHaveBeenCalled();
   });
 
+  it('maps the rate limit error on resend to a translated message', async () => {
+    (resendWhatsAppCodeReq as jest.Mock).mockRejectedValue({
+      response: { data: { error: 'too many phone verification attempts, try again later' } },
+    });
+    renderWithProviders(<VerifyWhatsApp />, openDialogState);
+    fireEvent.click(screen.getByText('verifyWhatsApp.resendBtn'));
+    expect(await screen.findByText('verifyWhatsApp.errors.rateLimit')).toBeInTheDocument();
+  });
+
+  it('maps the recipient-not-allowed error on resend to a translated message', async () => {
+    (resendWhatsAppCodeReq as jest.Mock).mockRejectedValue({
+      response: { data: { error: 'phone number not enabled to receive WhatsApp messages' } },
+    });
+    renderWithProviders(<VerifyWhatsApp />, openDialogState);
+    fireEvent.click(screen.getByText('verifyWhatsApp.resendBtn'));
+    expect(await screen.findByText('verifyWhatsApp.errors.recipientNotAllowed')).toBeInTheDocument();
+  });
+
   it('stores the user and opens the success dialog after a successful verification', async () => {
     const verifiedUser = { id: 'user-1', account: { accountId: 'test@test.it' }, profiles: [] };
     (verifyWhatsAppCodeReq as jest.Mock).mockResolvedValue({ status: 200, data: verifiedUser });

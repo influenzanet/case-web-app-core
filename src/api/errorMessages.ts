@@ -12,4 +12,5 @@ export const BACKEND_ERRORS = {
   CODE_EXPIRED: 'verification code expired',
   INVALID_CODE: 'invalid verification code',
   RATE_LIMITED: 'too many phone verification attempts, try again later',
+  RECIPIENT_NOT_ALLOWED: 'phone number not enabled to receive WhatsApp messages',
 } as const;

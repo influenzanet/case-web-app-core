@@ -89,6 +89,12 @@ const ChangePhone: React.FC = () => {
       case BACKEND_ERRORS.PHONE_ALREADY_TAKEN:
         setError(t('changePhone.errors.phoneAlreadyTaken'));
         break;
+      case BACKEND_ERRORS.RECIPIENT_NOT_ALLOWED:
+        setError(t('changePhone.errors.recipientNotAllowed'));
+        break;
+      case BACKEND_ERRORS.RATE_LIMITED:
+        setError(t('changePhone.errors.rateLimit'));
+        break;
       default:
         setError(t('changePhone.errors.unknown'));
         break;
