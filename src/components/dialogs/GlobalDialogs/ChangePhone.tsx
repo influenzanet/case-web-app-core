@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { renewToken } from '../../../api/instances/authenticatedApi';
 import { changeAccountPhoneReq, getUserReq } from '../../../api/userAPI';
-import { BACKEND_ERRORS } from '../../../api/errorMessages';
+import { BACKEND_ERRORS, classifyPhoneError } from '../../../api/errorMessages';
 import { dialogActions } from '../../../store/dialogSlice';
 import { RootState } from '../../../store/rootReducer';
 import { userActions } from '../../../store/userSlice';
@@ -55,7 +55,13 @@ const ChangePhone: React.FC = () => {
     try {
       const response = await changeAccountPhoneReq(formData.newPhone);
       if (response.status === 200) {
-        renewToken();
+        // Awaited so a failure is handled here instead of surfacing as an unhandled
+        // rejection, and so the renewal is not left racing whatever the user does next.
+        try {
+          await renewToken();
+        } catch (renewError) {
+          console.error(renewError);
+        }
         if (response.data) {
           dispatch(userActions.setUser(response.data));
         } else {
@@ -71,14 +77,28 @@ const ChangePhone: React.FC = () => {
       }))
     } catch (e: unknown) {
       console.error(e);
-      const errorResponse = e as { response?: { data?: { error?: string } } };
-      handleError(errorResponse.response?.data?.error);
+      handleError(e);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleError = (errorMsg?: string) => {
+  // The two failures the gateway gives a status of their own are read from it; the rest are
+  // only distinguishable by their message, so those keep matching on it.
+  const handleError = (e: unknown) => {
+    switch (classifyPhoneError(e)) {
+      case "recipientNotAllowed":
+        setError(t("changePhone.errors.recipientNotAllowed"));
+        return;
+      case "rateLimited":
+        setError(t("changePhone.errors.rateLimit"));
+        return;
+      default:
+        break;
+    }
+
+    const errorMsg = (e as { response?: { data?: { error?: string } } })
+      ?.response?.data?.error;
     switch (errorMsg) {
       case BACKEND_ERRORS.ACTION_FAILED:
         setError(t('changePhone.errors.wrongPasswordOrAccountId'));
@@ -88,12 +108,6 @@ const ChangePhone: React.FC = () => {
         break;
       case BACKEND_ERRORS.PHONE_ALREADY_TAKEN:
         setError(t('changePhone.errors.phoneAlreadyTaken'));
-        break;
-      case BACKEND_ERRORS.RECIPIENT_NOT_ALLOWED:
-        setError(t('changePhone.errors.recipientNotAllowed'));
-        break;
-      case BACKEND_ERRORS.RATE_LIMITED:
-        setError(t('changePhone.errors.rateLimit'));
         break;
       default:
         setError(t('changePhone.errors.unknown'));

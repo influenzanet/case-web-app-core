@@ -10,7 +10,7 @@ import { dialogActions } from '../../store/dialogSlice';
 import { useIsAuthenticated } from '../../hooks/useIsAuthenticated';
 import { PhoneContactInfo } from '../../api/types/user';
 import { resendWhatsAppCodeReq } from '../../api/userAPI';
-import { BACKEND_ERRORS } from '../../api/errorMessages';
+import { classifyPhoneError } from '../../api/errorMessages';
 
 
 interface AccountSettingsProps {
@@ -69,28 +69,27 @@ const AccountSettings: React.FC<AccountSettingsProps> = (props) => {
 
       setResendMessage({
         type: 'success',
-        text: t(`${props.itemKey}.phone.resendSuccess`, 'Codice inviato con successo!')
+        text: t(`${props.itemKey}.phone.resendSuccess`, 'Code sent.')
       });
     } catch (error) {
       console.error('Error resending WhatsApp code:', error);
-      const errorResponse = error as { response?: { data?: { error?: string } } };
-      switch (errorResponse.response?.data?.error) {
-        case BACKEND_ERRORS.RECIPIENT_NOT_ALLOWED:
+      switch (classifyPhoneError(error)) {
+        case 'recipientNotAllowed':
           setResendMessage({
             type: 'error',
-            text: t(`${props.itemKey}.phone.recipientNotAllowedError`, 'Questo numero non \u00e8 abilitato a ricevere messaggi WhatsApp. Controlla il numero inserito.')
+            text: t(`${props.itemKey}.phone.recipientNotAllowedError`, 'This number cannot receive WhatsApp messages. Please check the number you entered.')
           });
           break;
-        case BACKEND_ERRORS.RATE_LIMITED:
+        case 'rateLimited':
           setResendMessage({
             type: 'error',
-            text: t(`${props.itemKey}.phone.rateLimitError`, 'Hai richiesto troppi codici di verifica. Riprova pi\u00f9 tardi.')
+            text: t(`${props.itemKey}.phone.rateLimitError`, 'Too many verification codes requested. Please try again later.')
           });
           break;
         default:
           setResendMessage({
             type: 'error',
-            text: t(`${props.itemKey}.phone.resendError`, 'Errore nell\'invio del codice. Riprova.')
+            text: t(`${props.itemKey}.phone.resendError`, 'Could not send the code. Please try again.')
           });
           break;
       }
@@ -180,11 +179,11 @@ const AccountSettings: React.FC<AccountSettingsProps> = (props) => {
                 {isResending ? (
                   <>
                     <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                    {t(`${props.itemKey}.phone.resending`, 'Invio...')}
+                    {t(`${props.itemKey}.phone.resending`, 'Sending...')}
                   </>
                 ) : (
                   <>
-                    {t(`${props.itemKey}.phone.resendBtn`, 'Invia di nuovo codice')}
+                    {t(`${props.itemKey}.phone.resendBtn`, 'Send the code again')}
                     <span className="material-icons ms-1" style={{ fontSize: 'inherit' }}>send</span>
                   </>
                 )}

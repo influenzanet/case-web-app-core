@@ -1,69 +1,76 @@
-import React, { FC, useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useTranslation } from 'react-i18next';
+import React, { FC, useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 
-import { RootState } from '../../../store/rootReducer';
-import { dialogActions, VerifyWhatsAppDialog } from '../../../store/dialogSlice';
-import { userActions } from '../../../store/userSlice';
-import { verifyWhatsAppCodeReq, getUserReq, resendWhatsAppCodeReq } from '../../../api/userAPI';
-import { BACKEND_ERRORS } from '../../../api/errorMessages';
-import { renewToken } from '../../../api/instances/authenticatedApi';
+import { RootState } from "../../../store/rootReducer";
+import {
+  dialogActions,
+  VerifyWhatsAppDialog,
+} from "../../../store/dialogSlice";
+import { userActions } from "../../../store/userSlice";
+import {
+  verifyWhatsAppCodeReq,
+  getUserReq,
+  resendWhatsAppCodeReq,
+} from "../../../api/userAPI";
+import { classifyPhoneError } from "../../../api/errorMessages";
+import { renewToken } from "../../../api/instances/authenticatedApi";
 import {
   DialogBtn,
   AlertBox,
   TextField,
   defaultDialogPaddingXClass,
   Dialog,
-} from '@influenzanet/case-web-ui';
+} from "@influenzanet/case-web-ui";
 
 const VerifyWhatsApp: FC = () => {
   const dispatch = useDispatch();
-  const { t } = useTranslation(['dialogs']);
+  const { t } = useTranslation(["dialogs"]);
 
   const dialogState = useSelector((state: RootState) => state.dialog);
-  const open = dialogState.config?.type === 'verifyWhatsApp';
-  const dialogContent = open ? (dialogState.config as VerifyWhatsAppDialog).payload : undefined;
+  const open = dialogState.config?.type === "verifyWhatsApp";
+  const dialogContent = open
+    ? (dialogState.config as VerifyWhatsAppDialog).payload
+    : undefined;
 
   const [loading, setLoading] = useState(false);
   const [resendLoading, setResendLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [verificationCode, setVerificationCode] = useState('');
+  const [error, setError] = useState("");
+  const [verificationCode, setVerificationCode] = useState("");
 
-  const phoneNumber = dialogContent?.phoneNumber || '';
+  const phoneNumber = dialogContent?.phoneNumber || "";
 
   // Reset verification code when dialog opens
   useEffect(() => {
     if (open) {
-      setVerificationCode('');
-      setError('');
+      setVerificationCode("");
+      setError("");
     }
   }, [open]);
 
   const close = () => {
     dispatch(dialogActions.closeDialog());
-    setVerificationCode('');
-    setError('');
+    setVerificationCode("");
+    setError("");
   };
 
   const resendCode = async () => {
     setResendLoading(true);
-    setError('');
+    setError("");
     try {
       await resendWhatsAppCodeReq();
-      setError('');
+      setError("");
     } catch (e: unknown) {
       console.error(e);
-      const errorResponse = e as { response?: { data?: { error?: string } } };
-      const backendError = errorResponse.response?.data?.error;
-      switch (backendError) {
-        case BACKEND_ERRORS.RATE_LIMITED:
-          setError(t('verifyWhatsApp.errors.rateLimit'));
+      switch (classifyPhoneError(e)) {
+        case "rateLimited":
+          setError(t("verifyWhatsApp.errors.rateLimit"));
           break;
-        case BACKEND_ERRORS.RECIPIENT_NOT_ALLOWED:
-          setError(t('verifyWhatsApp.errors.recipientNotAllowed'));
+        case "recipientNotAllowed":
+          setError(t("verifyWhatsApp.errors.recipientNotAllowed"));
           break;
         default:
-          setError(backendError || t('verifyWhatsApp.errors.unknown'));
+          setError(t("verifyWhatsApp.errors.unknown"));
           break;
       }
     } finally {
@@ -73,17 +80,23 @@ const VerifyWhatsApp: FC = () => {
 
   const verifyCode = async () => {
     if (!verificationCode.trim()) {
-      setError(t('verifyWhatsApp.errors.codeRequired'));
+      setError(t("verifyWhatsApp.errors.codeRequired"));
       return;
     }
 
     setLoading(true);
-    setError('');
+    setError("");
 
     try {
       const response = await verifyWhatsAppCodeReq(verificationCode);
       if (response.status === 200) {
-        renewToken();
+        // Awaited so a failure is handled here instead of surfacing as an unhandled
+        // rejection, and so the renewal is not left racing whatever the user does next.
+        try {
+          await renewToken();
+        } catch (renewError) {
+          console.error(renewError);
+        }
         if (response.data) {
           dispatch(userActions.setUser(response.data));
         } else {
@@ -92,20 +105,39 @@ const VerifyWhatsApp: FC = () => {
         }
 
         // Show success message
-        dispatch(dialogActions.openAlertDialog({
-          type: 'alertDialog',
-          payload: {
-            color: 'success',
-            title: t('verifyWhatsApp.successDialog.title'),
-            content: t('verifyWhatsApp.successDialog.content'),
-            btn: t('verifyWhatsApp.successDialog.btn'),
-          }
-        }));
+        dispatch(
+          dialogActions.openAlertDialog({
+            type: "alertDialog",
+            payload: {
+              color: "success",
+              title: t("verifyWhatsApp.successDialog.title"),
+              content: t("verifyWhatsApp.successDialog.content"),
+              btn: t("verifyWhatsApp.successDialog.btn"),
+            },
+          }),
+        );
       }
     } catch (e: unknown) {
       console.error(e);
-      const errorResponse = e as { response?: { data?: { error?: string } } };
-      setError(errorResponse.response?.data?.error || t('verifyWhatsApp.errors.verificationFailed'));
+      // Every branch translates: the backend message is English prose meant for logs, and
+      // showing it raw put it in front of participants who do not read the interface in it.
+      switch (classifyPhoneError(e)) {
+        case "invalidCode":
+          setError(t("verifyWhatsApp.errors.wrongCode"));
+          break;
+        case "codeExpired":
+          setError(t("verifyWhatsApp.errors.codeExpired"));
+          break;
+        case "tooManyAttempts":
+          setError(t("verifyWhatsApp.errors.tooManyAttempts"));
+          break;
+        case "rateLimited":
+          setError(t("verifyWhatsApp.errors.rateLimit"));
+          break;
+        default:
+          setError(t("verifyWhatsApp.errors.verificationFailed"));
+          break;
+      }
     } finally {
       setLoading(false);
     }
@@ -118,7 +150,7 @@ const VerifyWhatsApp: FC = () => {
   return (
     <Dialog
       open={open}
-      title={t('verifyWhatsApp.title')}
+      title={t("verifyWhatsApp.title")}
       ariaLabelledBy="verify-whatsapp-title"
       onClose={close}
     >
@@ -127,20 +159,14 @@ const VerifyWhatsApp: FC = () => {
           <p className="mb-2">{t("verifyWhatsApp.info")}</p>
         </div>
 
-        {error && (
-          <AlertBox
-            type="danger"
-            content={error}
-            className="mb-3"
-          />
-        )}
+        {error && <AlertBox type="danger" content={error} className="mb-3" />}
 
         <div className="mb-3">
           <TextField
             id="verification-code"
             name="verificationCode"
-            label={t('verifyWhatsApp.codeInputLabel')}
-            placeholder={t('verifyWhatsApp.codeInputPlaceholder')}
+            label={t("verifyWhatsApp.codeInputLabel")}
+            placeholder={t("verifyWhatsApp.codeInputPlaceholder")}
             value={verificationCode}
             onChange={(event) => setVerificationCode(event.target.value)}
             maxLength={6}
@@ -153,7 +179,7 @@ const VerifyWhatsApp: FC = () => {
         <DialogBtn
           type="button"
           onClick={resendCode}
-          label={t('verifyWhatsApp.resendBtn')}
+          label={t("verifyWhatsApp.resendBtn")}
           loading={resendLoading}
           disabled={loading || !phoneNumber}
         />
@@ -161,14 +187,14 @@ const VerifyWhatsApp: FC = () => {
           <DialogBtn
             type="button"
             onClick={close}
-            label={t('verifyWhatsApp.cancelBtn')}
+            label={t("verifyWhatsApp.cancelBtn")}
             disabled={loading || resendLoading}
           />
           <DialogBtn
             type="button"
             onClick={verifyCode}
             color="primary"
-            label={t('verifyWhatsApp.submitBtn')}
+            label={t("verifyWhatsApp.submitBtn")}
             loading={loading}
             disabled={!verificationCode.trim() || resendLoading}
           />
