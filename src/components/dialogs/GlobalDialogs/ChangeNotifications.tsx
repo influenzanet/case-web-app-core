@@ -1,4 +1,5 @@
 import clsx from 'clsx';
+import { logRequestFailure } from "../../../api/errorMessages";
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
@@ -65,7 +66,7 @@ const ChangeNotifications = () => {
       dispatch(userActions.setUser(user));
       setLoading(false);
     } catch (e: any) {
-      console.error(e.response);
+      logRequestFailure("loading the notification settings", e);
       setLoading(false);
     }
   }

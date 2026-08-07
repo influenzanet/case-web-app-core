@@ -10,7 +10,7 @@ import { dialogActions } from '../../store/dialogSlice';
 import { useIsAuthenticated } from '../../hooks/useIsAuthenticated';
 import { PhoneContactInfo } from '../../api/types/user';
 import { resendWhatsAppCodeReq } from '../../api/userAPI';
-import { classifyPhoneError } from '../../api/errorMessages';
+import { classifyPhoneError, logRequestFailure } from "../../api/errorMessages";
 
 
 interface AccountSettingsProps {
@@ -72,7 +72,7 @@ const AccountSettings: React.FC<AccountSettingsProps> = (props) => {
         text: t(`${props.itemKey}.phone.resendSuccess`, 'Code sent.')
       });
     } catch (error) {
-      console.error('Error resending WhatsApp code:', error);
+      logRequestFailure("resending the WhatsApp code", error);
       switch (classifyPhoneError(error)) {
         case 'recipientNotAllowed':
           setResendMessage({

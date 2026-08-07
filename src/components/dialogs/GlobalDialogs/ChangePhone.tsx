@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { renewToken } from '../../../api/instances/authenticatedApi';
 import { changeAccountPhoneReq, getUserReq } from '../../../api/userAPI';
-import { BACKEND_ERRORS, classifyPhoneError } from '../../../api/errorMessages';
+import { BACKEND_ERRORS, classifyPhoneError, logRequestFailure } from "../../../api/errorMessages";
 import { dialogActions } from '../../../store/dialogSlice';
 import { RootState } from '../../../store/rootReducer';
 import { userActions } from '../../../store/userSlice';
@@ -60,7 +60,7 @@ const ChangePhone: React.FC = () => {
         try {
           await renewToken();
         } catch (renewError) {
-          console.error(renewError);
+          logRequestFailure("renewing the token after changing the phone", renewError);
         }
         if (response.data) {
           dispatch(userActions.setUser(response.data));
@@ -76,7 +76,7 @@ const ChangePhone: React.FC = () => {
         }
       }))
     } catch (e: unknown) {
-      console.error(e);
+      logRequestFailure("changing the phone number", e);
       handleError(e);
     } finally {
       setLoading(false);

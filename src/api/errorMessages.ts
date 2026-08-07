@@ -16,6 +16,31 @@ export const BACKEND_ERRORS = {
     "phone number not enabled to receive WhatsApp messages",
 } as const;
 
+// logRequestFailure records why a request failed — where it happened, the HTTP status and the
+// message the backend sent — and deliberately not the error itself.
+//
+// An axios error carries the request that produced it: config.headers holds the Authorization
+// bearer of the signed-in participant, and config.data holds the body, which in the phone
+// dialogs is their number or the verification code they just received. Passing that object to
+// the console publishes all of it to anything reading the browser log, and none of it helps
+// diagnose the failure.
+export const logRequestFailure = (context: string, error: unknown): void => {
+  const response = (
+    error as { response?: { status?: number; data?: { error?: string } } }
+  )?.response;
+
+  if (response !== undefined) {
+    console.error(`${context} failed`, {
+      status: response.status,
+      error: response.data?.error,
+    });
+    return;
+  }
+
+  const message = (error as { message?: string })?.message;
+  console.error(`${context} failed`, message ?? "no response received");
+};
+
 // What went wrong in a phone or WhatsApp request, as the interface needs to tell it apart.
 export type PhoneErrorKind =
   | "rateLimited"

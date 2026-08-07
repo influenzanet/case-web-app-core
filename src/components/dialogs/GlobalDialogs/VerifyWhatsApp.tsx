@@ -13,7 +13,7 @@ import {
   getUserReq,
   resendWhatsAppCodeReq,
 } from "../../../api/userAPI";
-import { classifyPhoneError } from "../../../api/errorMessages";
+import { classifyPhoneError, logRequestFailure } from "../../../api/errorMessages";
 import { renewToken } from "../../../api/instances/authenticatedApi";
 import {
   DialogBtn,
@@ -61,7 +61,7 @@ const VerifyWhatsApp: FC = () => {
       await resendWhatsAppCodeReq();
       setError("");
     } catch (e: unknown) {
-      console.error(e);
+      logRequestFailure("resending the WhatsApp code", e);
       switch (classifyPhoneError(e)) {
         case "rateLimited":
           setError(t("verifyWhatsApp.errors.rateLimit"));
@@ -95,7 +95,7 @@ const VerifyWhatsApp: FC = () => {
         try {
           await renewToken();
         } catch (renewError) {
-          console.error(renewError);
+          logRequestFailure("renewing the token after verifying the phone", renewError);
         }
         if (response.data) {
           dispatch(userActions.setUser(response.data));
@@ -118,7 +118,7 @@ const VerifyWhatsApp: FC = () => {
         );
       }
     } catch (e: unknown) {
-      console.error(e);
+      logRequestFailure("verifying the WhatsApp code", e);
       // Every branch translates: the backend message is English prose meant for logs, and
       // showing it raw put it in front of participants who do not read the interface in it.
       switch (classifyPhoneError(e)) {
