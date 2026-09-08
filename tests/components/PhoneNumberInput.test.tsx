@@ -34,6 +34,28 @@ describe('PhoneNumberInput', () => {
     expect(onChange).toHaveBeenLastCalledWith('+441234567890');
   });
 
+  it('emits an empty string when the local number is cleared', () => {
+    const onChange = jest.fn();
+    render(<PhoneNumberInput value="" onChange={onChange} placeholder="phone" />);
+    const input = screen.getByPlaceholderText('phone');
+    fireEvent.change(input, { target: { value: '3' } });
+    fireEvent.change(input, { target: { value: '' } });
+    expect(onChange).toHaveBeenLastCalledWith('');
+  });
+
+  it('emits an empty string when only the prefix changes on an empty number', () => {
+    const onChange = jest.fn();
+    const { container } = render(<PhoneNumberInput value="" onChange={onChange} placeholder="phone" />);
+    fireEvent.change(container.querySelector('select') as HTMLSelectElement, { target: { value: '+44' } });
+    expect(onChange).toHaveBeenLastCalledWith('');
+  });
+
+  it('keeps showing the selected prefix after the number is cleared', () => {
+    const { container } = render(<PhoneNumberInput value="+441234567890" onChange={jest.fn()} placeholder="phone" />);
+    fireEvent.change(screen.getByPlaceholderText('phone'), { target: { value: '' } });
+    expect((container.querySelector('select') as HTMLSelectElement).value).toBe('+44');
+  });
+
   it('strips characters that are not digits, spaces or hyphens', () => {
     const onChange = jest.fn();
     render(<PhoneNumberInput value="" onChange={onChange} placeholder="phone" />);

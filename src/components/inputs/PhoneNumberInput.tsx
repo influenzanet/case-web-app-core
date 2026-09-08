@@ -39,16 +39,18 @@ const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
     return matchingCode ? value.substring(matchingCode.code.length) : value;
   });
 
+  // A prefix on its own is not a phone number: emitting one would make an empty field read as a
+  // malformed number to the forms that treat the phone as optional.
   const handleCountryCodeChange = (newCode: string) => {
     setCountryCode(newCode);
-    onChange(newCode + phoneNumber);
+    onChange(phoneNumber === '' ? '' : newCode + phoneNumber);
   };
 
   const handlePhoneNumberChange = (newNumber: string) => {
     // Strip non-numeric characters (keep spaces and hyphens for readability)
     const cleanNumber = newNumber.replace(/[^\d\s-]/g, '');
     setPhoneNumber(cleanNumber);
-    onChange(countryCode + cleanNumber);
+    onChange(cleanNumber === '' ? '' : countryCode + cleanNumber);
   };
 
   return (
