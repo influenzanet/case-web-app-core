@@ -84,6 +84,31 @@ describe("VerifyWhatsApp dialog", () => {
     expect(changeAccountPhoneReq).not.toHaveBeenCalled();
   });
 
+  it("never sends a second resend while the first is still in flight", async () => {
+    // DialogBtn's loading prop only swaps the label, so the button has to be disabled as well:
+    // without that, a second click spends another of the three codes the backend allows.
+    let releaseResend: () => void = () => undefined;
+    (resendWhatsAppCodeReq as jest.Mock).mockImplementation(
+      () =>
+        new Promise<{ status: number }>((resolve) => {
+          releaseResend = () => resolve({ status: 200 });
+        }),
+    );
+    renderWithProviders(<VerifyWhatsApp />, openDialogState);
+    const resendButton = () =>
+      screen.getByRole("button", { name: /verifyWhatsApp.resend|loadingMsg/ });
+
+    fireEvent.click(resendButton());
+    await waitFor(() => expect(resendButton()).toBeDisabled());
+    fireEvent.click(resendButton());
+
+    expect(resendWhatsAppCodeReq).toHaveBeenCalledTimes(1);
+    releaseResend();
+    await waitFor(() =>
+      expect(screen.getByText("verifyWhatsApp.resendSuccess")).toBeInTheDocument(),
+    );
+  });
+
   it("maps the rate limit error on resend to a translated message", async () => {
     (resendWhatsAppCodeReq as jest.Mock).mockRejectedValue({
       response: {

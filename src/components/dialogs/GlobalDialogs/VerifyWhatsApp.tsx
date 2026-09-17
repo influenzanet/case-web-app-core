@@ -242,7 +242,11 @@ const VerifyWhatsApp: FC = () => {
               : t("verifyWhatsApp.resendBtn")
           }
           loading={resendLoading}
-          disabled={loading || !phoneNumber || resendOnCooldown}
+          loadingLabel={t("loadingMsg")}
+          // DialogBtn's loading prop only swaps the label, so the in-flight resend is what
+          // disables the button: a second click would spend another of the codes the backend
+          // allows before the first answer is even back.
+          disabled={loading || resendLoading || !phoneNumber || resendOnCooldown}
         />
         <div className="d-flex gap-3">
           <DialogBtn
