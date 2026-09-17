@@ -185,6 +185,63 @@ describe("VerifyWhatsApp dialog", () => {
     });
   });
 
+  it("refreshes the user and closes the dialog when the attempt cap removes the phone", async () => {
+    const userWithoutPhone = {
+      id: "user-1",
+      account: { accountId: "test@test.it" },
+      profiles: [],
+      contactInfos: [],
+    };
+    (verifyWhatsAppCodeReq as jest.Mock).mockRejectedValue({
+      response: {
+        status: 401,
+        data: { error: "too many attempts, phone number removed" },
+      },
+    });
+    (getUserReq as jest.Mock).mockResolvedValue({ data: userWithoutPhone });
+
+    const { store } = renderWithProviders(<VerifyWhatsApp />, openDialogState);
+    fireEvent.change(
+      screen.getByPlaceholderText("verifyWhatsApp.codeInputPlaceholder"),
+      { target: { value: "123456" } },
+    );
+    fireEvent.click(screen.getByText("verifyWhatsApp.submitBtn"));
+
+    // The backend removed the phone, so the account is reloaded instead of being left showing
+    // a number that no longer exists.
+    await waitFor(() => expect(getUserReq).toHaveBeenCalledTimes(1));
+    await waitFor(() => {
+      const state = store.getState() as {
+        dialog: { config?: { type?: string } };
+        user: { currentUser: unknown };
+      };
+      expect(state.user.currentUser).toEqual(userWithoutPhone);
+      expect(state.dialog.config?.type).toBe("alertDialog");
+    });
+  });
+
+  it("still closes the dialog when reloading the user after the phone removal fails", async () => {
+    (verifyWhatsAppCodeReq as jest.Mock).mockRejectedValue({
+      response: {
+        status: 401,
+        data: { error: "too many attempts, phone number removed" },
+      },
+    });
+    (getUserReq as jest.Mock).mockRejectedValue(new Error("network down"));
+
+    const { store } = renderWithProviders(<VerifyWhatsApp />, openDialogState);
+    fireEvent.change(
+      screen.getByPlaceholderText("verifyWhatsApp.codeInputPlaceholder"),
+      { target: { value: "123456" } },
+    );
+    fireEvent.click(screen.getByText("verifyWhatsApp.submitBtn"));
+
+    await waitFor(() => {
+      const state = store.getState() as { dialog: { config?: { type?: string } } };
+      expect(state.dialog.config?.type).toBe("alertDialog");
+    });
+  });
+
   it("maps the recipient-not-allowed error on resend to a translated message", async () => {
     (resendWhatsAppCodeReq as jest.Mock).mockRejectedValue({
       response: {

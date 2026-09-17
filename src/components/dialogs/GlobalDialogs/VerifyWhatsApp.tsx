@@ -78,6 +78,29 @@ const VerifyWhatsApp: FC = () => {
     }
   };
 
+  // The attempt cap removes the phone on the backend, so the account is reloaded and the
+  // verification dialog gives way to the alert: leaving it open would keep offering a code for
+  // a number that is gone.
+  const handlePhoneRemoved = async () => {
+    try {
+      const userData = (await getUserReq()).data;
+      dispatch(userActions.setUser(userData));
+    } catch (refreshError: unknown) {
+      logRequestFailure("reloading the user after the phone was removed", refreshError);
+    }
+    dispatch(
+      dialogActions.openAlertDialog({
+        type: "alertDialog",
+        payload: {
+          color: "danger",
+          title: t("verifyWhatsApp.tooManyAttemptsDialog.title"),
+          content: t("verifyWhatsApp.errors.tooManyAttempts"),
+          btn: t("verifyWhatsApp.tooManyAttemptsDialog.btn"),
+        },
+      }),
+    );
+  };
+
   const verifyCode = async () => {
     if (!verificationCode.trim()) {
       setError(t("verifyWhatsApp.errors.codeRequired"));
@@ -129,7 +152,7 @@ const VerifyWhatsApp: FC = () => {
           setError(t("verifyWhatsApp.errors.codeExpired"));
           break;
         case "tooManyAttempts":
-          setError(t("verifyWhatsApp.errors.tooManyAttempts"));
+          await handlePhoneRemoved();
           break;
         case "rateLimited":
           setError(t("verifyWhatsApp.errors.rateLimit"));
