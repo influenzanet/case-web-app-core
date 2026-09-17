@@ -223,6 +223,9 @@ const AccountSettings: React.FC<AccountSettingsProps> = (props) => {
         {phoneInfo && (
           <button
             className="btn btn-danger-light ms-2"
+            // The button shows a trash glyph and no text, so the name it is announced with has
+            // to be spelled out here.
+            aria-label={t(`${props.itemKey}.phone.deleteBtn`)}
             onClick={() => {
               dispatch(dialogActions.openDialogWithoutPayload({ type: 'deletePhone' }))
             }}

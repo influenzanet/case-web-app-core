@@ -119,3 +119,26 @@ describe('AccountSettings phone code resend', () => {
     expect(await screen.findByText('account.phone.resendError')).toBeInTheDocument();
   });
 });
+
+describe('AccountSettings phone deletion', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('names the delete-phone button for anyone not reading the icon', async () => {
+    // The button carries a trash glyph and no text, so without a label a screen reader
+    // announces nothing but "button".
+    const { store } = renderWithProviders(
+      <AccountSettings itemKey="account" hideProfileSettings={true} />,
+      stateWithUnverifiedPhone,
+    );
+
+    const deleteButton = screen.getByRole('button', { name: 'account.phone.deleteBtn' });
+    fireEvent.click(deleteButton);
+
+    await waitFor(() => {
+      const state = store.getState() as { dialog: { config?: { type?: string } } };
+      expect(state.dialog.config?.type).toBe('deletePhone');
+    });
+  });
+});
