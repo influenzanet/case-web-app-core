@@ -174,3 +174,39 @@ describe('ChangeNotifications dialog', () => {
     expect(sentPrefs.subscribedToWeekly).toBe(true);
   });
 });
+
+describe('ChangeNotifications channel checkboxes', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('disables the WhatsApp checkbox itself while the phone is unverified', async () => {
+    // The handler already refuses the change, but the control stayed operable: it took a click
+    // to find out, and assistive technology was told nothing. The attribute is what says it.
+    const user = buildUser(false);
+    (getUserReq as jest.Mock).mockResolvedValue({ data: user });
+    renderWithProviders(<ChangeNotifications />, openState(user));
+
+    await waitFor(() => expect(getUserReq).toHaveBeenCalled());
+    expect(whatsappCheckbox()).toBeDisabled();
+  });
+
+  it('disables the email checkbox while it is the only channel left', async () => {
+    const user = buildUser(false);
+    (getUserReq as jest.Mock).mockResolvedValue({ data: user });
+    renderWithProviders(<ChangeNotifications />, openState(user));
+
+    await waitFor(() => expect(getUserReq).toHaveBeenCalled());
+    expect(emailCheckbox()).toBeDisabled();
+  });
+
+  it('leaves both checkboxes operable once the phone is verified', async () => {
+    const user = buildUser(true);
+    (getUserReq as jest.Mock).mockResolvedValue({ data: user });
+    renderWithProviders(<ChangeNotifications />, openState(user));
+
+    await waitFor(() => expect(getUserReq).toHaveBeenCalled());
+    expect(whatsappCheckbox()).not.toBeDisabled();
+    expect(emailCheckbox()).not.toBeDisabled();
+  });
+});

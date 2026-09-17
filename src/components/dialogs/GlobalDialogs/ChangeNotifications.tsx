@@ -192,7 +192,7 @@ const ChangeNotifications = () => {
               id="channelEmail"
               name="channelEmail"
               checked={channelEmail}
-              {...({ disabled: !confirmedPhone && channelEmail } as const)}
+              disabled={!confirmedPhone && channelEmail}
               onChange={handleChannelEmail}
             >
               {t('dialogs:changeNotifications.channels.email')}
@@ -204,7 +204,7 @@ const ChangeNotifications = () => {
               id="channelWhatsapp"
               name="channelWhatsapp"
               checked={channelWhatsapp}
-              {...({ disabled: !confirmedPhone } as const)}
+              disabled={!confirmedPhone}
               onChange={handleChannelWhatsapp}
             >
               {t('dialogs:changeNotifications.channels.whatsapp')}
