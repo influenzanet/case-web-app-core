@@ -62,4 +62,13 @@ describe('ChangePhone dialog', () => {
     await fillAndSubmitPhone();
     expect(await screen.findByText('changePhone.errors.rateLimit')).toBeInTheDocument();
   });
+
+  it('asks for a new code when the number is no longer the one waiting to be verified', async () => {
+    (changeAccountPhoneReq as jest.Mock).mockRejectedValue({
+      response: { status: 400, data: { error: 'phone number is not pending verification' } },
+    });
+    renderWithProviders(<ChangePhone />, openDialogState);
+    await fillAndSubmitPhone();
+    expect(await screen.findByText('changePhone.errors.noPendingVerification')).toBeInTheDocument();
+  });
 });

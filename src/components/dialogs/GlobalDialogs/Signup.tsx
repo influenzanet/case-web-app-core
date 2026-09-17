@@ -511,9 +511,6 @@ const Signup: React.FC = () => {
       case 'not found':
         setError(t("dialogs:signup.errors.noRegistrationAllowed"));
         break;
-      case 'phone number already registered':
-        setError(t("dialogs:signup.errors.phoneAlreadyRegistered"));
-        break;
       case 'phone not valid':
         setError(t("dialogs:signup.errors.invalidPhone"));
         break;

@@ -81,6 +81,9 @@ const VerifyWhatsApp: FC = () => {
         case "recipientNotAllowed":
           setError(t("verifyWhatsApp.errors.recipientNotAllowed"));
           break;
+        case "noPendingVerification":
+          setError(t("verifyWhatsApp.errors.noPendingVerification"));
+          break;
         case "cooldown":
           setError(t("verifyWhatsApp.errors.cooldown"));
           // The window left is at most a full one, so holding the button for that long keeps
@@ -174,6 +177,9 @@ const VerifyWhatsApp: FC = () => {
           break;
         case "rateLimited":
           setError(t("verifyWhatsApp.errors.rateLimit"));
+          break;
+        case "noPendingVerification":
+          setError(t("verifyWhatsApp.errors.noPendingVerification"));
           break;
         default:
           setError(t("verifyWhatsApp.errors.verificationFailed"));

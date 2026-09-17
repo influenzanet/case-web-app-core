@@ -294,6 +294,38 @@ describe("VerifyWhatsApp dialog", () => {
     ).toBeInTheDocument();
   });
 
+  it("asks for a new code when the verification is no longer in progress", async () => {
+    (verifyWhatsAppCodeReq as jest.Mock).mockRejectedValue({
+      response: {
+        status: 400,
+        data: { error: "no phone verification in progress" },
+      },
+    });
+    renderWithProviders(<VerifyWhatsApp />, openDialogState);
+    fireEvent.change(
+      screen.getByPlaceholderText("verifyWhatsApp.codeInputPlaceholder"),
+      { target: { value: "123456" } },
+    );
+    fireEvent.click(screen.getByText("verifyWhatsApp.submitBtn"));
+    expect(
+      await screen.findByText("verifyWhatsApp.errors.noPendingVerification"),
+    ).toBeInTheDocument();
+  });
+
+  it("asks for a new code when the resend finds no number waiting", async () => {
+    (resendWhatsAppCodeReq as jest.Mock).mockRejectedValue({
+      response: {
+        status: 400,
+        data: { error: "phone number is not pending verification" },
+      },
+    });
+    renderWithProviders(<VerifyWhatsApp />, openDialogState);
+    fireEvent.click(screen.getByText("verifyWhatsApp.resendBtn"));
+    expect(
+      await screen.findByText("verifyWhatsApp.errors.noPendingVerification"),
+    ).toBeInTheDocument();
+  });
+
   it("stores the user and opens the success dialog after a successful verification", async () => {
     const verifiedUser = {
       id: "user-1",

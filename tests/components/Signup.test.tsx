@@ -7,6 +7,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
 
 import Signup from '../../src/components/dialogs/GlobalDialogs/Signup';
+import { signupWithEmailRequest } from '../../src/api/authAPI';
 import dialogReducer from '../../src/store/dialogSlice';
 import userReducer from '../../src/store/userSlice';
 import configReducer from '../../src/store/configSlice';
@@ -85,6 +86,40 @@ const fillTheRequiredFields = (root: HTMLElement) => {
   });
   acceptThePrivacyPolicy(root);
 };
+
+describe('Signup dialog, a phone number already on another account', () => {
+  const recaptchaFlag = process.env.REACT_APP_USE_RECAPTCHA;
+  beforeEach(() => {
+    jest.clearAllMocks();
+    delete process.env.REACT_APP_USE_RECAPTCHA;
+  });
+  afterAll(() => {
+    if (recaptchaFlag === undefined) {
+      delete process.env.REACT_APP_USE_RECAPTCHA;
+    } else {
+      process.env.REACT_APP_USE_RECAPTCHA = recaptchaFlag;
+    }
+  });
+
+  // A taken phone is answered like a duplicate e-mail, and the interface must not tell the two
+  // apart: a message naming the phone would turn the signup form into a membership oracle,
+  // where anyone could learn whether a number belongs to a participant.
+  it('never names the phone number as the reason a signup was refused', async () => {
+    (signupWithEmailRequest as jest.Mock).mockRejectedValue({
+      response: { status: 409, data: { error: 'phone number already registered' } },
+    });
+    const { baseElement } = renderSignup();
+    const root = baseElement as HTMLElement;
+    fillTheRequiredFields(root);
+    fireEvent.change(phoneField(), { target: { value: '3316221419' } });
+    fireEvent.blur(phoneField());
+
+    fireEvent.click(submitButton(root));
+
+    expect(await screen.findByText('dialogs:signup.errors.unknown')).toBeInTheDocument();
+    expect(screen.queryByText('dialogs:signup.errors.phoneAlreadyRegistered')).toBeNull();
+  });
+});
 
 describe('Signup dialog, optional phone number', () => {
   // The submit button is also gated on the recaptcha consent, which the repository's own .env

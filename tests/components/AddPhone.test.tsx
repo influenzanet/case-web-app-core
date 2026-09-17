@@ -120,6 +120,22 @@ describe('AddPhone dialog error mapping', () => {
   });
 });
 
+describe('AddPhone dialog verification state errors', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('asks for a new code when the number is no longer the one waiting to be verified', async () => {
+    (newAccountPhoneReq as jest.Mock).mockRejectedValue({
+      response: { status: 400, data: { error: 'phone number is not pending verification' } },
+    });
+    (getUserReq as jest.Mock).mockResolvedValue({ data: { id: 'user-1' } });
+    renderWithProviders(<AddPhone />, openDialogState);
+    await fillAndSubmitPhone();
+    expect(await screen.findByText('addPhone.errors.noPendingVerification')).toBeInTheDocument();
+  });
+});
+
 describe('AddPhone dialog account refresh after a failure', () => {
   beforeEach(() => {
     jest.clearAllMocks();

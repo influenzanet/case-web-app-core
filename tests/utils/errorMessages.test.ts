@@ -33,6 +33,13 @@ describe('classifyPhoneError', () => {
     expect(classifyPhoneError(errorWith(400, BACKEND_ERRORS.COOLDOWN))).toBe('cooldown');
   });
 
+  it('recognises both halves of a verification that is no longer in progress', () => {
+    // The two messages come from different endpoints but mean the same thing to a participant:
+    // the code they are holding belongs to nothing, and they need a new one.
+    expect(classifyPhoneError(errorWith(400, BACKEND_ERRORS.PHONE_NOT_PENDING))).toBe('noPendingVerification');
+    expect(classifyPhoneError(errorWith(400, BACKEND_ERRORS.NO_VERIFICATION_IN_PROGRESS))).toBe('noPendingVerification');
+  });
+
   it('falls back to unknown for anything it cannot place', () => {
     expect(classifyPhoneError(errorWith(500, 'database exploded'))).toBe('unknown');
     expect(classifyPhoneError(new Error('network down'))).toBe('unknown');

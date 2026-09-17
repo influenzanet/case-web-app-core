@@ -93,6 +93,9 @@ const ChangePhone: React.FC = () => {
       case "rateLimited":
         setError(t("changePhone.errors.rateLimit"));
         return;
+      case "noPendingVerification":
+        setError(t("changePhone.errors.noPendingVerification"));
+        return;
       default:
         break;
     }

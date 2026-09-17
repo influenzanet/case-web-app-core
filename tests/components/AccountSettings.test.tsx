@@ -101,6 +101,15 @@ describe('AccountSettings phone code resend', () => {
     jest.useRealTimers();
   });
 
+  it('asks for a new code when no verification is waiting on the backend', async () => {
+    (resendWhatsAppCodeReq as jest.Mock).mockRejectedValue({
+      response: { status: 400, data: { error: 'phone number is not pending verification' } },
+    });
+    renderWithProviders(<AccountSettings itemKey="account" hideProfileSettings={true} />, stateWithUnverifiedPhone);
+    clickResend();
+    expect(await screen.findByText('account.phone.noPendingVerificationError')).toBeInTheDocument();
+  });
+
   it('keeps the generic message for other send failures', async () => {
     (resendWhatsAppCodeReq as jest.Mock).mockRejectedValue({
       response: { data: { error: 'failed to send verification code' } },

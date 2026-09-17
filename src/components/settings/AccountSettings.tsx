@@ -89,6 +89,12 @@ const AccountSettings: React.FC<AccountSettingsProps> = (props) => {
             text: t(`${props.itemKey}.phone.rateLimitError`, 'Too many verification codes requested. Please try again later.')
           });
           break;
+        case 'noPendingVerification':
+          setResendMessage({
+            type: 'error',
+            text: t(`${props.itemKey}.phone.noPendingVerificationError`, 'There is no verification waiting for this number. Add the number again to start over.')
+          });
+          break;
         case 'cooldown':
           setResendMessage({
             type: 'error',

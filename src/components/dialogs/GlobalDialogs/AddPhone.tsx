@@ -150,6 +150,9 @@ const AddPhone: React.FC = () => {
       case "rateLimited":
         setError(t("addPhone.errors.rateLimit"));
         return;
+      case "noPendingVerification":
+        setError(t("addPhone.errors.noPendingVerification"));
+        return;
       default:
         break;
     }
