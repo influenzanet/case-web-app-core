@@ -2,6 +2,11 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TextField, SelectField } from '@influenzanet/case-web-ui';
 import COUNTRY_CODES from '../../configs/countryCodes.json';
+import {
+  composePhoneNumber,
+  parseInternationalPhoneNumber,
+  sanitizePhoneNumberInput,
+} from '../../utils/phoneNumberParsing';
 
 interface PhoneNumberInputProps {
   value: string;
@@ -39,18 +44,24 @@ const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
     return matchingCode ? value.substring(matchingCode.code.length) : value;
   });
 
-  // A prefix on its own is not a phone number: emitting one would make an empty field read as a
-  // malformed number to the forms that treat the phone as optional.
   const handleCountryCodeChange = (newCode: string) => {
     setCountryCode(newCode);
-    onChange(phoneNumber === '' ? '' : newCode + phoneNumber);
+    onChange(composePhoneNumber(newCode, phoneNumber));
   };
 
   const handlePhoneNumberChange = (newNumber: string) => {
-    // Strip non-numeric characters (keep spaces and hyphens for readability)
-    const cleanNumber = newNumber.replace(/[^\d\s-]/g, '');
+    // A number pasted or autofilled with its own prefix is split again, instead of being prefixed
+    // a second time with the selected country code.
+    const parsed = parseInternationalPhoneNumber(newNumber);
+    if (parsed) {
+      setCountryCode(parsed.countryCode);
+      setPhoneNumber(parsed.localNumber);
+      onChange(composePhoneNumber(parsed.countryCode, parsed.localNumber));
+      return;
+    }
+    const cleanNumber = sanitizePhoneNumberInput(newNumber);
     setPhoneNumber(cleanNumber);
-    onChange(cleanNumber === '' ? '' : countryCode + cleanNumber);
+    onChange(composePhoneNumber(countryCode, cleanNumber));
   };
 
   return (
@@ -88,7 +99,7 @@ const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
       </div>
 
       <small className="text-muted mt-1 d-block">
-        {t('addPhone.completeNumber')}: {countryCode + phoneNumber}
+        {t('addPhone.completeNumber')}: {composePhoneNumber(countryCode, phoneNumber) || countryCode}
       </small>
 
       {error && (

@@ -18,6 +18,11 @@ import {
   ConfirmDialog,
 } from "@influenzanet/case-web-ui";
 import COUNTRY_CODES from "../../../configs/countryCodes.json";
+import {
+  composePhoneNumber,
+  parseInternationalPhoneNumber,
+  sanitizePhoneNumberInput,
+} from "../../../utils/phoneNumberParsing";
 
 const AddPhone: React.FC = () => {
   const { t } = useTranslation(["dialogs"]);
@@ -51,13 +56,18 @@ const AddPhone: React.FC = () => {
   };
 
   const updateFullPhoneNumber = (countryCode: string, phoneNumber: string) => {
-    const cleanNumber = phoneNumber.replace(/[^\d\s-]/g, "");
-    const fullPhone = countryCode + cleanNumber;
+    // A number pasted or autofilled with its own prefix is split again, instead of being prefixed
+    // a second time with the selected country code.
+    const parsed = parseInternationalPhoneNumber(phoneNumber);
+    const nextCountryCode = parsed ? parsed.countryCode : countryCode;
+    const cleanNumber = parsed
+      ? parsed.localNumber
+      : sanitizePhoneNumberInput(phoneNumber);
     setFormData((prev) => ({
       ...prev,
-      countryCode,
+      countryCode: nextCountryCode,
       phoneNumber: cleanNumber,
-      newPhone: fullPhone,
+      newPhone: composePhoneNumber(nextCountryCode, cleanNumber),
     }));
   };
 

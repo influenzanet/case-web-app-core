@@ -68,4 +68,51 @@ describe('PhoneNumberInput', () => {
     expect((container.querySelector('select') as HTMLSelectElement).value).toBe('+44');
     expect((screen.getByPlaceholderText('phone') as HTMLInputElement).value).toBe('1234567890');
   });
+
+  it('re-parses a pasted number that already carries the prefix', () => {
+    const onChange = jest.fn();
+    const { container } = render(<PhoneNumberInput value="" onChange={onChange} placeholder="phone" />);
+    fireEvent.change(screen.getByPlaceholderText('phone'), { target: { value: '+393316221419' } });
+    expect(onChange).toHaveBeenLastCalledWith('+393316221419');
+    expect((container.querySelector('select') as HTMLSelectElement).value).toBe('+39');
+    expect((screen.getByPlaceholderText('phone') as HTMLInputElement).value).toBe('3316221419');
+  });
+
+  it('switches the prefix to the country code of the pasted number', () => {
+    const onChange = jest.fn();
+    const { container } = render(<PhoneNumberInput value="" onChange={onChange} placeholder="phone" />);
+    fireEvent.change(screen.getByPlaceholderText('phone'), { target: { value: '+447911123456' } });
+    expect(onChange).toHaveBeenLastCalledWith('+447911123456');
+    expect((container.querySelector('select') as HTMLSelectElement).value).toBe('+44');
+    expect((screen.getByPlaceholderText('phone') as HTMLInputElement).value).toBe('7911123456');
+  });
+
+  it('re-parses a pasted number written with spaces', () => {
+    const onChange = jest.fn();
+    render(<PhoneNumberInput value="" onChange={onChange} placeholder="phone" />);
+    fireEvent.change(screen.getByPlaceholderText('phone'), { target: { value: '+39 331 622 1419' } });
+    expect(onChange).toHaveBeenLastCalledWith('+393316221419');
+    expect((screen.getByPlaceholderText('phone') as HTMLInputElement).value).toBe('3316221419');
+  });
+
+  it('reads a number typed with the 00 international prefix', () => {
+    const onChange = jest.fn();
+    const { container } = render(<PhoneNumberInput value="" onChange={onChange} placeholder="phone" />);
+    fireEvent.change(screen.getByPlaceholderText('phone'), { target: { value: '003316221419' } });
+    expect(onChange).toHaveBeenLastCalledWith('+3316221419');
+    expect((container.querySelector('select') as HTMLSelectElement).value).toBe('+33');
+  });
+
+  it('keeps a number in international form while its country code is incomplete', () => {
+    const onChange = jest.fn();
+    const input = () => screen.getByPlaceholderText('phone') as HTMLInputElement;
+    const { container } = render(<PhoneNumberInput value="" onChange={onChange} placeholder="phone" />);
+    fireEvent.change(input(), { target: { value: '+3' } });
+    expect(input().value).toBe('+3');
+    expect(onChange).toHaveBeenLastCalledWith('+3');
+    fireEvent.change(input(), { target: { value: '+39' } });
+    expect((container.querySelector('select') as HTMLSelectElement).value).toBe('+39');
+    expect(input().value).toBe('');
+    expect(onChange).toHaveBeenLastCalledWith('');
+  });
 });

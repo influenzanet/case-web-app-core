@@ -62,6 +62,18 @@ describe('AddPhone dialog', () => {
     await fillAndSubmitPhone();
     expect(newAccountPhoneReq).toHaveBeenCalledWith('+391234567890');
   });
+
+  it('sends a pasted number that already carries its prefix without duplicating it', async () => {
+    (newAccountPhoneReq as jest.Mock).mockResolvedValue({ status: 500 });
+    renderWithProviders(<AddPhone />, openDialogState);
+    fireEvent.change(screen.getByPlaceholderText('dialogs:addPhone.phoneInputPlaceholder'), {
+      target: { value: '+393316221419' },
+    });
+    expect((document.querySelector('select') as HTMLSelectElement).value).toBe('+39');
+    fireEvent.click(screen.getByText('addPhone.confirmBtn'));
+    fireEvent.click(await screen.findByText('addPhone.warningDialog.confirmBtn'));
+    expect(newAccountPhoneReq).toHaveBeenCalledWith('+393316221419');
+  });
 });
 
 describe('AddPhone dialog error mapping', () => {
