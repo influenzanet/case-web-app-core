@@ -2,10 +2,10 @@
  * @jest-environment jsdom
  */
 import React from 'react';
-import { fireEvent, screen } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 
 import AddPhone from '../../src/components/dialogs/GlobalDialogs/AddPhone';
-import { newAccountPhoneReq } from '../../src/api/userAPI';
+import { getUserReq, newAccountPhoneReq } from '../../src/api/userAPI';
 import { renderWithProviders } from './testUtils';
 import COUNTRY_CODES from '../../src/configs/countryCodes.json';
 
@@ -97,5 +97,62 @@ describe('AddPhone dialog error mapping', () => {
     renderWithProviders(<AddPhone />, openDialogState);
     await fillAndSubmitPhone();
     expect(await screen.findByText('addPhone.errors.rateLimit')).toBeInTheDocument();
+  });
+
+  it('names the failure when the code could not be sent', async () => {
+    (newAccountPhoneReq as jest.Mock).mockRejectedValue({
+      response: { status: 500, data: { error: 'failed to send verification code' } },
+    });
+    (getUserReq as jest.Mock).mockResolvedValue({ data: { id: 'user-1' } });
+    renderWithProviders(<AddPhone />, openDialogState);
+    await fillAndSubmitPhone();
+    expect(await screen.findByText('addPhone.errors.sendFailed')).toBeInTheDocument();
+  });
+
+  it('names the pending phone left by an earlier attempt', async () => {
+    (newAccountPhoneReq as jest.Mock).mockRejectedValue({
+      response: { status: 400, data: { error: 'user already has a phone number' } },
+    });
+    (getUserReq as jest.Mock).mockResolvedValue({ data: { id: 'user-1' } });
+    renderWithProviders(<AddPhone />, openDialogState);
+    await fillAndSubmitPhone();
+    expect(await screen.findByText('addPhone.errors.alreadyHasPhone')).toBeInTheDocument();
+  });
+});
+
+describe('AddPhone dialog account refresh after a failure', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('reloads the account when the backend answered, since it may already hold the phone', async () => {
+    const userWithPendingPhone = {
+      id: 'user-1',
+      account: { accountId: 'test@test.it' },
+      profiles: [],
+      contactInfos: [{ id: 'ci-1', type: 'phone', phone: '+391234567890', confirmedAt: 0 }],
+    };
+    (newAccountPhoneReq as jest.Mock).mockRejectedValue({
+      response: { status: 500, data: { error: 'failed to send verification code' } },
+    });
+    (getUserReq as jest.Mock).mockResolvedValue({ data: userWithPendingPhone });
+
+    const { store } = renderWithProviders(<AddPhone />, openDialogState);
+    await fillAndSubmitPhone();
+
+    await waitFor(() => expect(getUserReq).toHaveBeenCalledTimes(1));
+    await waitFor(() => {
+      const state = store.getState() as { user: { currentUser: unknown } };
+      expect(state.user.currentUser).toEqual(userWithPendingPhone);
+    });
+  });
+
+  it('does not reload the account when the request never reached the backend', async () => {
+    (newAccountPhoneReq as jest.Mock).mockRejectedValue(new Error('network down'));
+    renderWithProviders(<AddPhone />, openDialogState);
+    await fillAndSubmitPhone();
+
+    expect(await screen.findByText('addPhone.errors.unknown')).toBeInTheDocument();
+    expect(getUserReq).not.toHaveBeenCalled();
   });
 });

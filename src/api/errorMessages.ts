@@ -6,6 +6,7 @@ export const BACKEND_ERRORS = {
   PHONE_ALREADY_TAKEN: "phone number already taken",
   PHONE_ALREADY_VERIFIED: "phone number already verified",
   NO_PHONE_TO_EDIT: "user has no phone number to edit",
+  USER_HAS_PHONE: "user already has a phone number",
   WHATSAPP_UNAVAILABLE: "WhatsApp is not configured",
   SEND_FAILED: "failed to send verification code",
   TOO_MANY_ATTEMPTS: "too many attempts, phone number removed",
