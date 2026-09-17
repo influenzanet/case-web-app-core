@@ -120,9 +120,10 @@ const ChangeNotifications = () => {
           btn: t('changeNotifications.successDialog.btn'),
         }
       }))
-    } catch (e: any) {
+    } catch (e: unknown) {
       setLoading(false);
-      console.error(e.response);
+      logRequestFailure("saving the notification settings", e);
+      setError(t('changeNotifications.errors.unknown'));
     }
   }
 

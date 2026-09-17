@@ -3,6 +3,7 @@ import store, { resetStore } from "../../store/store";
 import { minuteToMillisecondFactor } from "../../constants";
 import { setAppAuth } from "../../store/appSlice";
 import { TokenResponse } from "../types/authAPI";
+import { logRequestFailure } from "../errorMessages";
 
 const renewThreshold = 1 * minuteToMillisecondFactor;
 
@@ -62,11 +63,9 @@ authApiInstance.interceptors.request.use(
       }
     } catch (e: any) {
       resetApiAuth();
-      if (e.response) {
-        console.error(e.response);
-      } else {
-        console.error(e);
-      }
+      // Logged through logRequestFailure: the error carries the request that produced it, and
+      // its headers hold the bearer of the signed-in participant.
+      logRequestFailure("renewing the access token", e);
     }
     return config;
   },

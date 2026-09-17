@@ -85,6 +85,50 @@ describe('ChangeNotifications dialog', () => {
     await waitFor(() => expect(emailCheckbox().checked).toBe(true));
   });
 
+  it('tells the participant when saving the settings fails', async () => {
+    const consoleError = jest.spyOn(console, 'error').mockImplementation(() => undefined);
+    const user = buildUser(true);
+    (getUserReq as jest.Mock).mockResolvedValue({ data: user });
+    (updateContactPreferencesReq as jest.Mock).mockRejectedValue({
+      response: { status: 500, data: { error: 'database unavailable' } },
+      config: { headers: { Authorization: 'Bearer super-secret-access-token' } },
+    });
+    const { store } = renderWithProviders(<ChangeNotifications />, openState(user));
+    await waitFor(() => expect(getUserReq).toHaveBeenCalled());
+
+    fireEvent.click(whatsappCheckbox());
+    fireEvent.click(screen.getByText('changeNotifications.submitBtn'));
+
+    expect(await screen.findByText('changeNotifications.errors.unknown')).toBeInTheDocument();
+    // The dialog stays open on a failure: closing it would read as a save that worked.
+    const state = store.getState() as { dialog: { config?: { type?: string } } };
+    expect(state.dialog.config?.type).toBe('changeNotifications');
+    consoleError.mockRestore();
+  });
+
+  it('keeps the failed request out of the console', async () => {
+    const consoleError = jest.spyOn(console, 'error').mockImplementation(() => undefined);
+    const user = buildUser(true);
+    (getUserReq as jest.Mock).mockResolvedValue({ data: user });
+    (updateContactPreferencesReq as jest.Mock).mockRejectedValue({
+      response: { status: 500, data: { error: 'database unavailable' } },
+      config: { headers: { Authorization: 'Bearer super-secret-access-token' } },
+    });
+    renderWithProviders(<ChangeNotifications />, openState(user));
+    await waitFor(() => expect(getUserReq).toHaveBeenCalled());
+
+    fireEvent.click(whatsappCheckbox());
+    fireEvent.click(screen.getByText('changeNotifications.submitBtn'));
+
+    await screen.findByText('changeNotifications.errors.unknown');
+    expect(consoleError).toHaveBeenCalledWith('saving the notification settings failed', {
+      status: 500,
+      error: 'database unavailable',
+    });
+    expect(JSON.stringify(consoleError.mock.calls)).not.toContain('super-secret-access-token');
+    consoleError.mockRestore();
+  });
+
   it('submits the selected channels', async () => {
     const user = buildUser(true);
     (getUserReq as jest.Mock).mockResolvedValue({ data: user });
