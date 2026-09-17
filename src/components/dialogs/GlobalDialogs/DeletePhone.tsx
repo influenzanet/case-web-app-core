@@ -11,7 +11,7 @@ import {
   defaultDialogPaddingXClass,
 } from '@influenzanet/case-web-ui';
 import { deletePhoneReq, getUserReq } from '../../../api/userAPI';
-import { getErrorMsg } from '../../../api/utils';
+import { logRequestFailure } from '../../../api/errorMessages';
 import { renewToken } from '../../../api/instances/authenticatedApi';
 import { userActions } from '../../../store/userSlice';
 
@@ -36,13 +36,17 @@ const DeletePhone: React.FC<DeletePhoneProps> = (props) => {
 
   const onDeletePhone = async () => {
     setLoading(true);
+    setError('');
     try {
       const response = await deletePhoneReq();
 
       if (response.status === 200) {
+        // The endpoint answers with the account it just updated, so it is only fetched again
+        // when that answer carried no body: reloading it every time asked the backend for what
+        // had already been stored a line above.
         if (response.data) {
           dispatch(userActions.setUser(response.data));
-        }else{
+        } else {
           const userData = (await getUserReq()).data;
           dispatch(userActions.setUser(userData));
         }
@@ -56,11 +60,16 @@ const DeletePhone: React.FC<DeletePhoneProps> = (props) => {
           btn: t('dialogs:deletePhone.successDialog.btn'),
         }
       }))
-       const userData = (await getUserReq()).data;
-       dispatch(userActions.setUser(userData));
-    } catch (e) {
-      const err = getErrorMsg(e);
-      setError(err);
+    } catch (e: unknown) {
+      logRequestFailure('deleting the phone number', e);
+      // The endpoint refuses with a missing argument or a database message, neither of which
+      // means anything to a participant; both are English prose, and the alert box below reads
+      // its content as markdown with raw HTML enabled, so the backend text was also markup the
+      // browser would render.
+      setError(t('deletePhone.errors.unknown'));
+    } finally {
+      // Also on the way out of a successful deletion: the dialog stays mounted, so a loading
+      // flag left set is still set the next time it is opened.
       setLoading(false);
     }
   }
