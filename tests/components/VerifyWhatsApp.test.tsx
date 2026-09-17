@@ -433,3 +433,86 @@ describe("VerifyWhatsApp dialog", () => {
     expect(getUserReq).not.toHaveBeenCalled();
   });
 });
+
+describe("VerifyWhatsApp code field", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  const codeField = () =>
+    screen.getByPlaceholderText(
+      "verifyWhatsApp.codeInputPlaceholder",
+    ) as HTMLInputElement;
+
+  it("asks the browser for the numeric keypad and the one-time code", () => {
+    renderWithProviders(<VerifyWhatsApp />, openDialogState);
+    const field = codeField();
+    expect(field).toHaveAttribute("inputmode", "numeric");
+    expect(field).toHaveAttribute("pattern", "[0-9]*");
+    // The code arrives by WhatsApp on the same phone, so the browser is allowed to offer it
+    // instead of being told to suggest nothing.
+    expect(field).toHaveAttribute("autocomplete", "one-time-code");
+    // No maxLength: the browser applies it to the pasted text before the field ever sees it,
+    // so a code pasted with a space in it arrives one digit short. The length is held in state
+    // instead, after the separators have been taken out.
+    expect(field).not.toHaveAttribute("maxlength");
+  });
+
+  it("takes the whole code from a paste that carries separators", () => {
+    renderWithProviders(<VerifyWhatsApp />, openDialogState);
+    const submit = screen
+      .getByText("verifyWhatsApp.submitBtn")
+      .closest("button");
+
+    fireEvent.change(codeField(), { target: { value: "123 456" } });
+
+    expect(codeField().value).toBe("123456");
+    expect(submit).not.toBeDisabled();
+  });
+
+  it("keeps no more than the six digits the code has", () => {
+    renderWithProviders(<VerifyWhatsApp />, openDialogState);
+    fireEvent.change(codeField(), { target: { value: "1234567890" } });
+    expect(codeField().value).toBe("123456");
+  });
+
+  it("keeps only the digits of what is typed", () => {
+    renderWithProviders(<VerifyWhatsApp />, openDialogState);
+    fireEvent.change(codeField(), { target: { value: "12a4 b5-6" } });
+    expect(codeField().value).toBe("12456");
+  });
+
+  it("holds the submit button until the code is six digits long", () => {
+    renderWithProviders(<VerifyWhatsApp />, openDialogState);
+    const submit = screen
+      .getByText("verifyWhatsApp.submitBtn")
+      .closest("button");
+
+    fireEvent.change(codeField(), { target: { value: "12345" } });
+    expect(submit).toBeDisabled();
+
+    fireEvent.change(codeField(), { target: { value: "123456" } });
+    expect(submit).not.toBeDisabled();
+  });
+
+  it("never spends an attempt on anything but six digits", async () => {
+    // Every code the backend issues is six digits, so a shorter or non-numeric one can only
+    // be refused — and each refusal costs the participant one of the attempts that, once
+    // spent, take the registered number with them.
+    (verifyWhatsAppCodeReq as jest.Mock).mockResolvedValue({
+      status: 200,
+      data: { id: "user-1" },
+    });
+    renderWithProviders(<VerifyWhatsApp />, openDialogState);
+
+    fireEvent.change(codeField(), { target: { value: "abc-def" } });
+    fireEvent.click(screen.getByText("verifyWhatsApp.submitBtn"));
+    expect(verifyWhatsAppCodeReq).not.toHaveBeenCalled();
+
+    fireEvent.change(codeField(), { target: { value: "1a2b3c4d5e6f" } });
+    fireEvent.click(screen.getByText("verifyWhatsApp.submitBtn"));
+    await waitFor(() =>
+      expect(verifyWhatsAppCodeReq).toHaveBeenCalledWith("123456"),
+    );
+  });
+});

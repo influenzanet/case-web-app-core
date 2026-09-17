@@ -24,6 +24,10 @@ import {
   Dialog,
 } from "@influenzanet/case-web-ui";
 
+// Every verification code the backend issues is six digits (GenerateVerificationCode(6) over a
+// digit-only charset), so a code of any other shape can only be refused.
+const VERIFICATION_CODE_LENGTH = 6;
+
 const VerifyWhatsApp: FC = () => {
   const dispatch = useDispatch();
   const { t } = useTranslation(["dialogs"]);
@@ -123,7 +127,9 @@ const VerifyWhatsApp: FC = () => {
   };
 
   const verifyCode = async () => {
-    if (!verificationCode.trim()) {
+    // A refusal still costs one of the attempts the backend counts, and the account loses the
+    // registered number once they run out, so an incomplete code is stopped here.
+    if (verificationCode.length !== VERIFICATION_CODE_LENGTH) {
       setError(t("verifyWhatsApp.errors.codeRequired"));
       return;
     }
@@ -223,9 +229,22 @@ const VerifyWhatsApp: FC = () => {
             label={t("verifyWhatsApp.codeInputLabel")}
             placeholder={t("verifyWhatsApp.codeInputPlaceholder")}
             value={verificationCode}
-            onChange={(event) => setVerificationCode(event.target.value)}
-            maxLength={6}
-            autoComplete="off"
+            // Anything but a digit can only be a typo or a paste that carried formatting with
+            // it: keeping it would send a code the backend is bound to refuse. The length is
+            // applied here rather than through maxLength, which the browser applies to a paste
+            // before the field sees it: a code pasted as "123 456" would arrive a digit short.
+            onChange={(event) =>
+              setVerificationCode(
+                event.target.value
+                  .replace(/\D/g, "")
+                  .slice(0, VERIFICATION_CODE_LENGTH),
+              )
+            }
+            inputMode="numeric"
+            pattern="[0-9]*"
+            // The code arrives by WhatsApp on the same phone, so the browser and the keyboard
+            // are allowed to offer it instead of being told to suggest nothing.
+            autoComplete="one-time-code"
           />
         </div>
       </div>
@@ -265,7 +284,11 @@ const VerifyWhatsApp: FC = () => {
             // DialogBtn's loading prop only swaps the label, so the in-flight check is what
             // disables the button: a second click would spend another of the attempts the
             // backend counts before the first answer is even back.
-            disabled={!verificationCode.trim() || loading || resendLoading}
+            disabled={
+              verificationCode.length !== VERIFICATION_CODE_LENGTH ||
+              loading ||
+              resendLoading
+            }
           />
         </div>
       </div>
