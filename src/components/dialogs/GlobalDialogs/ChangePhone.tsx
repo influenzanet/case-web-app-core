@@ -78,8 +78,23 @@ const ChangePhone: React.FC = () => {
     } catch (e: unknown) {
       logRequestFailure("changing the phone number", e);
       handleError(e);
+      // A failure the backend answered can still have stored the new number, because sending
+      // the code is the step after storing it. The account is reloaded so the interface shows
+      // the number that is now waiting to be verified instead of the previous one.
+      if ((e as { response?: unknown })?.response !== undefined) {
+        await refreshUser();
+      }
     } finally {
       setLoading(false);
+    }
+  };
+
+  const refreshUser = async () => {
+    try {
+      const userData = (await getUserReq()).data;
+      dispatch(userActions.setUser(userData));
+    } catch (refreshError: unknown) {
+      logRequestFailure("reloading the user after changing the phone failed", refreshError);
     }
   };
 
@@ -111,6 +126,9 @@ const ChangePhone: React.FC = () => {
         break;
       case BACKEND_ERRORS.PHONE_ALREADY_TAKEN:
         setError(t('changePhone.errors.phoneAlreadyTaken'));
+        break;
+      case BACKEND_ERRORS.SEND_FAILED:
+        setError(t('changePhone.errors.sendFailed'));
         break;
       default:
         setError(t('changePhone.errors.unknown'));
