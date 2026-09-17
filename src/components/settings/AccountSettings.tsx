@@ -11,6 +11,7 @@ import { useIsAuthenticated } from '../../hooks/useIsAuthenticated';
 import { PhoneContactInfo } from '../../api/types/user';
 import { resendWhatsAppCodeReq } from '../../api/userAPI';
 import { classifyPhoneError, logRequestFailure } from "../../api/errorMessages";
+import { useResendCooldown } from '../../hooks/useResendCooldown';
 
 
 interface AccountSettingsProps {
@@ -26,6 +27,7 @@ const AccountSettings: React.FC<AccountSettingsProps> = (props) => {
   const dialogState = useSelector((state: RootState) => state.dialog);
   const [isResending, setIsResending] = useState(false);
   const [resendMessage, setResendMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+  const { secondsLeft: resendSecondsLeft, isCoolingDown: resendOnCooldown, start: startResendCooldown } = useResendCooldown();
 
   const phoneInfo = currentUser?.contactInfos.find(
     (info): info is PhoneContactInfo => info.type === 'phone'
@@ -71,6 +73,7 @@ const AccountSettings: React.FC<AccountSettingsProps> = (props) => {
         type: 'success',
         text: t(`${props.itemKey}.phone.resendSuccess`, 'Code sent.')
       });
+      startResendCooldown();
     } catch (error) {
       logRequestFailure("resending the WhatsApp code", error);
       switch (classifyPhoneError(error)) {
@@ -85,6 +88,15 @@ const AccountSettings: React.FC<AccountSettingsProps> = (props) => {
             type: 'error',
             text: t(`${props.itemKey}.phone.rateLimitError`, 'Too many verification codes requested. Please try again later.')
           });
+          break;
+        case 'cooldown':
+          setResendMessage({
+            type: 'error',
+            text: t(`${props.itemKey}.phone.cooldownError`, 'A code was just sent. Please wait a moment before asking for another one.')
+          });
+          // The window left is at most a full one, so holding the button for that long keeps
+          // the participant from walking into the same refusal a second time.
+          startResendCooldown();
           break;
         default:
           setResendMessage({
@@ -174,12 +186,16 @@ const AccountSettings: React.FC<AccountSettingsProps> = (props) => {
               <button
                 className="btn btn-primary d-flex align-items-center ms-2"
                 onClick={handleResendCode}
-                disabled={isResending}
+                disabled={isResending || resendOnCooldown}
               >
                 {isResending ? (
                   <>
                     <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
                     {t(`${props.itemKey}.phone.resending`, 'Sending...')}
+                  </>
+                ) : resendOnCooldown ? (
+                  <>
+                    {t(`${props.itemKey}.phone.resendCountdown`, 'New code in {{seconds}}s', { seconds: resendSecondsLeft })}
                   </>
                 ) : (
                   <>

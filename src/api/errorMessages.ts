@@ -13,6 +13,7 @@ export const BACKEND_ERRORS = {
   CODE_EXPIRED: "verification code expired",
   INVALID_CODE: "invalid verification code",
   RATE_LIMITED: "too many phone verification attempts, try again later",
+  COOLDOWN: "cannot send verification so often",
   RECIPIENT_NOT_ALLOWED:
     "phone number not enabled to receive WhatsApp messages",
 } as const;
@@ -49,6 +50,7 @@ export type PhoneErrorKind =
   | "invalidCode"
   | "codeExpired"
   | "tooManyAttempts"
+  | "cooldown"
   | "unknown";
 
 // HTTP statuses the gateway assigns to the two gRPC statuses the phone flow can raise: a spent
@@ -65,6 +67,7 @@ const MESSAGE_KINDS: Record<string, PhoneErrorKind> = {
   [BACKEND_ERRORS.INVALID_CODE]: "invalidCode",
   [BACKEND_ERRORS.CODE_EXPIRED]: "codeExpired",
   [BACKEND_ERRORS.TOO_MANY_ATTEMPTS]: "tooManyAttempts",
+  [BACKEND_ERRORS.COOLDOWN]: "cooldown",
 };
 
 // classifyPhoneError decides what a failed request means, reading the HTTP status first and the

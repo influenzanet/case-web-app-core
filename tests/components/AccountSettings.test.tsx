@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 import React from 'react';
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 
 import AccountSettings from '../../src/components/settings/AccountSettings';
 import { resendWhatsAppCodeReq } from '../../src/api/userAPI';
@@ -72,6 +72,33 @@ describe('AccountSettings phone code resend', () => {
     renderWithProviders(<AccountSettings itemKey="account" hideProfileSettings={true} />, stateWithUnverifiedPhone);
     clickResend();
     expect(await screen.findByText('account.phone.rateLimitError')).toBeInTheDocument();
+  });
+
+  it('maps the cooldown refusal to its own message', async () => {
+    (resendWhatsAppCodeReq as jest.Mock).mockRejectedValue({
+      response: { status: 400, data: { error: 'cannot send verification so often' } },
+    });
+    renderWithProviders(<AccountSettings itemKey="account" hideProfileSettings={true} />, stateWithUnverifiedPhone);
+    clickResend();
+    expect(await screen.findByText('account.phone.cooldownError')).toBeInTheDocument();
+  });
+
+  it('holds the resend button for the cooldown after a successful resend', async () => {
+    jest.useFakeTimers();
+    (resendWhatsAppCodeReq as jest.Mock).mockResolvedValue({ status: 200 });
+    renderWithProviders(<AccountSettings itemKey="account" hideProfileSettings={true} />, stateWithUnverifiedPhone);
+    const resendButton = () => screen.getByRole('button', { name: /account.phone.resend/ });
+
+    fireEvent.click(resendButton());
+
+    await waitFor(() => expect(resendWhatsAppCodeReq).toHaveBeenCalledTimes(1));
+    expect(resendButton()).toBeDisabled();
+
+    act(() => {
+      jest.advanceTimersByTime(60000);
+    });
+    expect(resendButton()).not.toBeDisabled();
+    jest.useRealTimers();
   });
 
   it('keeps the generic message for other send failures', async () => {

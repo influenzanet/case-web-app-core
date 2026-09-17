@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 import React from "react";
-import { fireEvent, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, screen, waitFor } from "@testing-library/react";
 
 import VerifyWhatsApp from "../../src/components/dialogs/GlobalDialogs/VerifyWhatsApp";
 import {
@@ -254,6 +254,43 @@ describe("VerifyWhatsApp dialog", () => {
     fireEvent.click(screen.getByText("verifyWhatsApp.resendBtn"));
     expect(
       await screen.findByText("verifyWhatsApp.errors.recipientNotAllowed"),
+    ).toBeInTheDocument();
+  });
+
+  it("confirms a successful resend and holds the button until the cooldown is over", async () => {
+    jest.useFakeTimers();
+    (resendWhatsAppCodeReq as jest.Mock).mockResolvedValue({ status: 200 });
+    renderWithProviders(<VerifyWhatsApp />, openDialogState);
+    const resendButton = () =>
+      screen.getByRole("button", { name: /verifyWhatsApp.resend/ });
+
+    fireEvent.click(resendButton());
+
+    // The participant is told the code went out, and the button holds for the minute the
+    // backend refuses a second one in.
+    expect(
+      await screen.findByText("verifyWhatsApp.resendSuccess"),
+    ).toBeInTheDocument();
+    expect(resendButton()).toBeDisabled();
+
+    act(() => {
+      jest.advanceTimersByTime(60000);
+    });
+    expect(resendButton()).not.toBeDisabled();
+    jest.useRealTimers();
+  });
+
+  it("maps the cooldown refusal instead of asking the participant to simply try again", async () => {
+    (resendWhatsAppCodeReq as jest.Mock).mockRejectedValue({
+      response: {
+        status: 400,
+        data: { error: "cannot send verification so often" },
+      },
+    });
+    renderWithProviders(<VerifyWhatsApp />, openDialogState);
+    fireEvent.click(screen.getByText("verifyWhatsApp.resendBtn"));
+    expect(
+      await screen.findByText("verifyWhatsApp.errors.cooldown"),
     ).toBeInTheDocument();
   });
 

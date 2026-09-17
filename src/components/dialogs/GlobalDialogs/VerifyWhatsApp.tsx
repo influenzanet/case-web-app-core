@@ -15,6 +15,7 @@ import {
 } from "../../../api/userAPI";
 import { classifyPhoneError, logRequestFailure } from "../../../api/errorMessages";
 import { renewToken } from "../../../api/instances/authenticatedApi";
+import { useResendCooldown } from "../../../hooks/useResendCooldown";
 import {
   DialogBtn,
   AlertBox,
@@ -36,7 +37,13 @@ const VerifyWhatsApp: FC = () => {
   const [loading, setLoading] = useState(false);
   const [resendLoading, setResendLoading] = useState(false);
   const [error, setError] = useState("");
+  const [resendConfirmation, setResendConfirmation] = useState("");
   const [verificationCode, setVerificationCode] = useState("");
+  const {
+    secondsLeft: resendSecondsLeft,
+    isCoolingDown: resendOnCooldown,
+    start: startResendCooldown,
+  } = useResendCooldown();
 
   const phoneNumber = dialogContent?.phoneNumber || "";
 
@@ -45,6 +52,7 @@ const VerifyWhatsApp: FC = () => {
     if (open) {
       setVerificationCode("");
       setError("");
+      setResendConfirmation("");
     }
   }, [open]);
 
@@ -52,14 +60,18 @@ const VerifyWhatsApp: FC = () => {
     dispatch(dialogActions.closeDialog());
     setVerificationCode("");
     setError("");
+    setResendConfirmation("");
   };
 
   const resendCode = async () => {
     setResendLoading(true);
     setError("");
+    setResendConfirmation("");
     try {
       await resendWhatsAppCodeReq();
       setError("");
+      setResendConfirmation(t("verifyWhatsApp.resendSuccess"));
+      startResendCooldown();
     } catch (e: unknown) {
       logRequestFailure("resending the WhatsApp code", e);
       switch (classifyPhoneError(e)) {
@@ -68,6 +80,12 @@ const VerifyWhatsApp: FC = () => {
           break;
         case "recipientNotAllowed":
           setError(t("verifyWhatsApp.errors.recipientNotAllowed"));
+          break;
+        case "cooldown":
+          setError(t("verifyWhatsApp.errors.cooldown"));
+          // The window left is at most a full one, so holding the button for that long keeps
+          // the participant from walking into the same refusal a second time.
+          startResendCooldown();
           break;
         default:
           setError(t("verifyWhatsApp.errors.unknown"));
@@ -184,6 +202,14 @@ const VerifyWhatsApp: FC = () => {
 
         {error && <AlertBox type="danger" content={error} className="mb-3" />}
 
+        {resendConfirmation && (
+          <AlertBox
+            type="success"
+            content={resendConfirmation}
+            className="mb-3"
+          />
+        )}
+
         <div className="mb-3">
           <TextField
             id="verification-code"
@@ -202,9 +228,15 @@ const VerifyWhatsApp: FC = () => {
         <DialogBtn
           type="button"
           onClick={resendCode}
-          label={t("verifyWhatsApp.resendBtn")}
+          label={
+            resendOnCooldown
+              ? t("verifyWhatsApp.resendCountdown", {
+                  seconds: resendSecondsLeft,
+                })
+              : t("verifyWhatsApp.resendBtn")
+          }
           loading={resendLoading}
-          disabled={loading || !phoneNumber}
+          disabled={loading || !phoneNumber || resendOnCooldown}
         />
         <div className="d-flex gap-3">
           <DialogBtn

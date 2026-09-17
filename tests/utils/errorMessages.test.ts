@@ -29,6 +29,10 @@ describe('classifyPhoneError', () => {
     expect(classifyPhoneError(errorWith(401, BACKEND_ERRORS.TOO_MANY_ATTEMPTS))).toBe('tooManyAttempts');
   });
 
+  it('recognises the resend cooldown, which shares its status with every other bad request', () => {
+    expect(classifyPhoneError(errorWith(400, BACKEND_ERRORS.COOLDOWN))).toBe('cooldown');
+  });
+
   it('falls back to unknown for anything it cannot place', () => {
     expect(classifyPhoneError(errorWith(500, 'database exploded'))).toBe('unknown');
     expect(classifyPhoneError(new Error('network down'))).toBe('unknown');
