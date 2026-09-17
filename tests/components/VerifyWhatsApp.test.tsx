@@ -138,6 +138,52 @@ describe("VerifyWhatsApp dialog", () => {
     ).toBeInTheDocument();
   });
 
+  it("never checks the same code twice while the first check is still in flight", async () => {
+    // DialogBtn's loading prop only swaps the label, so the in-flight request is what disables
+    // the button: a second click would spend another of the attempts the backend counts before
+    // the first answer is even back.
+    let releaseVerification: () => void = () => undefined;
+    (verifyWhatsAppCodeReq as jest.Mock).mockImplementation(
+      () =>
+        new Promise<{ status: number; data: unknown }>((resolve) => {
+          releaseVerification = () =>
+            resolve({
+              status: 200,
+              data: {
+                id: "user-1",
+                account: { accountId: "test@test.it" },
+                profiles: [],
+              },
+            });
+        }),
+    );
+    const { store } = renderWithProviders(<VerifyWhatsApp />, openDialogState);
+    // Addressed by position, not by name: the label is swapped for the loading one while the
+    // request is in flight, which is the state under test.
+    const submitButton = () => {
+      const buttons = Array.from(document.querySelectorAll("button"));
+      return buttons[buttons.length - 1];
+    };
+    expect(submitButton()).toHaveTextContent("verifyWhatsApp.submitBtn");
+
+    fireEvent.change(
+      screen.getByPlaceholderText("verifyWhatsApp.codeInputPlaceholder"),
+      { target: { value: "123456" } },
+    );
+    fireEvent.click(submitButton());
+    expect(verifyWhatsAppCodeReq).toHaveBeenCalledTimes(1);
+
+    await waitFor(() => expect(submitButton()).toBeDisabled());
+    fireEvent.click(submitButton());
+
+    expect(verifyWhatsAppCodeReq).toHaveBeenCalledTimes(1);
+    releaseVerification();
+    await waitFor(() => {
+      const state = store.getState() as { dialog: { config?: { type?: string } } };
+      expect(state.dialog.config?.type).toBe("alertDialog");
+    });
+  });
+
   it("shows a translated message for a wrong code instead of the backend text", async () => {
     (verifyWhatsAppCodeReq as jest.Mock).mockRejectedValue({
       response: { status: 401, data: { error: "invalid verification code" } },

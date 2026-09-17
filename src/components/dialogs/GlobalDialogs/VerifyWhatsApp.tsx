@@ -261,7 +261,11 @@ const VerifyWhatsApp: FC = () => {
             color="primary"
             label={t("verifyWhatsApp.submitBtn")}
             loading={loading}
-            disabled={!verificationCode.trim() || resendLoading}
+            loadingLabel={t("loadingMsg")}
+            // DialogBtn's loading prop only swaps the label, so the in-flight check is what
+            // disables the button: a second click would spend another of the attempts the
+            // backend counts before the first answer is even back.
+            disabled={!verificationCode.trim() || loading || resendLoading}
           />
         </div>
       </div>
