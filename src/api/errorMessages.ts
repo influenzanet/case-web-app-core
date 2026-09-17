@@ -54,6 +54,10 @@ export type PhoneErrorKind =
   | "tooManyAttempts"
   | "cooldown"
   | "noPendingVerification"
+  | "sendFailed"
+  | "alreadyVerified"
+  | "noPhone"
+  | "whatsAppUnavailable"
   | "unknown";
 
 // HTTP statuses the gateway assigns to the two gRPC statuses the phone flow can raise: a spent
@@ -75,6 +79,14 @@ const MESSAGE_KINDS: Record<string, PhoneErrorKind> = {
   // the one waiting to be verified any more, so the only way forward is a new code.
   [BACKEND_ERRORS.PHONE_NOT_PENDING]: "noPendingVerification",
   [BACKEND_ERRORS.NO_VERIFICATION_IN_PROGRESS]: "noPendingVerification",
+  // Matched on the message alone, like the ones above and for the same reason: the statuses
+  // these arrive with are the shared ones. A 503 in particular is also what the gateway
+  // answers when user-management itself cannot be reached, which says nothing about whether
+  // WhatsApp is configured.
+  [BACKEND_ERRORS.SEND_FAILED]: "sendFailed",
+  [BACKEND_ERRORS.PHONE_ALREADY_VERIFIED]: "alreadyVerified",
+  [BACKEND_ERRORS.NO_PHONE_TO_EDIT]: "noPhone",
+  [BACKEND_ERRORS.WHATSAPP_UNAVAILABLE]: "whatsAppUnavailable",
 };
 
 // classifyPhoneError decides what a failed request means, reading the HTTP status first and the

@@ -94,6 +94,19 @@ const VerifyWhatsApp: FC = () => {
           // the participant from walking into the same refusal a second time.
           startResendCooldown();
           break;
+        case "sendFailed":
+          // The code was never handed to Meta, so there is nothing on its way: asking for
+          // another one is what the participant has to do, and the message says so.
+          setError(t("verifyWhatsApp.errors.sendFailed"));
+          break;
+        case "whatsAppUnavailable":
+          // No code can go out at all until the instance is configured again, so a retry would
+          // only spend the participant's patience.
+          setError(t("verifyWhatsApp.errors.whatsAppUnavailable"));
+          break;
+        case "alreadyVerified":
+          await handleAlreadyVerified();
+          break;
         default:
           setError(t("verifyWhatsApp.errors.unknown"));
           break;
@@ -103,16 +116,38 @@ const VerifyWhatsApp: FC = () => {
     }
   };
 
-  // The attempt cap removes the phone on the backend, so the account is reloaded and the
-  // verification dialog gives way to the alert: leaving it open would keep offering a code for
-  // a number that is gone.
-  const handlePhoneRemoved = async () => {
+  // The backend considers the number verified, so there is nothing left for this dialog to ask
+  // for: the account is reloaded and the same confirmation the successful check shows takes its
+  // place, rather than an error about a code the participant no longer needs.
+  const handleAlreadyVerified = async () => {
+    await reloadUser("reloading the user after the phone was already verified");
+    dispatch(
+      dialogActions.openAlertDialog({
+        type: "alertDialog",
+        payload: {
+          color: "success",
+          title: t("verifyWhatsApp.successDialog.title"),
+          content: t("verifyWhatsApp.successDialog.content"),
+          btn: t("verifyWhatsApp.successDialog.btn"),
+        },
+      }),
+    );
+  };
+
+  const reloadUser = async (context: string) => {
     try {
       const userData = (await getUserReq()).data;
       dispatch(userActions.setUser(userData));
     } catch (refreshError: unknown) {
-      logRequestFailure("reloading the user after the phone was removed", refreshError);
+      logRequestFailure(context, refreshError);
     }
+  };
+
+  // The attempt cap removes the phone on the backend, so the account is reloaded and the
+  // verification dialog gives way to the alert: leaving it open would keep offering a code for
+  // a number that is gone.
+  const handlePhoneRemoved = async () => {
+    await reloadUser("reloading the user after the phone was removed");
     dispatch(
       dialogActions.openAlertDialog({
         type: "alertDialog",

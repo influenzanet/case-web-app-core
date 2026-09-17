@@ -111,6 +111,11 @@ const ChangePhone: React.FC = () => {
       case "noPendingVerification":
         setError(t("changePhone.errors.noPendingVerification"));
         return;
+      case "noPhone":
+        // Only this endpoint answers it: there is no number on the account to change, so the
+        // dialog says that instead of the message it shows for a failure it cannot place.
+        setError(t("changePhone.errors.noPhone"));
+        return;
       default:
         break;
     }

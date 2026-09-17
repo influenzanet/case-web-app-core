@@ -516,3 +516,61 @@ describe("VerifyWhatsApp code field", () => {
     );
   });
 });
+
+describe("VerifyWhatsApp resend answers", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("tells the participant to ask again when the send itself failed", async () => {
+    (resendWhatsAppCodeReq as jest.Mock).mockRejectedValue({
+      response: { status: 500, data: { error: "failed to send verification code" } },
+    });
+    renderWithProviders(<VerifyWhatsApp />, openDialogState);
+    fireEvent.click(screen.getByText("verifyWhatsApp.resendBtn"));
+    expect(
+      await screen.findByText("verifyWhatsApp.errors.sendFailed"),
+    ).toBeInTheDocument();
+  });
+
+  it("says WhatsApp is unavailable rather than blaming the code", async () => {
+    (resendWhatsAppCodeReq as jest.Mock).mockRejectedValue({
+      response: { status: 503, data: { error: "WhatsApp is not configured" } },
+    });
+    renderWithProviders(<VerifyWhatsApp />, openDialogState);
+    fireEvent.click(screen.getByText("verifyWhatsApp.resendBtn"));
+    expect(
+      await screen.findByText("verifyWhatsApp.errors.whatsAppUnavailable"),
+    ).toBeInTheDocument();
+  });
+
+  it("closes the dialog on a number the backend already considers verified", async () => {
+    // Nothing is left to verify, so the dialog has nothing to ask for: the account is reloaded
+    // and the same confirmation the successful path shows takes its place.
+    const verifiedUser = {
+      id: "user-1",
+      account: { accountId: "test@test.it" },
+      profiles: [],
+      contactInfos: [
+        { id: "ci-1", type: "phone", phone: "+391234567890", confirmedAt: 1752000000 },
+      ],
+    };
+    (resendWhatsAppCodeReq as jest.Mock).mockRejectedValue({
+      response: { status: 400, data: { error: "phone number already verified" } },
+    });
+    (getUserReq as jest.Mock).mockResolvedValue({ data: verifiedUser });
+
+    const { store } = renderWithProviders(<VerifyWhatsApp />, openDialogState);
+    fireEvent.click(screen.getByText("verifyWhatsApp.resendBtn"));
+
+    await waitFor(() => expect(getUserReq).toHaveBeenCalledTimes(1));
+    await waitFor(() => {
+      const state = store.getState() as {
+        dialog: { config?: { type?: string } };
+        user: { currentUser: unknown };
+      };
+      expect(state.user.currentUser).toEqual(verifiedUser);
+      expect(state.dialog.config?.type).toBe("alertDialog");
+    });
+  });
+});

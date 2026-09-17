@@ -7,9 +7,10 @@ import { RootState } from "../../store/rootReducer";
 import { useTranslation } from 'react-i18next';
 import { EditBtn } from '@influenzanet/case-web-ui';
 import { dialogActions } from '../../store/dialogSlice';
+import { userActions } from '../../store/userSlice';
 import { useIsAuthenticated } from '../../hooks/useIsAuthenticated';
 import { PhoneContactInfo } from '../../api/types/user';
-import { resendWhatsAppCodeReq } from '../../api/userAPI';
+import { resendWhatsAppCodeReq, getUserReq } from '../../api/userAPI';
 import { classifyPhoneError, logRequestFailure } from "../../api/errorMessages";
 import { useResendCooldown } from '../../hooks/useResendCooldown';
 
@@ -52,6 +53,25 @@ const AccountSettings: React.FC<AccountSettingsProps> = (props) => {
       {'authentication needed'}
     </div>
   }
+
+  // The backend considers the number verified, so the account this page is showing is the one
+  // that is out of date: reloading it puts the verified badge in place of the resend button,
+  // which is the whole answer. Only when that reload fails does the page still show the number
+  // as unverified, and then the message is the only thing telling the participant why no code
+  // is coming.
+  const handleAlreadyVerified = async () => {
+    try {
+      const userData = (await getUserReq()).data;
+      dispatch(userActions.setUser(userData));
+      return;
+    } catch (refreshError) {
+      logRequestFailure('reloading the user after the phone was already verified', refreshError);
+    }
+    setResendMessage({
+      type: 'error',
+      text: t(`${props.itemKey}.phone.alreadyVerifiedError`, 'This number is already verified.')
+    });
+  };
 
   const handleResendCode = async () => {
     setIsResending(true);
@@ -103,6 +123,25 @@ const AccountSettings: React.FC<AccountSettingsProps> = (props) => {
           // The window left is at most a full one, so holding the button for that long keeps
           // the participant from walking into the same refusal a second time.
           startResendCooldown();
+          break;
+        case 'sendFailed':
+          // The code never reached Meta, so nothing is on its way and another request is what
+          // the participant has to make.
+          setResendMessage({
+            type: 'error',
+            text: t(`${props.itemKey}.phone.sendFailedError`, 'We could not send the code. Please ask for a new one.')
+          });
+          break;
+        case 'whatsAppUnavailable':
+          // No code can go out until the instance is configured again, so a retry would only
+          // spend the participant's patience.
+          setResendMessage({
+            type: 'error',
+            text: t(`${props.itemKey}.phone.whatsAppUnavailableError`, 'WhatsApp messages cannot be sent at the moment. Please try again later.')
+          });
+          break;
+        case 'alreadyVerified':
+          await handleAlreadyVerified();
           break;
         default:
           setResendMessage({

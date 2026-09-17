@@ -40,8 +40,20 @@ describe('classifyPhoneError', () => {
     expect(classifyPhoneError(errorWith(400, BACKEND_ERRORS.NO_VERIFICATION_IN_PROGRESS))).toBe('noPendingVerification');
   });
 
+  it('recognises the four answers that were declared but never classified', () => {
+    // Matched on the message alone: the statuses they arrive with are shared with every other
+    // bad request, internal fault and unreachable service, so none of them identifies its
+    // answer. A 503 in particular is also what the gateway returns when user-management itself
+    // is down, which has nothing to do with WhatsApp being configured.
+    expect(classifyPhoneError(errorWith(500, BACKEND_ERRORS.SEND_FAILED))).toBe('sendFailed');
+    expect(classifyPhoneError(errorWith(400, BACKEND_ERRORS.PHONE_ALREADY_VERIFIED))).toBe('alreadyVerified');
+    expect(classifyPhoneError(errorWith(400, BACKEND_ERRORS.NO_PHONE_TO_EDIT))).toBe('noPhone');
+    expect(classifyPhoneError(errorWith(503, BACKEND_ERRORS.WHATSAPP_UNAVAILABLE))).toBe('whatsAppUnavailable');
+  });
+
   it('falls back to unknown for anything it cannot place', () => {
     expect(classifyPhoneError(errorWith(500, 'database exploded'))).toBe('unknown');
+    expect(classifyPhoneError(errorWith(503, 'user-management is unreachable'))).toBe('unknown');
     expect(classifyPhoneError(new Error('network down'))).toBe('unknown');
     expect(classifyPhoneError(undefined)).toBe('unknown');
   });

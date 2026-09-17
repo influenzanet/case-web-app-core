@@ -54,6 +54,15 @@ describe('ChangePhone dialog', () => {
     expect(await screen.findByText('changePhone.errors.recipientNotAllowed')).toBeInTheDocument();
   });
 
+  it('tells the participant there is no number to change', async () => {
+    (changeAccountPhoneReq as jest.Mock).mockRejectedValue({
+      response: { status: 400, data: { error: 'user has no phone number to edit' } },
+    });
+    renderWithProviders(<ChangePhone />, openDialogState);
+    await fillAndSubmitPhone();
+    expect(await screen.findByText('changePhone.errors.noPhone')).toBeInTheDocument();
+  });
+
   it('maps the rate limit error to a translated message', async () => {
     (changeAccountPhoneReq as jest.Mock).mockRejectedValue({
       response: { data: { error: 'too many phone verification attempts, try again later' } },
