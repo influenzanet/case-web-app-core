@@ -144,3 +144,53 @@ describe("DeletePhone dialog", () => {
     });
   });
 });
+
+describe("DeletePhone confirm button while the request is running", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("names itself while the deletion is in flight", async () => {
+    let releaseDeletion: () => void = () => undefined;
+    (deletePhoneReq as jest.Mock).mockImplementation(
+      () =>
+        new Promise<{ status: number; data: unknown }>((resolve) => {
+          releaseDeletion = () =>
+            resolve({ status: 200, data: userWithoutPhone });
+        }),
+    );
+    renderWithProviders(<DeletePhone />, openDialogState);
+
+    confirmDeletion();
+
+    // The loading state swaps the label for a spinner and an empty span, so without a label of
+    // its own the button is announced as nothing at all.
+    expect(
+      await screen.findByRole("button", { name: "loadingMsg" }),
+    ).toBeInTheDocument();
+    releaseDeletion();
+  });
+
+  it("refuses a second click while the first deletion is still running", async () => {
+    // A second DELETE for a number the first one is already removing.
+    let releaseDeletion: () => void = () => undefined;
+    (deletePhoneReq as jest.Mock).mockImplementation(
+      () =>
+        new Promise<{ status: number; data: unknown }>((resolve) => {
+          releaseDeletion = () =>
+            resolve({ status: 200, data: userWithoutPhone });
+        }),
+    );
+    renderWithProviders(<DeletePhone />, openDialogState);
+
+    confirmDeletion();
+    const confirmButton = await screen.findByRole("button", {
+      name: "loadingMsg",
+    });
+    expect(confirmButton).toBeDisabled();
+    fireEvent.click(confirmButton);
+
+    expect(deletePhoneReq).toHaveBeenCalledTimes(1);
+    releaseDeletion();
+  });
+});

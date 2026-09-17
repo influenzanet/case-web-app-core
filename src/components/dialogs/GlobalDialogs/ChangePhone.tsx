@@ -204,6 +204,7 @@ const ChangePhone: React.FC = () => {
               type="submit"
               color="primary"
               loading={loading}
+              loadingLabel={t('loadingMsg')}
               disabled={buttonDisabled()}
               label={t('changePhone.confirmBtn')}
             />

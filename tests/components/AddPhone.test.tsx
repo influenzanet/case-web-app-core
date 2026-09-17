@@ -172,3 +172,42 @@ describe('AddPhone dialog account refresh after a failure', () => {
     expect(getUserReq).not.toHaveBeenCalled();
   });
 });
+
+describe('AddPhone confirm button while the request is running', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('names itself while the number is being saved', async () => {
+    let releaseRequest: () => void = () => undefined;
+    (newAccountPhoneReq as jest.Mock).mockImplementation(
+      () => new Promise<{ status: number }>((resolve) => {
+        releaseRequest = () => resolve({ status: 200 });
+      }),
+    );
+    renderWithProviders(<AddPhone />, openDialogState);
+
+    await fillAndSubmitPhone();
+
+    expect(await screen.findByRole('button', { name: 'loadingMsg' })).toBeInTheDocument();
+    releaseRequest();
+  });
+
+  it('refuses a second click while the first request is still running', async () => {
+    let releaseRequest: () => void = () => undefined;
+    (newAccountPhoneReq as jest.Mock).mockImplementation(
+      () => new Promise<{ status: number }>((resolve) => {
+        releaseRequest = () => resolve({ status: 200 });
+      }),
+    );
+    renderWithProviders(<AddPhone />, openDialogState);
+
+    await fillAndSubmitPhone();
+    const submitButton = await screen.findByRole('button', { name: 'loadingMsg' });
+    expect(submitButton).toBeDisabled();
+    fireEvent.click(submitButton);
+
+    expect(newAccountPhoneReq).toHaveBeenCalledTimes(1);
+    releaseRequest();
+  });
+});

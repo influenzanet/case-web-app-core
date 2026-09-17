@@ -70,6 +70,9 @@ const ManageProfiles: React.FC = () => {
     if (!selectedProfile) {
       return;
     }
+    // The confirmation dialog stays open until the request settles, so its button can be clicked
+    // again: without this, a second click removes a second profile.
+    if (loading) { return; }
     setLoading(true);
     try {
       const response = await removeProfileReq(selectedProfile.id);
@@ -178,6 +181,7 @@ const ManageProfiles: React.FC = () => {
             type="button"
             color="primary"
             loading={loading}
+            loadingLabel={t("loadingMsg")}
             label={t("manageProfiles.newProfileBtn")}
             onClick={() => setNewProfileDialog(true)}
           />

@@ -112,6 +112,11 @@ const DeletePhone: React.FC<DeletePhoneProps> = (props) => {
             color="danger"
             className="mt-2"
             loading={loading}
+            loadingLabel={t('loadingMsg')}
+            // DialogBtn's loading prop only swaps the label for a spinner, so the button has to
+            // be disabled as well: a second click sends the request the first one is still
+            // waiting on.
+            disabled={loading}
             outlined={true}
             label={t('deletePhone.confirmBtn')}
             onClick={() => onDeletePhone()}

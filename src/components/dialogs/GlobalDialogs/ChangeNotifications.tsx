@@ -249,6 +249,7 @@ const ChangeNotifications = () => {
               type="submit"
               color="primary"
               loading={loading}
+              loadingLabel={t('loadingMsg')}
               disabled={loading || !changed}
               label={t('changeNotifications.submitBtn')}
             />

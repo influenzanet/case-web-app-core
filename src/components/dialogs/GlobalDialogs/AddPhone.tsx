@@ -257,6 +257,7 @@ const AddPhone: React.FC = () => {
               type="submit"
               color="primary"
               loading={loading}
+              loadingLabel={t("loadingMsg")}
               disabled={buttonDisabled()}
               label={t("addPhone.confirmBtn")}
             />

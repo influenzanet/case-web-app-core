@@ -196,6 +196,7 @@ const ChangePassword: React.FC<ChangePasswordProps> = (props) => {
               type="submit"
               color="primary"
               loading={loading}
+              loadingLabel={t('loadingMsg')}
               disabled={loading || formData.oldPassword.length < 6 || !checkPasswordRules(formData.newPassword) || !passwordsMatch()}
               label={t('changePassword.confirmBtn')}
             />

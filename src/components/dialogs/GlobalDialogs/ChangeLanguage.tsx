@@ -163,6 +163,7 @@ const ChangeLanguage: React.FC<ChangeLanguageProps> = (props) => {
             type="submit"
             color="primary"
             loading={loading}
+            loadingLabel={t('loadingMsg')}
             disabled={loading}
             label={t('changeLanguage.confirmBtn')}
             onClick={() => changeLanguage()}

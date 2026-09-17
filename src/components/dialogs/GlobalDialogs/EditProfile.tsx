@@ -192,6 +192,7 @@ const EditProfile: React.FC<EditProfileProps> = (props) => {
             type="button"
             color="primary"
             loading={loading}
+            loadingLabel={t("loadingMsg")}
             disabled={
               loading ||
               profile.alias.length < 1 ||

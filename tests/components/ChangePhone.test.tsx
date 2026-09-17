@@ -122,3 +122,42 @@ describe('ChangePhone dialog', () => {
     expect(await screen.findByText('changePhone.errors.noPendingVerification')).toBeInTheDocument();
   });
 });
+
+describe('ChangePhone confirm button while the request is running', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('names itself while the new number is being saved', async () => {
+    let releaseRequest: () => void = () => undefined;
+    (changeAccountPhoneReq as jest.Mock).mockImplementation(
+      () => new Promise<{ status: number }>((resolve) => {
+        releaseRequest = () => resolve({ status: 200 });
+      }),
+    );
+    renderWithProviders(<ChangePhone />, openDialogState);
+
+    await fillAndSubmitPhone();
+
+    expect(await screen.findByRole('button', { name: 'loadingMsg' })).toBeInTheDocument();
+    releaseRequest();
+  });
+
+  it('refuses a second click while the first request is still running', async () => {
+    let releaseRequest: () => void = () => undefined;
+    (changeAccountPhoneReq as jest.Mock).mockImplementation(
+      () => new Promise<{ status: number }>((resolve) => {
+        releaseRequest = () => resolve({ status: 200 });
+      }),
+    );
+    renderWithProviders(<ChangePhone />, openDialogState);
+
+    await fillAndSubmitPhone();
+    const submitButton = await screen.findByRole('button', { name: 'loadingMsg' });
+    expect(submitButton).toBeDisabled();
+    fireEvent.click(submitButton);
+
+    expect(changeAccountPhoneReq).toHaveBeenCalledTimes(1);
+    releaseRequest();
+  });
+});
