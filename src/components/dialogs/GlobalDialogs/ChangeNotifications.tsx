@@ -40,6 +40,9 @@ const ChangeNotifications = () => {
 
   useEffect(() => {
     if (open) {
+      // The banner belongs to the save that failed, not to the dialog, so a dialog opened
+      // again starts without it.
+      setError('');
       fetchUser();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -2,11 +2,12 @@
  * @jest-environment jsdom
  */
 import React from 'react';
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 
 import ChangeNotifications from '../../src/components/dialogs/GlobalDialogs/ChangeNotifications';
 import { getUserReq, updateContactPreferencesReq } from '../../src/api/userAPI';
 import { renderWithProviders } from './testUtils';
+import { dialogActions } from '../../src/store/dialogSlice';
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
@@ -126,6 +127,34 @@ describe('ChangeNotifications dialog', () => {
       error: 'database unavailable',
     });
     expect(JSON.stringify(consoleError.mock.calls)).not.toContain('super-secret-access-token');
+    consoleError.mockRestore();
+  });
+
+  it('clears the error banner when the dialog is opened again', async () => {
+    const consoleError = jest.spyOn(console, 'error').mockImplementation(() => undefined);
+    const user = buildUser(true);
+    (getUserReq as jest.Mock).mockResolvedValue({ data: user });
+    (updateContactPreferencesReq as jest.Mock).mockRejectedValue({
+      response: { status: 500, data: { error: 'database unavailable' } },
+    });
+    const { store } = renderWithProviders(<ChangeNotifications />, openState(user));
+    await waitFor(() => expect(getUserReq).toHaveBeenCalled());
+
+    fireEvent.click(whatsappCheckbox());
+    fireEvent.click(screen.getByText('changeNotifications.submitBtn'));
+    await screen.findByText('changeNotifications.errors.unknown');
+
+    // The banner belongs to the save that failed, not to the dialog: reopening starts over.
+    act(() => {
+      store.dispatch(dialogActions.closeDialog());
+    });
+    act(() => {
+      store.dispatch(dialogActions.openDialogWithoutPayload({ type: 'changeNotifications' }));
+    });
+
+    await waitFor(() =>
+      expect(screen.queryByText('changeNotifications.errors.unknown')).toBeNull(),
+    );
     consoleError.mockRestore();
   });
 
