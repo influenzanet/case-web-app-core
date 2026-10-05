@@ -8,6 +8,7 @@ import { getUserReq, updateContactPreferencesReq } from '../../../api/userAPI';
 import { dialogActions } from '../../../store/dialogSlice';
 import { RootState } from '../../../store/rootReducer';
 import { userActions } from '../../../store/userSlice';
+import { useWhatsAppEnabled } from '../../../hooks/useWhatsAppEnabled';
 import {
   Dialog,
   DialogBtn,
@@ -37,6 +38,9 @@ const ChangeNotifications = () => {
     (info): info is PhoneContactInfo => info.type === 'phone'
   );
   const confirmedPhone = (phoneInfo?.confirmedAt ?? 0) > 0;
+  // When WhatsApp is disabled on the platform its channel is not offered and cannot be the
+  // channel left once email is switched off; stored preferences are saved back unchanged.
+  const whatsAppEnabled = useWhatsAppEnabled();
 
   useEffect(() => {
     if (open) {
@@ -81,7 +85,7 @@ const ChangeNotifications = () => {
   }
 
   const handleChannelEmail = (value: boolean) => {
-    if (!value && !channelWhatsapp) return;
+    if (!value && (!channelWhatsapp || !whatsAppEnabled)) return;
     setChanged(true);
     setChannelEmail(value);
   }
@@ -192,13 +196,14 @@ const ChangeNotifications = () => {
               id="channelEmail"
               name="channelEmail"
               checked={channelEmail}
-              disabled={!confirmedPhone && channelEmail}
+              disabled={(!confirmedPhone || !whatsAppEnabled) && channelEmail}
               onChange={handleChannelEmail}
             >
               {t('dialogs:changeNotifications.channels.email')}
             </Checkbox>
           </div>
 
+          {whatsAppEnabled && (<React.Fragment>
           <div className="mb-2">
             <Checkbox
               id="channelWhatsapp"
@@ -224,6 +229,7 @@ const ChangeNotifications = () => {
               {t('dialogs:changeNotifications.channels.note')}
             </p>
           )}
+          </React.Fragment>)}
 
           <AlertBox
             type="danger"

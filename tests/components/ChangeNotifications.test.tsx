@@ -8,6 +8,7 @@ import ChangeNotifications from '../../src/components/dialogs/GlobalDialogs/Chan
 import { getUserReq, updateContactPreferencesReq } from '../../src/api/userAPI';
 import { renderWithProviders } from './testUtils';
 import { dialogActions } from '../../src/store/dialogSlice';
+import { useWhatsAppEnabled } from '../../src/hooks/useWhatsAppEnabled';
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
@@ -19,6 +20,14 @@ jest.mock('../../src/api/userAPI', () => ({
 jest.mock('../../src/api/instances/authenticatedApi', () => ({
   renewToken: jest.fn(),
 }));
+jest.mock('../../src/hooks/useWhatsAppEnabled', () => ({
+  useWhatsAppEnabled: jest.fn(),
+}));
+
+// WhatsApp is enabled on the platform unless a test says otherwise.
+beforeEach(() => {
+  (useWhatsAppEnabled as jest.Mock).mockReturnValue(true);
+});
 
 const buildUser = (phoneConfirmed: boolean) => ({
   id: 'user-1',
@@ -208,5 +217,66 @@ describe('ChangeNotifications channel checkboxes', () => {
     await waitFor(() => expect(getUserReq).toHaveBeenCalled());
     expect(whatsappCheckbox()).not.toBeDisabled();
     expect(emailCheckbox()).not.toBeDisabled();
+  });
+});
+
+describe('ChangeNotifications with WhatsApp disabled on the platform', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    (useWhatsAppEnabled as jest.Mock).mockReturnValue(false);
+  });
+
+  const queryWhatsappCheckbox = () =>
+    screen.queryByLabelText('dialogs:changeNotifications.channels.whatsapp');
+
+  it('does not offer the WhatsApp channel or its hints to a verified phone', async () => {
+    const user = buildUser(true);
+    (getUserReq as jest.Mock).mockResolvedValue({ data: user });
+    renderWithProviders(<ChangeNotifications />, openState(user));
+
+    await waitFor(() => expect(getUserReq).toHaveBeenCalled());
+    expect(queryWhatsappCheckbox()).toBeNull();
+    expect(screen.queryByText('dialogs:changeNotifications.channels.note')).toBeNull();
+    expect(screen.queryByText('dialogs:changeNotifications.channels.whatsappDisabled')).toBeNull();
+    expect(emailCheckbox()).toBeInTheDocument();
+  });
+
+  it('does not offer the WhatsApp channel or its hints to an unverified phone', async () => {
+    const user = buildUser(false);
+    (getUserReq as jest.Mock).mockResolvedValue({ data: user });
+    renderWithProviders(<ChangeNotifications />, openState(user));
+
+    await waitFor(() => expect(getUserReq).toHaveBeenCalled());
+    expect(queryWhatsappCheckbox()).toBeNull();
+    expect(screen.queryByText('dialogs:changeNotifications.channels.whatsappDisabled')).toBeNull();
+  });
+
+  it('keeps email, the only channel on offer, from being unchecked', async () => {
+    // The stored preferences still list whatsapp, but a channel the participant cannot see
+    // must not count as the one left when email is switched off.
+    const user = buildUser(true);
+    (getUserReq as jest.Mock).mockResolvedValue({ data: user });
+    renderWithProviders(<ChangeNotifications />, openState(user));
+    await waitFor(() => expect(getUserReq).toHaveBeenCalled());
+
+    expect(emailCheckbox()).toBeDisabled();
+    fireEvent.click(emailCheckbox());
+    await waitFor(() => expect(emailCheckbox().checked).toBe(true));
+  });
+
+  it('saves the stored channels as they are', async () => {
+    const user = buildUser(true);
+    (getUserReq as jest.Mock).mockResolvedValue({ data: user });
+    (updateContactPreferencesReq as jest.Mock).mockResolvedValue({ data: user });
+    renderWithProviders(<ChangeNotifications />, openState(user));
+    await waitFor(() => expect(getUserReq).toHaveBeenCalled());
+
+    fireEvent.click(screen.getByLabelText('dialogs:changeNotifications.newsletter.label'));
+    fireEvent.click(screen.getByText('changeNotifications.submitBtn'));
+
+    await waitFor(() => expect(updateContactPreferencesReq).toHaveBeenCalledTimes(1));
+    const sentPrefs = (updateContactPreferencesReq as jest.Mock).mock.calls[0][0];
+    expect(sentPrefs.preferredChannels).toEqual(['email', 'whatsapp']);
+    expect(sentPrefs.subscribedToNewsletter).toBe(true);
   });
 });

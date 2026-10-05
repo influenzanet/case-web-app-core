@@ -6,12 +6,19 @@ import { useHistory } from 'react-router-dom';
 import { useIsAuthenticated } from '../../hooks/useIsAuthenticated';
 import { PhoneContactInfo } from '../../api/types/user';
 import { DialogBtn } from '@influenzanet/case-web-ui';
+import { useWhatsAppEnabled } from '../../hooks/useWhatsAppEnabled';
 
 const PhoneVerificationBanner: React.FC = () => {
   const { t } = useTranslation();
   const isAuth = useIsAuthenticated();
   const history = useHistory();
   const currentUser = useSelector((state: RootState) => state.user.currentUser);
+  const whatsAppEnabled = useWhatsAppEnabled();
+
+  // Phone verification only matters when WhatsApp is enabled on the platform.
+  if (!whatsAppEnabled) {
+    return null;
+  }
 
 
   if (!isAuth || !currentUser) {

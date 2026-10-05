@@ -7,6 +7,7 @@ import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import AccountSettings from '../../src/components/settings/AccountSettings';
 import { resendWhatsAppCodeReq, getUserReq } from '../../src/api/userAPI';
 import { renderWithProviders } from './testUtils';
+import { useWhatsAppEnabled } from '../../src/hooks/useWhatsAppEnabled';
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
@@ -18,6 +19,14 @@ jest.mock('../../src/api/userAPI', () => ({
 jest.mock('../../src/hooks/useIsAuthenticated', () => ({
   useIsAuthenticated: () => true,
 }));
+jest.mock('../../src/hooks/useWhatsAppEnabled', () => ({
+  useWhatsAppEnabled: jest.fn(),
+}));
+
+// WhatsApp is enabled on the platform unless a test says otherwise.
+beforeEach(() => {
+  (useWhatsAppEnabled as jest.Mock).mockReturnValue(true);
+});
 
 const stateWithUnverifiedPhone = {
   user: {
@@ -206,5 +215,53 @@ describe('AccountSettings phone deletion', () => {
       const state = store.getState() as { dialog: { config?: { type?: string } } };
       expect(state.dialog.config?.type).toBe('deletePhone');
     });
+  });
+});
+
+describe('AccountSettings and the platform WhatsApp switch', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('shows the phone section when WhatsApp is enabled', () => {
+    renderWithProviders(
+      <AccountSettings itemKey="account" hideProfileSettings={true} />,
+      stateWithUnverifiedPhone,
+    );
+    expect(screen.getByText('account.phone.title')).toBeInTheDocument();
+    expect(screen.getByText('account.phone.resendBtn')).toBeInTheDocument();
+  });
+
+  it('hides every phone control when WhatsApp is disabled', () => {
+    (useWhatsAppEnabled as jest.Mock).mockReturnValue(false);
+    renderWithProviders(
+      <AccountSettings itemKey="account" hideProfileSettings={true} />,
+      stateWithUnverifiedPhone,
+    );
+    expect(screen.queryByText('account.phone.title')).toBeNull();
+    expect(screen.queryByText('account.phone.notConfirmed')).toBeNull();
+    expect(screen.queryByText('account.phone.resendBtn')).toBeNull();
+    expect(screen.queryByRole('button', { name: 'account.phone.deleteBtn' })).toBeNull();
+    // The rest of the account settings are untouched.
+    expect(screen.getByText('account.email.title')).toBeInTheDocument();
+    expect(screen.getByText('account.password.title')).toBeInTheDocument();
+  });
+
+  it('does not offer to add a phone when WhatsApp is disabled', () => {
+    (useWhatsAppEnabled as jest.Mock).mockReturnValue(false);
+    const withoutPhone = {
+      user: {
+        currentUser: {
+          ...stateWithUnverifiedPhone.user.currentUser,
+          contactInfos: [stateWithUnverifiedPhone.user.currentUser.contactInfos[0]],
+        },
+      },
+    };
+    renderWithProviders(
+      <AccountSettings itemKey="account" hideProfileSettings={true} />,
+      withoutPhone,
+    );
+    expect(screen.queryByText('account.phone.btn')).toBeNull();
+    expect(screen.queryByText('account.phone.infoAdd')).toBeNull();
   });
 });

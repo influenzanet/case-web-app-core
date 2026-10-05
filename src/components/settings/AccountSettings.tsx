@@ -13,6 +13,7 @@ import { PhoneContactInfo } from '../../api/types/user';
 import { resendWhatsAppCodeReq, getUserReq } from '../../api/userAPI';
 import { classifyPhoneError, logRequestFailure } from "../../api/errorMessages";
 import { useResendCooldown } from '../../hooks/useResendCooldown';
+import { useWhatsAppEnabled } from '../../hooks/useWhatsAppEnabled';
 
 
 interface AccountSettingsProps {
@@ -29,6 +30,7 @@ const AccountSettings: React.FC<AccountSettingsProps> = (props) => {
   const [isResending, setIsResending] = useState(false);
   const [resendMessage, setResendMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
   const { secondsLeft: resendSecondsLeft, isCoolingDown: resendOnCooldown, start: startResendCooldown } = useResendCooldown();
+  const whatsAppEnabled = useWhatsAppEnabled();
 
   const phoneInfo = currentUser?.contactInfos.find(
     (info): info is PhoneContactInfo => info.type === 'phone'
@@ -194,7 +196,8 @@ const AccountSettings: React.FC<AccountSettingsProps> = (props) => {
         {blurEmail(currentUser.account.accountId)}
       </EditBtn>
 
-      {/** phone */}
+      {/** phone: only offered when WhatsApp is enabled on the platform */}
+      {whatsAppEnabled && (<React.Fragment>
       <div className="d-flex align-items-center mt-2">
         <h4 className="fw-bold mb-0">
           {t(`${props.itemKey}.phone.title`)}
@@ -278,6 +281,7 @@ const AccountSettings: React.FC<AccountSettingsProps> = (props) => {
           {resendMessage.text}
         </div>
       )}
+      </React.Fragment>)}
 
 
       {/** password */}

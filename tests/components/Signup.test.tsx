@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 import React from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
 
@@ -11,6 +11,7 @@ import { signupWithEmailRequest } from '../../src/api/authAPI';
 import dialogReducer from '../../src/store/dialogSlice';
 import userReducer from '../../src/store/userSlice';
 import configReducer from '../../src/store/configSlice';
+import { useWhatsAppEnabled } from '../../src/hooks/useWhatsAppEnabled';
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key, i18n: { language: 'it' } }),
@@ -33,6 +34,14 @@ jest.mock('../../src/api/instances/authenticatedApi', () => ({
   setDefaultAccessTokenHeader: jest.fn(),
   resetApiAuth: jest.fn(),
 }));
+jest.mock('../../src/hooks/useWhatsAppEnabled', () => ({
+  useWhatsAppEnabled: jest.fn(),
+}));
+
+// WhatsApp is enabled on the platform unless a test says otherwise.
+beforeEach(() => {
+  (useWhatsAppEnabled as jest.Mock).mockReturnValue(true);
+});
 
 // The dialog only renders when the dialog slice says it is the open one.
 const openSignupState = {
@@ -189,5 +198,51 @@ describe('Signup dialog, optional phone number', () => {
 
     expect(screen.queryByText(PHONE_ERROR)).toBeNull();
     expect(submitButton(root).disabled).toBe(false);
+  });
+});
+
+describe('Signup dialog, WhatsApp disabled on the platform', () => {
+  const recaptchaFlag = process.env.REACT_APP_USE_RECAPTCHA;
+  beforeEach(() => {
+    jest.clearAllMocks();
+    delete process.env.REACT_APP_USE_RECAPTCHA;
+    (useWhatsAppEnabled as jest.Mock).mockReturnValue(false);
+  });
+  afterAll(() => {
+    if (recaptchaFlag === undefined) {
+      delete process.env.REACT_APP_USE_RECAPTCHA;
+    } else {
+      process.env.REACT_APP_USE_RECAPTCHA = recaptchaFlag;
+    }
+  });
+
+  it('does not offer the phone field', () => {
+    const { baseElement } = renderSignup();
+    expect(
+      screen.queryByPlaceholderText('signup.phoneInputPlaceholdersignup.phoneOptionalWithExplanation'),
+    ).toBeNull();
+    expect((baseElement as HTMLElement).querySelector('select')).toBeNull();
+  });
+
+  it('lets a participant register and sends no phone number', async () => {
+    (signupWithEmailRequest as jest.Mock).mockRejectedValue({ response: { status: 500 } });
+    const { baseElement } = renderSignup();
+    const root = baseElement as HTMLElement;
+    fillTheRequiredFields(root);
+
+    expect(submitButton(root).disabled).toBe(false);
+    fireEvent.click(submitButton(root));
+
+    await waitFor(() => expect(signupWithEmailRequest).toHaveBeenCalledTimes(1));
+    expect((signupWithEmailRequest as jest.Mock).mock.calls[0][0]).toEqual(
+      expect.objectContaining({ email: 'partecipante@example.org', phone: '' }),
+    );
+  });
+});
+
+describe('Signup dialog, WhatsApp enabled on the platform', () => {
+  it('offers the phone field', () => {
+    renderSignup();
+    expect(phoneField()).toBeInTheDocument();
   });
 });

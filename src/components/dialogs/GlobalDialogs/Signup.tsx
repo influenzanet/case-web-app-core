@@ -28,6 +28,7 @@ import { userActions } from '../../../store/userSlice';
 import { getErrorMsg } from '../../../api/utils';
 import { parseBooleanFlag } from '../../../utils/parseBooleanFlag';
 import { PhoneNumberInput } from '../../inputs';
+import { useWhatsAppEnabled } from '../../../hooks/useWhatsAppEnabled';
 
 const marginBottomClass = "mb-2";
 
@@ -103,6 +104,8 @@ const SignupForm: React.FC<SignupFormProps> = (props) => {
   const [showPasswordError, setShowPasswordError] = useState(false);
   const [showConfirmPasswordError, setShowConfirmPasswordError] = useState(false);
   const [showPhoneError, setShowPhoneError] = useState(false);
+  // Without WhatsApp the phone field is not offered, so the phone stays empty and is not sent.
+  const whatsAppEnabled = useWhatsAppEnabled();
 
   const reCaptchaSiteKey = process.env.REACT_APP_RECAPTCHA_SITEKEY ? process.env.REACT_APP_RECAPTCHA_SITEKEY : '';
   const useRecaptcha = process.env.REACT_APP_USE_RECAPTCHA === 'true';
@@ -246,6 +249,7 @@ const SignupForm: React.FC<SignupFormProps> = (props) => {
             setSignupData(prev => { return { ...prev, confirmPassword: value } })
           }}
         />
+        {whatsAppEnabled ? (
         <PhoneNumberInput
           className={marginBottomClass}
           value={signupData.phone}
@@ -260,6 +264,7 @@ const SignupForm: React.FC<SignupFormProps> = (props) => {
           }}
           error={signupData.phone !== "" && !checkPhoneFormat(signupData.phone) && showPhoneError ? t("dialogs:signup.errors.phone") : undefined}
         />
+        ) : null}
 
         {/* additional input to check signup validity --> */}
         <label style={signUpInfoCheckStyle} aria-hidden="true" htmlFor='name'></label>
