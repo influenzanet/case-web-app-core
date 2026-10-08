@@ -56,12 +56,17 @@ const ChangeNotifications = () => {
     setNewsletterEnabled(currentUser.contactPreferences.subscribedToNewsletter ? true : false);
     setWeeklyEnabled(currentUser.contactPreferences.subscribedToWeekly ? true : false);
     const channels = currentUser.contactPreferences.preferredChannels ?? [];
-    if (channels.length === 0) {
+    // WhatsApp only counts with a verified phone: a stored whatsapp channel without one cannot be
+    // delivered nor saved again, and its box is disabled, so it would leave the dialog stuck.
+    const whatsapp = channels.includes('whatsapp') && confirmedPhone;
+    // A stored list naming no usable channel is read like an empty one, as e-mail: otherwise
+    // both boxes would start unticked and saving would send no channel at all.
+    if (!channels.includes('email') && !whatsapp) {
       setChannelEmail(true);
       setChannelWhatsapp(false);
     } else {
       setChannelEmail(channels.includes('email'));
-      setChannelWhatsapp(channels.includes('whatsapp'));
+      setChannelWhatsapp(whatsapp);
     }
   }, [currentUser]);
 

@@ -280,3 +280,157 @@ describe('ChangeNotifications with WhatsApp disabled on the platform', () => {
     expect(sentPrefs.subscribedToNewsletter).toBe(true);
   });
 });
+
+describe('ChangeNotifications stored channels', () => {
+  const buildStoredUser = (preferredChannels?: string[]) => {
+    const user = buildUser(true);
+    if (preferredChannels === undefined) {
+      delete (user.contactPreferences as { preferredChannels?: string[] }).preferredChannels;
+    } else {
+      user.contactPreferences.preferredChannels = preferredChannels;
+    }
+    return user;
+  };
+
+  const renderWithStored = async (preferredChannels?: string[]) => {
+    const user = buildStoredUser(preferredChannels);
+    (getUserReq as jest.Mock).mockResolvedValue({ data: user });
+    (updateContactPreferencesReq as jest.Mock).mockResolvedValue({ data: user });
+    const view = renderWithProviders(<ChangeNotifications />, openState(user));
+    await waitFor(() => expect(getUserReq).toHaveBeenCalled());
+    return { ...view, user };
+  };
+
+  const submit = () => fireEvent.click(screen.getByText('changeNotifications.submitBtn'));
+  const sentChannels = () =>
+    (updateContactPreferencesReq as jest.Mock).mock.calls[0][0].preferredChannels;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('sends exactly whatsapp when email is unticked', async () => {
+    await renderWithStored(['email', 'whatsapp']);
+
+    fireEvent.click(emailCheckbox());
+    await waitFor(() => expect(emailCheckbox().checked).toBe(false));
+    submit();
+
+    await waitFor(() => expect(updateContactPreferencesReq).toHaveBeenCalledTimes(1));
+    expect(sentChannels()).toEqual(['whatsapp']);
+  });
+
+  it('sends exactly email when only email is ticked', async () => {
+    await renderWithStored(['whatsapp']);
+
+    fireEvent.click(emailCheckbox());
+    fireEvent.click(whatsappCheckbox());
+    await waitFor(() => expect(whatsappCheckbox().checked).toBe(false));
+    submit();
+
+    await waitFor(() => expect(updateContactPreferencesReq).toHaveBeenCalledTimes(1));
+    expect(sentChannels()).toEqual(['email']);
+  });
+
+  it('sends both channels when both are ticked', async () => {
+    await renderWithStored(['email']);
+
+    fireEvent.click(whatsappCheckbox());
+    submit();
+
+    await waitFor(() => expect(updateContactPreferencesReq).toHaveBeenCalledTimes(1));
+    expect(sentChannels()).toEqual(['email', 'whatsapp']);
+  });
+
+  it('does not add email to a stored whatsapp-only choice when other settings change', async () => {
+    await renderWithStored(['whatsapp']);
+
+    fireEvent.click(screen.getByLabelText('dialogs:changeNotifications.newsletter.label'));
+    submit();
+
+    await waitFor(() => expect(updateContactPreferencesReq).toHaveBeenCalledTimes(1));
+    expect(sentChannels()).toEqual(['whatsapp']);
+  });
+
+  it('reads a stored list with no known channel as email, so a channel is always sent', async () => {
+    await renderWithStored(['sms']);
+    expect(emailCheckbox().checked).toBe(true);
+    expect(whatsappCheckbox().checked).toBe(false);
+
+    fireEvent.click(screen.getByLabelText('dialogs:changeNotifications.newsletter.label'));
+    submit();
+
+    await waitFor(() => expect(updateContactPreferencesReq).toHaveBeenCalledTimes(1));
+    expect(sentChannels()).toEqual(['email']);
+  });
+
+  it.each([[['whatsapp']], [['email', 'whatsapp']]])(
+    'reads a stored whatsapp channel without a verified phone as off (%p)',
+    async (stored) => {
+      const user = buildUser(false);
+      user.contactPreferences.preferredChannels = stored as string[];
+      (getUserReq as jest.Mock).mockResolvedValue({ data: user });
+      (updateContactPreferencesReq as jest.Mock).mockResolvedValue({ data: user });
+      renderWithProviders(<ChangeNotifications />, openState(user));
+      await waitFor(() => expect(getUserReq).toHaveBeenCalled());
+
+      expect(emailCheckbox().checked).toBe(true);
+      expect(whatsappCheckbox().checked).toBe(false);
+
+      fireEvent.click(screen.getByLabelText('dialogs:changeNotifications.newsletter.label'));
+      submit();
+      await waitFor(() => expect(updateContactPreferencesReq).toHaveBeenCalledTimes(1));
+      expect(sentChannels()).toEqual(['email']);
+    },
+  );
+
+  it('does not let the last ticked channel be unticked', async () => {
+    await renderWithStored(['whatsapp']);
+
+    fireEvent.click(whatsappCheckbox());
+    expect(whatsappCheckbox().checked).toBe(true);
+    expect(emailCheckbox().checked).toBe(false);
+  });
+
+  it('shows email unticked and whatsapp ticked for a stored whatsapp-only choice', async () => {
+    await renderWithStored(['whatsapp']);
+
+    expect(emailCheckbox().checked).toBe(false);
+    expect(whatsappCheckbox().checked).toBe(true);
+  });
+
+  it.each([[[]], [undefined]])('shows email ticked for stored channels %p', async (stored) => {
+    await renderWithStored(stored as string[] | undefined);
+
+    expect(emailCheckbox().checked).toBe(true);
+    expect(whatsappCheckbox().checked).toBe(false);
+  });
+
+  it('shows the stored state again when reopened after unsaved edits', async () => {
+    const { store } = await renderWithStored(['whatsapp']);
+
+    fireEvent.click(emailCheckbox());
+    await waitFor(() => expect(emailCheckbox().checked).toBe(true));
+
+    act(() => {
+      store.dispatch(dialogActions.closeDialog());
+    });
+    act(() => {
+      store.dispatch(dialogActions.openDialogWithoutPayload({ type: 'changeNotifications' }));
+    });
+
+    await waitFor(() => expect(emailCheckbox().checked).toBe(false));
+    expect(whatsappCheckbox().checked).toBe(true);
+  });
+
+  it('leaves the WhatsApp checkbox disabled and unticked without a verified phone', async () => {
+    const user = buildUser(false);
+    (getUserReq as jest.Mock).mockResolvedValue({ data: user });
+    renderWithProviders(<ChangeNotifications />, openState(user));
+    await waitFor(() => expect(getUserReq).toHaveBeenCalled());
+
+    expect(whatsappCheckbox()).toBeDisabled();
+    expect(whatsappCheckbox().checked).toBe(false);
+    expect(emailCheckbox().checked).toBe(true);
+  });
+});
