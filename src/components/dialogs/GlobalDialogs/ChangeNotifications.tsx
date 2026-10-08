@@ -96,7 +96,7 @@ const ChangeNotifications = () => {
   }
 
   const handleChannelWhatsapp = (value: boolean) => {
-    // the UI checkbox cannot be disabled, so enforce the verified-phone requirement here
+    // the checkbox is already disabled without a verified phone; the guard keeps the state consistent regardless
     if (value && !confirmedPhone) return;
     if (!value && !channelEmail) return;
     setChanged(true);
