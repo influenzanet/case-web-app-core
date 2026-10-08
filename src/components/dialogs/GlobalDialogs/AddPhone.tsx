@@ -11,18 +11,12 @@ import { userActions } from "../../../store/userSlice";
 import {
   DialogBtn,
   AlertBox,
-  TextField,
-  SelectField,
   defaultDialogPaddingXClass,
   Dialog,
   ConfirmDialog,
 } from "@influenzanet/case-web-ui";
-import COUNTRY_CODES from "../../../configs/countryCodes.json";
-import {
-  composePhoneNumber,
-  parseInternationalPhoneNumber,
-  sanitizePhoneNumberInput,
-} from "../../../utils/phoneNumberParsing";
+import PhoneNumberInput from "../../inputs/PhoneNumberInput";
+import { parseInternationalPhoneNumber } from "../../../utils/phoneNumberParsing";
 
 const AddPhone: React.FC = () => {
   const { t } = useTranslation(["dialogs"]);
@@ -34,8 +28,6 @@ const AddPhone: React.FC = () => {
   const [error, setError] = useState("");
   const [openConfirm, setOpenConfirm] = useState(false);
   const [formData, setFormData] = useState({
-    countryCode: "+39",
-    phoneNumber: "",
     newPhone: "",
   });
 
@@ -49,40 +41,8 @@ const AddPhone: React.FC = () => {
     setLoading(false);
     setError("");
     setFormData({
-      countryCode: "+39",
-      phoneNumber: "",
       newPhone: "",
     });
-  };
-
-  const updateFullPhoneNumber = (countryCode: string, phoneNumber: string) => {
-    // A number pasted or autofilled with its own prefix is split again, instead of being prefixed
-    // a second time with the selected country code.
-    const parsed = parseInternationalPhoneNumber(phoneNumber);
-    const nextCountryCode = parsed ? parsed.countryCode : countryCode;
-    const cleanNumber = parsed
-      ? parsed.localNumber
-      : sanitizePhoneNumberInput(phoneNumber);
-    setFormData((prev) => ({
-      ...prev,
-      countryCode: nextCountryCode,
-      phoneNumber: cleanNumber,
-      newPhone: composePhoneNumber(nextCountryCode, cleanNumber),
-    }));
-  };
-
-  const handleCountryCodeChange = (
-    event: React.ChangeEvent<HTMLSelectElement>,
-  ) => {
-    const newCountryCode = event.target.value;
-    updateFullPhoneNumber(newCountryCode, formData.phoneNumber);
-  };
-
-  const handlePhoneNumberChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    const newPhoneNumber = event.target.value;
-    updateFullPhoneNumber(formData.countryCode, newPhoneNumber);
   };
 
   const handleClose = () => {
@@ -187,7 +147,9 @@ const AddPhone: React.FC = () => {
   };
 
   const buttonDisabled = (): boolean => {
-    return loading || formData.phoneNumber.length < 8;
+    const localNumber =
+      parseInternationalPhoneNumber(formData.newPhone)?.localNumber ?? "";
+    return loading || localNumber.length < 8;
   };
 
   return (
@@ -199,37 +161,16 @@ const AddPhone: React.FC = () => {
     >
       <div className={clsx(defaultDialogPaddingXClass, "py-3", "bg-grey-1")}>
         <form onSubmit={onSubmit}>
-          <label className="form-label mb-1">
-            {t("dialogs:addPhone.phoneInputLabel")}
-          </label>
-
-          <div className="d-flex mb-2">
-            <SelectField
-              className="me-2"
-              style={{ width: "120px", flexShrink: 0 }}
-              value={formData.countryCode}
-              onChange={handleCountryCodeChange}
-              values={COUNTRY_CODES.map((country) => ({
-                code: country.code,
-                label: `${country.code} ${country.country}`,
-              }))}
-            />
-
-            <TextField
-              type="text"
-              placeholder={t("dialogs:addPhone.phoneInputPlaceholder")}
-              value={formData.phoneNumber}
-              autoFocus
-              autoComplete="tel"
-              className="flex-grow-1"
-              onChange={handlePhoneNumberChange}
-              style={{ marginBottom: 0 }}
-            />
-          </div>
-
-          <small className="text-muted mb-2 d-block">
-            {t("dialogs:addPhone.completeNumber")}: {formData.newPhone}
-          </small>
+          <PhoneNumberInput
+            className="mb-2"
+            value={formData.newPhone}
+            label={t("dialogs:addPhone.phoneInputLabel")}
+            placeholder={t("dialogs:addPhone.phoneInputPlaceholder")}
+            autoFocus
+            onChange={(fullPhoneNumber) => {
+              setFormData((prev) => ({ ...prev, newPhone: fullPhoneNumber }));
+            }}
+          />
 
           <AlertBox type="info" content={t("addPhone.info")} />
 

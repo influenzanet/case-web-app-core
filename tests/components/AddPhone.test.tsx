@@ -2,11 +2,13 @@
  * @jest-environment jsdom
  */
 import React from 'react';
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 
 import AddPhone from '../../src/components/dialogs/GlobalDialogs/AddPhone';
 import { getUserReq, newAccountPhoneReq } from '../../src/api/userAPI';
 import { renderWithProviders } from './testUtils';
+import { dialogActions } from '../../src/store/dialogSlice';
+import PhoneNumberInput from '../../src/components/inputs/PhoneNumberInput';
 import COUNTRY_CODES from '../../src/configs/countryCodes.json';
 
 jest.mock('react-i18next', () => ({
@@ -19,6 +21,11 @@ jest.mock('../../src/api/userAPI', () => ({
 jest.mock('../../src/api/instances/authenticatedApi', () => ({
   renewToken: jest.fn(),
 }));
+
+jest.mock('../../src/components/inputs/PhoneNumberInput', () => {
+  const actual = jest.requireActual('../../src/components/inputs/PhoneNumberInput');
+  return { __esModule: true, default: jest.fn(actual.default) };
+});
 
 const openDialogState = {
   dialog: {
@@ -73,6 +80,124 @@ describe('AddPhone dialog', () => {
     fireEvent.click(screen.getByText('addPhone.confirmBtn'));
     fireEvent.click(await screen.findByText('addPhone.warningDialog.confirmBtn'));
     expect(newAccountPhoneReq).toHaveBeenCalledWith('+393316221419');
+  });
+});
+
+describe('AddPhone dialog shared phone input', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  const typeNumber = (value: string) =>
+    fireEvent.change(screen.getByPlaceholderText('dialogs:addPhone.phoneInputPlaceholder'), {
+      target: { value },
+    });
+
+  it('delegates the phone field to the shared PhoneNumberInput', () => {
+    renderWithProviders(<AddPhone />, openDialogState);
+    expect(PhoneNumberInput).toHaveBeenCalled();
+    const props = (PhoneNumberInput as unknown as jest.Mock).mock.calls[0][0];
+    expect(props.label).toBe('dialogs:addPhone.phoneInputLabel');
+    expect(props.placeholder).toBe('dialogs:addPhone.phoneInputPlaceholder');
+    expect(props.autoFocus).toBe(true);
+  });
+
+  it('renders the shared PhoneNumberInput once, with its label, placeholder and focus', () => {
+    const { baseElement } = renderWithProviders(<AddPhone />, openDialogState);
+    expect(baseElement.querySelectorAll('select').length).toBe(1);
+    expect(baseElement.querySelectorAll('input[type="text"]').length).toBe(1);
+    expect(screen.getByText('dialogs:addPhone.phoneInputLabel')).toBeInTheDocument();
+    expect(screen.getAllByText(/addPhone\.completeNumber/).length).toBe(1);
+    expect(screen.getByPlaceholderText('dialogs:addPhone.phoneInputPlaceholder')).toHaveFocus();
+  });
+
+  it('prefixes a typed number with the selected country code', async () => {
+    (newAccountPhoneReq as jest.Mock).mockResolvedValue({ status: 500 });
+    const { baseElement } = renderWithProviders(<AddPhone />, openDialogState);
+    fireEvent.change(baseElement.querySelector('select') as HTMLSelectElement, {
+      target: { value: '+44' },
+    });
+    typeNumber('7911123456');
+    fireEvent.click(screen.getByText('addPhone.confirmBtn'));
+    fireEvent.click(await screen.findByText('addPhone.warningDialog.confirmBtn'));
+    expect(newAccountPhoneReq).toHaveBeenCalledWith('+447911123456');
+  });
+
+  it('does not duplicate the prefix of a pasted international number', async () => {
+    (newAccountPhoneReq as jest.Mock).mockResolvedValue({ status: 500 });
+    const { baseElement } = renderWithProviders(<AddPhone />, openDialogState);
+    typeNumber('+393316221419');
+    expect((baseElement.querySelector('select') as HTMLSelectElement).value).toBe('+39');
+    expect(screen.getByPlaceholderText('dialogs:addPhone.phoneInputPlaceholder')).toHaveValue(
+      '3316221419',
+    );
+    fireEvent.click(screen.getByText('addPhone.confirmBtn'));
+    fireEvent.click(await screen.findByText('addPhone.warningDialog.confirmBtn'));
+    expect(newAccountPhoneReq).toHaveBeenCalledTimes(1);
+    expect(newAccountPhoneReq).toHaveBeenCalledWith('+393316221419');
+  });
+
+  it('accepts a number typed with the 00 international prefix', async () => {
+    (newAccountPhoneReq as jest.Mock).mockResolvedValue({ status: 500 });
+    const { baseElement } = renderWithProviders(<AddPhone />, openDialogState);
+    typeNumber('00447911123456');
+    expect((baseElement.querySelector('select') as HTMLSelectElement).value).toBe('+44');
+    fireEvent.click(screen.getByText('addPhone.confirmBtn'));
+    fireEvent.click(await screen.findByText('addPhone.warningDialog.confirmBtn'));
+    expect(newAccountPhoneReq).toHaveBeenCalledWith('+447911123456');
+  });
+
+  it('opens the verification dialog for the number the shared input composed', async () => {
+    (newAccountPhoneReq as jest.Mock).mockResolvedValue({ status: 200, data: { id: 'user-1', profiles: [] } });
+    const { store } = renderWithProviders(<AddPhone />, openDialogState);
+    typeNumber('+393316221419');
+    fireEvent.click(screen.getByText('addPhone.confirmBtn'));
+    fireEvent.click(await screen.findByText('addPhone.warningDialog.confirmBtn'));
+    await waitFor(() => {
+      expect(store.getState().dialog.config?.type).toBe('verifyWhatsApp');
+    });
+    expect((store.getState().dialog.config as { payload?: { phoneNumber?: string } }).payload?.phoneNumber).toBe(
+      '+393316221419',
+    );
+  });
+
+  it('keeps submit disabled for a too short number and enables it once valid', () => {
+    renderWithProviders(<AddPhone />, openDialogState);
+    const submit = screen.getByText('addPhone.confirmBtn').closest('button');
+    expect(submit).toBeDisabled();
+    typeNumber('1234567');
+    expect(submit).toBeDisabled();
+    typeNumber('12345678');
+    expect(submit).not.toBeDisabled();
+    typeNumber('+39123');
+    expect(submit).toBeDisabled();
+    typeNumber('+3912345678');
+    expect(submit).not.toBeDisabled();
+    typeNumber('');
+    expect(submit).toBeDisabled();
+  });
+
+  it('starts empty after the dialog is closed and opened again', () => {
+    const { store, baseElement } = renderWithProviders(<AddPhone />, openDialogState);
+    fireEvent.change(baseElement.querySelector('select') as HTMLSelectElement, {
+      target: { value: '+44' },
+    });
+    typeNumber('7911123456');
+    expect(screen.getByPlaceholderText('dialogs:addPhone.phoneInputPlaceholder')).toHaveValue(
+      '7911123456',
+    );
+
+    act(() => {
+      store.dispatch(dialogActions.closeDialog());
+    });
+    act(() => {
+      store.dispatch(dialogActions.openDialogWithoutPayload({ type: 'addPhone' }));
+    });
+
+    const input = screen.getByPlaceholderText('dialogs:addPhone.phoneInputPlaceholder');
+    expect(input).toHaveValue('');
+    expect((baseElement.querySelector('select') as HTMLSelectElement).value).toBe('+39');
+    expect(screen.getByText('addPhone.confirmBtn').closest('button')).toBeDisabled();
   });
 });
 
