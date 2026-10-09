@@ -62,7 +62,7 @@ const renderSignup = () => {
   );
 };
 
-const PHONE_ERROR = 'dialogs:signup.errors.phone';
+const PHONE_ERROR = 'addPhone.phoneValidation.tooShort';
 
 const phoneField = () =>
   screen.getByPlaceholderText('signup.phoneInputPlaceholdersignup.phoneOptionalWithExplanation');
@@ -198,6 +198,40 @@ describe('Signup dialog, optional phone number', () => {
 
     expect(screen.queryByText(PHONE_ERROR)).toBeNull();
     expect(submitButton(root).disabled).toBe(false);
+  });
+
+  it('shows the invalid message and keeps register disabled for a plausible-length but invalid number', () => {
+    const { baseElement } = renderSignup();
+    const root = baseElement as HTMLElement;
+    fillTheRequiredFields(root);
+
+    const phone = phoneField();
+    fireEvent.change(phone, { target: { value: '1234567890' } });
+
+    expect(screen.getByText('addPhone.phoneValidation.invalid')).toBeInTheDocument();
+    expect(submitButton(root).disabled).toBe(true);
+  });
+
+  it('registers with the E.164 phone number when it was typed with spaces', async () => {
+    // An earlier describe block also submits this form; clearing call history (not the
+    // useWhatsAppEnabled mock implementation set in the outer beforeEach) keeps this count
+    // about this test's own submission only.
+    jest.clearAllMocks();
+    (signupWithEmailRequest as jest.Mock).mockRejectedValue({ response: { status: 500 } });
+    const { baseElement } = renderSignup();
+    const root = baseElement as HTMLElement;
+    fillTheRequiredFields(root);
+
+    const phone = phoneField();
+    fireEvent.change(phone, { target: { value: '331 622 1419' } });
+
+    expect(submitButton(root).disabled).toBe(false);
+    fireEvent.click(submitButton(root));
+
+    await waitFor(() => expect(signupWithEmailRequest).toHaveBeenCalledTimes(1));
+    expect((signupWithEmailRequest as jest.Mock).mock.calls[0][0]).toEqual(
+      expect.objectContaining({ phone: '+393316221419' }),
+    );
   });
 });
 

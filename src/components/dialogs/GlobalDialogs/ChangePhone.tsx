@@ -27,6 +27,7 @@ const ChangePhone: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [openConfirm, setOpenConfirm] = useState(false);
+  const [phoneValid, setPhoneValid] = useState(false);
   const [formData, setFormData] = useState({
     newPhone: ''
   });
@@ -40,6 +41,7 @@ const ChangePhone: React.FC = () => {
   const resetForm = () => {
     setLoading(false);
     setError('');
+    setPhoneValid(false);
     setFormData({
       newPhone: ''
     });
@@ -147,7 +149,7 @@ const ChangePhone: React.FC = () => {
   };
 
   const buttonDisabled = (): boolean => {
-    return loading || formData.newPhone.length < 8;
+    return loading || !phoneValid;
   }
 
 
@@ -170,8 +172,9 @@ const ChangePhone: React.FC = () => {
             label={t('dialogs:changePhone.phoneInputLabel')}
             placeholder={t('dialogs:changePhone.phoneInputPlaceholder')}
             autoFocus
-            onChange={(fullPhoneNumber) => {
+            onChange={(fullPhoneNumber, isValid) => {
               setFormData(prev => { return { ...prev, newPhone: fullPhoneNumber } });
+              setPhoneValid(isValid);
             }}
           />
 

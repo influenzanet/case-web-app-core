@@ -35,7 +35,7 @@ const openDialogState = {
 
 const fillAndSubmitPhone = async () => {
   fireEvent.change(screen.getByPlaceholderText('dialogs:addPhone.phoneInputPlaceholder'), {
-    target: { value: '1234567890' },
+    target: { value: '3316221419' },
   });
   fireEvent.click(screen.getByText('addPhone.confirmBtn'));
   fireEvent.click(await screen.findByText('addPhone.warningDialog.confirmBtn'));
@@ -52,14 +52,14 @@ describe('AddPhone dialog', () => {
     expect(options.length).toBe(COUNTRY_CODES.length);
   });
 
-  it('shows the composed full number and enables submit only from 8 digits', () => {
+  it('shows the composed full number and enables submit once it is a valid number', () => {
     renderWithProviders(<AddPhone />, openDialogState);
     const submit = screen.getByText('addPhone.confirmBtn').closest('button');
     expect(submit).toBeDisabled();
     fireEvent.change(screen.getByPlaceholderText('dialogs:addPhone.phoneInputPlaceholder'), {
-      target: { value: '1234567890' },
+      target: { value: '3316221419' },
     });
-    expect(screen.getByText(/\+391234567890/)).toBeInTheDocument();
+    expect(screen.getByText(/\+393316221419/)).toBeInTheDocument();
     expect(submit).not.toBeDisabled();
   });
 
@@ -67,7 +67,7 @@ describe('AddPhone dialog', () => {
     (newAccountPhoneReq as jest.Mock).mockResolvedValue({ status: 500 });
     renderWithProviders(<AddPhone />, openDialogState);
     await fillAndSubmitPhone();
-    expect(newAccountPhoneReq).toHaveBeenCalledWith('+391234567890');
+    expect(newAccountPhoneReq).toHaveBeenCalledWith('+393316221419');
   });
 
   it('sends a pasted number that already carries its prefix without duplicating it', async () => {
@@ -147,6 +147,15 @@ describe('AddPhone dialog shared phone input', () => {
     expect(newAccountPhoneReq).toHaveBeenCalledWith('+447911123456');
   });
 
+  it('sends the E.164 number for a number typed with spaces', async () => {
+    (newAccountPhoneReq as jest.Mock).mockResolvedValue({ status: 500 });
+    renderWithProviders(<AddPhone />, openDialogState);
+    typeNumber('331 622 1419');
+    fireEvent.click(screen.getByText('addPhone.confirmBtn'));
+    fireEvent.click(await screen.findByText('addPhone.warningDialog.confirmBtn'));
+    expect(newAccountPhoneReq).toHaveBeenCalledWith('+393316221419');
+  });
+
   it('opens the verification dialog for the number the shared input composed', async () => {
     (newAccountPhoneReq as jest.Mock).mockResolvedValue({ status: 200, data: { id: 'user-1', profiles: [] } });
     const { store } = renderWithProviders(<AddPhone />, openDialogState);
@@ -161,17 +170,17 @@ describe('AddPhone dialog shared phone input', () => {
     );
   });
 
-  it('keeps submit disabled for a too short number and enables it once valid', () => {
+  it('keeps submit disabled for an invalid number and enables it once valid', () => {
     renderWithProviders(<AddPhone />, openDialogState);
     const submit = screen.getByText('addPhone.confirmBtn').closest('button');
     expect(submit).toBeDisabled();
-    typeNumber('1234567');
+    typeNumber('331622');
     expect(submit).toBeDisabled();
-    typeNumber('12345678');
+    typeNumber('3316221419');
     expect(submit).not.toBeDisabled();
     typeNumber('+39123');
     expect(submit).toBeDisabled();
-    typeNumber('+3912345678');
+    typeNumber('+393316221419');
     expect(submit).not.toBeDisabled();
     typeNumber('');
     expect(submit).toBeDisabled();

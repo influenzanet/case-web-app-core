@@ -4,9 +4,11 @@
 import React from 'react';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 
+import { act } from 'react-dom/test-utils';
 import ChangePhone from '../../src/components/dialogs/GlobalDialogs/ChangePhone';
 import { changeAccountPhoneReq, getUserReq } from '../../src/api/userAPI';
 import { renderWithProviders } from './testUtils';
+import { dialogActions } from '../../src/store/dialogSlice';
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
@@ -27,7 +29,7 @@ const openDialogState = {
 
 const fillAndSubmitPhone = async () => {
   fireEvent.change(screen.getByPlaceholderText('dialogs:changePhone.phoneInputPlaceholder'), {
-    target: { value: '1234567890' },
+    target: { value: '3316221419' },
   });
   fireEvent.click(screen.getByText('changePhone.confirmBtn'));
   fireEvent.click(await screen.findByText('changePhone.warningDialog.confirmBtn'));
@@ -42,7 +44,7 @@ describe('ChangePhone dialog', () => {
     (changeAccountPhoneReq as jest.Mock).mockResolvedValue({ status: 500 });
     renderWithProviders(<ChangePhone />, openDialogState);
     await fillAndSubmitPhone();
-    expect(changeAccountPhoneReq).toHaveBeenCalledWith('+391234567890');
+    expect(changeAccountPhoneReq).toHaveBeenCalledWith('+393316221419');
   });
 
   it('maps the recipient-not-allowed error to a translated message', async () => {
@@ -120,6 +122,62 @@ describe('ChangePhone dialog', () => {
     renderWithProviders(<ChangePhone />, openDialogState);
     await fillAndSubmitPhone();
     expect(await screen.findByText('changePhone.errors.noPendingVerification')).toBeInTheDocument();
+  });
+});
+
+describe('ChangePhone dialog shared phone input', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  const typeNumber = (value: string) =>
+    fireEvent.change(screen.getByPlaceholderText('dialogs:changePhone.phoneInputPlaceholder'), {
+      target: { value },
+    });
+
+  it('keeps submit disabled for an invalid number and enables it once valid', () => {
+    renderWithProviders(<ChangePhone />, openDialogState);
+    const submit = screen.getByText('changePhone.confirmBtn').closest('button');
+    expect(submit).toBeDisabled();
+    typeNumber('1234567890');
+    expect(submit).toBeDisabled();
+    typeNumber('3316221419');
+    expect(submit).not.toBeDisabled();
+  });
+
+  it('sends the E.164 number for a UK number selected via the prefix', async () => {
+    (changeAccountPhoneReq as jest.Mock).mockResolvedValue({ status: 500 });
+    const { baseElement } = renderWithProviders(<ChangePhone />, openDialogState);
+    fireEvent.change(baseElement.querySelector('select') as HTMLSelectElement, {
+      target: { value: '+44' },
+    });
+    typeNumber('7911 123456');
+    fireEvent.click(screen.getByText('changePhone.confirmBtn'));
+    fireEvent.click(await screen.findByText('changePhone.warningDialog.confirmBtn'));
+    expect(changeAccountPhoneReq).toHaveBeenCalledWith('+447911123456');
+  });
+
+  it('starts empty after the dialog is closed and opened again', () => {
+    const { store, baseElement } = renderWithProviders(<ChangePhone />, openDialogState);
+    fireEvent.change(baseElement.querySelector('select') as HTMLSelectElement, {
+      target: { value: '+44' },
+    });
+    typeNumber('7911123456');
+    expect(screen.getByPlaceholderText('dialogs:changePhone.phoneInputPlaceholder')).toHaveValue(
+      '7911123456',
+    );
+
+    act(() => {
+      store.dispatch(dialogActions.closeDialog());
+    });
+    act(() => {
+      store.dispatch(dialogActions.openDialogWithoutPayload({ type: 'changePhone' }));
+    });
+
+    const input = screen.getByPlaceholderText('dialogs:changePhone.phoneInputPlaceholder');
+    expect(input).toHaveValue('');
+    expect((baseElement.querySelector('select') as HTMLSelectElement).value).toBe('+39');
+    expect(screen.getByText('changePhone.confirmBtn').closest('button')).toBeDisabled();
   });
 });
 

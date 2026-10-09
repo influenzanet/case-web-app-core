@@ -16,7 +16,6 @@ import {
   ConfirmDialog,
 } from "@influenzanet/case-web-ui";
 import PhoneNumberInput from "../../inputs/PhoneNumberInput";
-import { parseInternationalPhoneNumber } from "../../../utils/phoneNumberParsing";
 
 const AddPhone: React.FC = () => {
   const { t } = useTranslation(["dialogs"]);
@@ -27,6 +26,7 @@ const AddPhone: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [openConfirm, setOpenConfirm] = useState(false);
+  const [phoneValid, setPhoneValid] = useState(false);
   const [formData, setFormData] = useState({
     newPhone: "",
   });
@@ -40,6 +40,7 @@ const AddPhone: React.FC = () => {
   const resetForm = () => {
     setLoading(false);
     setError("");
+    setPhoneValid(false);
     setFormData({
       newPhone: "",
     });
@@ -147,9 +148,7 @@ const AddPhone: React.FC = () => {
   };
 
   const buttonDisabled = (): boolean => {
-    const localNumber =
-      parseInternationalPhoneNumber(formData.newPhone)?.localNumber ?? "";
-    return loading || localNumber.length < 8;
+    return loading || !phoneValid;
   };
 
   return (
@@ -167,8 +166,9 @@ const AddPhone: React.FC = () => {
             label={t("dialogs:addPhone.phoneInputLabel")}
             placeholder={t("dialogs:addPhone.phoneInputPlaceholder")}
             autoFocus
-            onChange={(fullPhoneNumber) => {
+            onChange={(fullPhoneNumber, isValid) => {
               setFormData((prev) => ({ ...prev, newPhone: fullPhoneNumber }));
+              setPhoneValid(isValid);
             }}
           />
 

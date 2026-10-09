@@ -29,6 +29,7 @@ import { getErrorMsg } from '../../../api/utils';
 import { parseBooleanFlag } from '../../../utils/parseBooleanFlag';
 import { PhoneNumberInput } from '../../inputs';
 import { useWhatsAppEnabled } from '../../../hooks/useWhatsAppEnabled';
+import { validatePhoneNumber } from '../../../utils/phoneNumberValidation';
 
 const marginBottomClass = "mb-2";
 
@@ -51,12 +52,8 @@ interface SignupFormProps {
 }
 
 const emailFormatRegexp = new RegExp(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
-const phoneFormatRegexp = new RegExp(/^\+\d{1,3}[-\s]?(\(?\d+\)?[-\s]?)*\d{4,}$/);
 const checkEmailFormat = (email: string): boolean => {
   return emailFormatRegexp.test(email);
-}
-const checkPhoneFormat = (phone: string): boolean => {
-  return phoneFormatRegexp.test(phone);
 }
 
 const signUpInfoCheckStyle: React.CSSProperties = {
@@ -90,6 +87,9 @@ const SignupForm: React.FC<SignupFormProps> = (props) => {
     confirmPassword: '',
     infoCheck: '',
   });
+  const [phoneValid, setPhoneValid] = useState(
+    validatePhoneNumber(signupData.phone).status === 'valid',
+  );
 
   const privacyConsentText = useTranslatedMarkdown('consent/privacy.md');
   const recaptchaConsentText = useTranslatedMarkdown('consent/recaptcha.md');
@@ -103,7 +103,6 @@ const SignupForm: React.FC<SignupFormProps> = (props) => {
   const [showEmailError, setShowEmailError] = useState(false);
   const [showPasswordError, setShowPasswordError] = useState(false);
   const [showConfirmPasswordError, setShowConfirmPasswordError] = useState(false);
-  const [showPhoneError, setShowPhoneError] = useState(false);
   // Without WhatsApp the phone field is not offered, so the phone stays empty and is not sent.
   const whatsAppEnabled = useWhatsAppEnabled();
 
@@ -113,13 +112,15 @@ const SignupForm: React.FC<SignupFormProps> = (props) => {
   const recaptchaRef = useRef<ReCAPTCHA>(null);
 
   useEffect(() => {
-    setSignupData(props.initialSignupData ? props.initialSignupData : {
+    const nextSignupData = props.initialSignupData ? props.initialSignupData : {
       email: '',
       password: '',
       phone: '',
       confirmPassword: '',
       infoCheck: '',
-    });
+    };
+    setSignupData(nextSignupData);
+    setPhoneValid(validatePhoneNumber(nextSignupData.phone).status === 'valid');
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.initialSignupData])
@@ -130,7 +131,7 @@ const SignupForm: React.FC<SignupFormProps> = (props) => {
 
   const isDisabled = (): boolean => {
     const emailOk = checkEmailFormat(signupData.email);
-    const phoneOk = signupData.phone === "" || checkPhoneFormat(signupData.phone); // Phone is optional
+    const phoneOk = signupData.phone === "" || phoneValid; // Phone is optional
     const passwordRuleOk = checkPasswordRules(signupData.password);
     return !(!props.isLoading && (!useRecaptcha || reCaptchaAccepted) && acceptedPrivacyPolicy && emailOk && passwordRuleOk && phoneOk && passwordsMatch());
   }
@@ -256,13 +257,10 @@ const SignupForm: React.FC<SignupFormProps> = (props) => {
           label={phoneInputLabel + (phoneOptional)}
           placeholder={phoneInputPlaceholder + (phoneOptionalWithExplanation)}
           autoFocus={false}
-          onChange={(fullPhoneNumber) => {
+          onChange={(fullPhoneNumber, isValid) => {
             setSignupData(prev => { return { ...prev, phone: fullPhoneNumber } })
+            setPhoneValid(isValid)
           }}
-          onBlur={() => {
-            setShowPhoneError(true)
-          }}
-          error={signupData.phone !== "" && !checkPhoneFormat(signupData.phone) && showPhoneError ? t("dialogs:signup.errors.phone") : undefined}
         />
         ) : null}
 
