@@ -1,15 +1,20 @@
-// Runtime switches the platform publishes next to the other runtime assets, so the same build
-// can run on instances with and without WhatsApp.
-const PLATFORM_CONFIG_FILE = '/platform-config.json';
+// The backend answers from the same decision function the backend services use, so the web
+// follows the backend configuration with no static file to copy or keep in sync.
+const PLATFORM_CONFIG_PATH = '/v1/platform-config';
 
-let whatsAppEnabledPromise: Promise<boolean> | undefined;
+// One cached promise per instance id, failures included, so each instance is read at most once
+// per page load however many callers ask.
+const whatsAppEnabledByInstance = new Map<string, Promise<boolean>>();
 
-const platformConfigUrl = (): string =>
-  (process.env.REACT_APP_CONTENT_URL ?? '') + PLATFORM_CONFIG_FILE;
+const platformConfigUrl = (instanceId: string): string =>
+  (process.env.REACT_APP_API_BASE_URL ?? '') +
+  PLATFORM_CONFIG_PATH +
+  '?instance=' +
+  encodeURIComponent(instanceId);
 
-const readWhatsAppEnabled = async (): Promise<boolean> => {
+const readWhatsAppEnabled = async (instanceId: string): Promise<boolean> => {
   try {
-    const response = await fetch(platformConfigUrl());
+    const response = await fetch(platformConfigUrl(instanceId));
     if (!response.ok) {
       return false;
     }
@@ -22,10 +27,13 @@ const readWhatsAppEnabled = async (): Promise<boolean> => {
   }
 };
 
-// Read once per page load and shared by every caller, failures included.
-export const isWhatsAppEnabled = (): Promise<boolean> => {
-  if (whatsAppEnabledPromise === undefined) {
-    whatsAppEnabledPromise = readWhatsAppEnabled();
+// Read once per instance per page load and shared by every caller, failures included.
+export const isWhatsAppEnabled = (instanceId: string): Promise<boolean> => {
+  const cached = whatsAppEnabledByInstance.get(instanceId);
+  if (cached !== undefined) {
+    return cached;
   }
-  return whatsAppEnabledPromise;
+  const promise = readWhatsAppEnabled(instanceId);
+  whatsAppEnabledByInstance.set(instanceId, promise);
+  return promise;
 };

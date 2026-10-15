@@ -21,12 +21,12 @@ const jsonResponse = (body: unknown, ok = true, status = 200) => ({
 });
 
 describe('platform config reader', () => {
-  const contentUrl = process.env.REACT_APP_CONTENT_URL;
+  const apiBaseUrl = process.env.REACT_APP_API_BASE_URL;
   const originalFetch = (global as any).fetch;
   let fetchMock: jest.Mock;
 
   beforeEach(() => {
-    process.env.REACT_APP_CONTENT_URL = '/assets';
+    process.env.REACT_APP_API_BASE_URL = '/api';
     fetchMock = jest.fn();
     (global as any).fetch = fetchMock;
     // The reader logs why it fell back to hidden; the reason is not what these tests check.
@@ -36,28 +36,34 @@ describe('platform config reader', () => {
     jest.restoreAllMocks();
   });
   afterAll(() => {
-    if (contentUrl === undefined) {
-      delete process.env.REACT_APP_CONTENT_URL;
+    if (apiBaseUrl === undefined) {
+      delete process.env.REACT_APP_API_BASE_URL;
     } else {
-      process.env.REACT_APP_CONTENT_URL = contentUrl;
+      process.env.REACT_APP_API_BASE_URL = apiBaseUrl;
     }
     (global as any).fetch = originalFetch;
   });
 
-  it('reads the file served next to the other runtime assets', async () => {
+  it('asks the backend for the given instance, with the instance id encoded', async () => {
     fetchMock.mockResolvedValue(jsonResponse({ whatsAppEnabled: true }));
-    await loadReader().isWhatsAppEnabled();
-    expect(fetchMock).toHaveBeenCalledWith('/assets/platform-config.json');
+    await loadReader().isWhatsAppEnabled('it aly');
+    expect(fetchMock).toHaveBeenCalledWith('/api/v1/platform-config?instance=it%20aly');
   });
 
-  it('is true only when the file says whatsAppEnabled: true', async () => {
+  it('encodes instance ids containing a slash', async () => {
     fetchMock.mockResolvedValue(jsonResponse({ whatsAppEnabled: true }));
-    await expect(loadReader().isWhatsAppEnabled()).resolves.toBe(true);
+    await loadReader().isWhatsAppEnabled('a/b');
+    expect(fetchMock).toHaveBeenCalledWith('/api/v1/platform-config?instance=a%2Fb');
   });
 
-  it('is false when the file says whatsAppEnabled: false', async () => {
+  it('is true only when the backend says whatsAppEnabled: true', async () => {
+    fetchMock.mockResolvedValue(jsonResponse({ whatsAppEnabled: true }));
+    await expect(loadReader().isWhatsAppEnabled('italy')).resolves.toBe(true);
+  });
+
+  it('is false when the backend says whatsAppEnabled: false', async () => {
     fetchMock.mockResolvedValue(jsonResponse({ whatsAppEnabled: false }));
-    await expect(loadReader().isWhatsAppEnabled()).resolves.toBe(false);
+    await expect(loadReader().isWhatsAppEnabled('italy')).resolves.toBe(false);
   });
 
   it.each([
@@ -68,52 +74,70 @@ describe('platform config reader', () => {
     ['an array', [true]],
   ])('is false when the value is %s', async (_label, body) => {
     fetchMock.mockResolvedValue(jsonResponse(body));
-    await expect(loadReader().isWhatsAppEnabled()).resolves.toBe(false);
+    await expect(loadReader().isWhatsAppEnabled('italy')).resolves.toBe(false);
   });
 
-  it('is false when the file is missing (404)', async () => {
+  it('is false when the instance is unknown or invalid (400)', async () => {
+    fetchMock.mockResolvedValue(jsonResponse({ whatsAppEnabled: true }, false, 400));
+    await expect(loadReader().isWhatsAppEnabled('italy')).resolves.toBe(false);
+  });
+
+  it('is false when the route is missing (404)', async () => {
     fetchMock.mockResolvedValue(jsonResponse({ whatsAppEnabled: true }, false, 404));
-    await expect(loadReader().isWhatsAppEnabled()).resolves.toBe(false);
+    await expect(loadReader().isWhatsAppEnabled('italy')).resolves.toBe(false);
   });
 
   it('is false when the server answers with an error', async () => {
     fetchMock.mockResolvedValue(jsonResponse({ whatsAppEnabled: true }, false, 500));
-    await expect(loadReader().isWhatsAppEnabled()).resolves.toBe(false);
+    await expect(loadReader().isWhatsAppEnabled('italy')).resolves.toBe(false);
   });
 
-  it('is false when the file is not valid JSON', async () => {
+  it('is false when the response is not valid JSON', async () => {
     fetchMock.mockResolvedValue({
       ok: true,
       status: 200,
       json: () => Promise.reject(new SyntaxError('Unexpected token < in JSON')),
     });
-    await expect(loadReader().isWhatsAppEnabled()).resolves.toBe(false);
+    await expect(loadReader().isWhatsAppEnabled('italy')).resolves.toBe(false);
   });
 
   it('is false when the request itself fails', async () => {
     fetchMock.mockRejectedValue(new TypeError('Failed to fetch'));
-    await expect(loadReader().isWhatsAppEnabled()).resolves.toBe(false);
+    await expect(loadReader().isWhatsAppEnabled('italy')).resolves.toBe(false);
   });
 
   it('is false when fetch is not available at all', async () => {
     delete (global as any).fetch;
-    await expect(loadReader().isWhatsAppEnabled()).resolves.toBe(false);
+    await expect(loadReader().isWhatsAppEnabled('italy')).resolves.toBe(false);
   });
 
-  it('fetches the file once per page load, however many callers ask', async () => {
+  it('fetches once per instance per page load, however many callers ask', async () => {
     fetchMock.mockResolvedValue(jsonResponse({ whatsAppEnabled: true }));
     const reader = loadReader();
-    const answers = await Promise.all([reader.isWhatsAppEnabled(), reader.isWhatsAppEnabled()]);
-    await expect(reader.isWhatsAppEnabled()).resolves.toBe(true);
+    const answers = await Promise.all([
+      reader.isWhatsAppEnabled('italy'),
+      reader.isWhatsAppEnabled('italy'),
+    ]);
+    await expect(reader.isWhatsAppEnabled('italy')).resolves.toBe(true);
     expect(answers).toEqual([true, true]);
     expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('keeps separate cache entries for different instances', async () => {
+    fetchMock.mockImplementation((url: string) =>
+      Promise.resolve(jsonResponse({ whatsAppEnabled: url.includes('italy') })),
+    );
+    const reader = loadReader();
+    await expect(reader.isWhatsAppEnabled('italy')).resolves.toBe(true);
+    await expect(reader.isWhatsAppEnabled('netherlands')).resolves.toBe(false);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 
   it('does not retry a failed load within the same page load', async () => {
     fetchMock.mockRejectedValue(new TypeError('Failed to fetch'));
     const reader = loadReader();
-    await reader.isWhatsAppEnabled();
-    await expect(reader.isWhatsAppEnabled()).resolves.toBe(false);
+    await reader.isWhatsAppEnabled('italy');
+    await expect(reader.isWhatsAppEnabled('italy')).resolves.toBe(false);
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 });
