@@ -71,7 +71,7 @@ const AccountSettings: React.FC<AccountSettingsProps> = (props) => {
     }
     setResendMessage({
       type: 'error',
-      text: t(`${props.itemKey}.phone.alreadyVerifiedError`, 'This number is already verified.')
+      text: t(`${props.itemKey}.phone.alreadyVerifiedError`)
     });
   };
 
@@ -93,7 +93,7 @@ const AccountSettings: React.FC<AccountSettingsProps> = (props) => {
 
       setResendMessage({
         type: 'success',
-        text: t(`${props.itemKey}.phone.resendSuccess`, 'Code sent.')
+        text: t(`${props.itemKey}.phone.resendSuccess`)
       });
       startResendCooldown();
     } catch (error) {
@@ -102,25 +102,25 @@ const AccountSettings: React.FC<AccountSettingsProps> = (props) => {
         case 'recipientNotAllowed':
           setResendMessage({
             type: 'error',
-            text: t(`${props.itemKey}.phone.recipientNotAllowedError`, 'This number cannot receive WhatsApp messages. Please check the number you entered.')
+            text: t(`${props.itemKey}.phone.recipientNotAllowedError`)
           });
           break;
         case 'rateLimited':
           setResendMessage({
             type: 'error',
-            text: t(`${props.itemKey}.phone.rateLimitError`, 'Too many verification codes requested. Please try again later.')
+            text: t(`${props.itemKey}.phone.rateLimitError`)
           });
           break;
         case 'noPendingVerification':
           setResendMessage({
             type: 'error',
-            text: t(`${props.itemKey}.phone.noPendingVerificationError`, 'There is no verification waiting for this number. Add the number again to start over.')
+            text: t(`${props.itemKey}.phone.noPendingVerificationError`)
           });
           break;
         case 'cooldown':
           setResendMessage({
             type: 'error',
-            text: t(`${props.itemKey}.phone.cooldownError`, 'A code was just sent. Please wait a moment before asking for another one.')
+            text: t(`${props.itemKey}.phone.cooldownError`)
           });
           // The window left is at most a full one, so holding the button for that long keeps
           // the participant from walking into the same refusal a second time.
@@ -131,7 +131,7 @@ const AccountSettings: React.FC<AccountSettingsProps> = (props) => {
           // the participant has to make.
           setResendMessage({
             type: 'error',
-            text: t(`${props.itemKey}.phone.sendFailedError`, 'We could not send the code. Please ask for a new one.')
+            text: t(`${props.itemKey}.phone.sendFailedError`)
           });
           break;
         case 'whatsAppUnavailable':
@@ -139,7 +139,7 @@ const AccountSettings: React.FC<AccountSettingsProps> = (props) => {
           // spend the participant's patience.
           setResendMessage({
             type: 'error',
-            text: t(`${props.itemKey}.phone.whatsAppUnavailableError`, 'WhatsApp messages cannot be sent at the moment. Please try again later.')
+            text: t(`${props.itemKey}.phone.whatsAppUnavailableError`)
           });
           break;
         case 'alreadyVerified':
@@ -148,7 +148,7 @@ const AccountSettings: React.FC<AccountSettingsProps> = (props) => {
         default:
           setResendMessage({
             type: 'error',
-            text: t(`${props.itemKey}.phone.resendError`, 'Could not send the code. Please try again.')
+            text: t(`${props.itemKey}.phone.resendError`)
           });
           break;
       }
@@ -196,8 +196,10 @@ const AccountSettings: React.FC<AccountSettingsProps> = (props) => {
         {blurEmail(currentUser.account.accountId)}
       </EditBtn>
 
-      {/** phone: only offered when WhatsApp is enabled on the platform */}
-      {whatsAppEnabled && (<React.Fragment>
+      {/** phone: adding, changing and verifying a number are only offered when WhatsApp is
+       * enabled on the platform; a number already stored stays visible and can always be
+       * deleted, so switching WhatsApp off never leaves a participant unable to remove it. */}
+      {(whatsAppEnabled || phoneInfo) && (<React.Fragment>
       <div className="d-flex align-items-center mt-2">
         <h4 className="fw-bold mb-0">
           {t(`${props.itemKey}.phone.title`)}
@@ -216,7 +218,7 @@ const AccountSettings: React.FC<AccountSettingsProps> = (props) => {
       </div>
       {phoneInfo ? (
         <p className="mb-1 text-grey-7">
-          {t(`${props.itemKey}.phone.info`)}
+          {whatsAppEnabled ? t(`${props.itemKey}.phone.info`) : t(`${props.itemKey}.phone.infoWhatsAppOff`)}
         </p>) : (
         <p className="mb-1 text-grey-7">
           {t(`${props.itemKey}.phone.infoAdd`)}
@@ -225,12 +227,16 @@ const AccountSettings: React.FC<AccountSettingsProps> = (props) => {
       <div className="m-0 d-flex align-items-center py-2">
         {phoneInfo ? (
           <>
-            <EditBtn
-              onClick={() => dispatch(dialogActions.openDialogWithoutPayload({ type: 'changePhone' }))}
-            >
-              {blurPhone(phoneInfo.phone)}
-            </EditBtn>
-            {(phoneInfo.confirmedAt === undefined || !phoneInfo.confirmedAt || phoneInfo.confirmedAt === 0) && (
+            {whatsAppEnabled ? (
+              <EditBtn
+                onClick={() => dispatch(dialogActions.openDialogWithoutPayload({ type: 'changePhone' }))}
+              >
+                {blurPhone(phoneInfo.phone)}
+              </EditBtn>
+            ) : (
+              <span>{blurPhone(phoneInfo.phone)}</span>
+            )}
+            {whatsAppEnabled && (phoneInfo.confirmedAt === undefined || !phoneInfo.confirmedAt || phoneInfo.confirmedAt === 0) && (
               <button
                 className="btn btn-primary d-flex align-items-center ms-2"
                 onClick={handleResendCode}
@@ -239,15 +245,15 @@ const AccountSettings: React.FC<AccountSettingsProps> = (props) => {
                 {isResending ? (
                   <>
                     <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                    {t(`${props.itemKey}.phone.resending`, 'Sending...')}
+                    {t(`${props.itemKey}.phone.resending`)}
                   </>
                 ) : resendOnCooldown ? (
                   <>
-                    {t(`${props.itemKey}.phone.resendCountdown`, 'New code in {{seconds}}s', { seconds: resendSecondsLeft })}
+                    {t(`${props.itemKey}.phone.resendCountdown`, { seconds: resendSecondsLeft })}
                   </>
                 ) : (
                   <>
-                    {t(`${props.itemKey}.phone.resendBtn`, 'Send the code again')}
+                    {t(`${props.itemKey}.phone.resendBtn`)}
                     <span className="material-icons ms-1" style={{ fontSize: 'inherit' }}>send</span>
                   </>
                 )}

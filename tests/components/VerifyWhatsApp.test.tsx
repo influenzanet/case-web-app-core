@@ -78,7 +78,7 @@ describe("VerifyWhatsApp dialog", () => {
     fireEvent.click(screen.getByText("verifyWhatsApp.resendBtn"));
 
     await waitFor(() => expect(resendWhatsAppCodeReq).toHaveBeenCalledTimes(1));
-    // C-6 regression guard: the resend must not use the old delete + re-add pattern
+    // The resend must not go back to deleting the phone and adding it again.
     expect(deletePhoneReq).not.toHaveBeenCalled();
     expect(newAccountPhoneReq).not.toHaveBeenCalled();
     expect(changeAccountPhoneReq).not.toHaveBeenCalled();
@@ -572,5 +572,24 @@ describe("VerifyWhatsApp resend answers", () => {
       expect(state.user.currentUser).toEqual(verifiedUser);
       expect(state.dialog.config?.type).toBe("alertDialog");
     });
+  });
+});
+
+// The statement has to be read before the button that sends a code, so it comes first in the
+// order the page is read in.
+const comesBefore = (first: Element, second: Element) =>
+  (first.compareDocumentPosition(second) & Node.DOCUMENT_POSITION_FOLLOWING) !== 0;
+
+describe("VerifyWhatsApp dialog, WhatsApp opt-in statement", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("states what verifying means before the button that sends a new code", () => {
+    renderWithProviders(<VerifyWhatsApp />, openDialogState);
+    const statement = screen.getByText("dialogs:whatsAppOptIn.statement");
+    expect(comesBefore(statement, screen.getByText("verifyWhatsApp.resendBtn"))).toBe(true);
+    expect(comesBefore(statement, screen.getByText("verifyWhatsApp.submitBtn"))).toBe(true);
+    expect(resendWhatsAppCodeReq).not.toHaveBeenCalled();
   });
 });

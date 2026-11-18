@@ -16,6 +16,7 @@ import {
   ConfirmDialog,
 } from "@influenzanet/case-web-ui";
 import PhoneNumberInput from "../../inputs/PhoneNumberInput";
+import WhatsAppOptInStatement from "../../misc/WhatsAppOptInStatement";
 
 const AddPhone: React.FC = () => {
   const { t } = useTranslation(["dialogs"]);
@@ -173,6 +174,8 @@ const AddPhone: React.FC = () => {
           />
 
           <AlertBox type="info" content={t("addPhone.info")} />
+
+          <WhatsAppOptInStatement className="mt-2" />
 
           <AlertBox
             type="danger"

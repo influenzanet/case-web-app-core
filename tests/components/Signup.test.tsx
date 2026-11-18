@@ -280,3 +280,27 @@ describe('Signup dialog, WhatsApp enabled on the platform', () => {
     expect(phoneField()).toBeInTheDocument();
   });
 });
+
+// The statement has to be read before the button that sends a code, so it comes first in the
+// order the page is read in.
+const comesBefore = (first: Element, second: Element) =>
+  (first.compareDocumentPosition(second) & Node.DOCUMENT_POSITION_FOLLOWING) !== 0;
+
+describe('Signup dialog, WhatsApp opt-in statement', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('states what verifying means right under the phone field', () => {
+    renderSignup();
+    const statement = screen.getByText('dialogs:whatsAppOptIn.statement');
+    expect(comesBefore(phoneField(), statement)).toBe(true);
+    expect(comesBefore(statement, document.querySelector('button[type="submit"]') as Element)).toBe(true);
+  });
+
+  it('says nothing about WhatsApp when it is off on the platform', () => {
+    (useWhatsAppEnabled as jest.Mock).mockReturnValue(false);
+    renderSignup();
+    expect(screen.queryByText('dialogs:whatsAppOptIn.statement')).toBeNull();
+  });
+});

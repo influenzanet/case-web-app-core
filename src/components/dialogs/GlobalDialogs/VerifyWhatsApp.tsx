@@ -16,6 +16,7 @@ import {
 import { classifyPhoneError, logRequestFailure } from "../../../api/errorMessages";
 import { renewToken } from "../../../api/instances/authenticatedApi";
 import { useResendCooldown } from "../../../hooks/useResendCooldown";
+import WhatsAppOptInStatement from "../../misc/WhatsAppOptInStatement";
 import {
   DialogBtn,
   AlertBox,
@@ -282,6 +283,8 @@ const VerifyWhatsApp: FC = () => {
             autoComplete="one-time-code"
           />
         </div>
+
+        <WhatsAppOptInStatement />
       </div>
 
       <div className="d-flex justify-content-between align-items-center gap-3 p-3 border-top">

@@ -23,6 +23,7 @@ import {
   TitleBar,
 } from "@influenzanet/case-web-ui";
 import { LinkResolverPaths } from "./LinkResolverConst";
+import { logRequestFailure } from '../../../../../api/errorMessages';
 
 interface ContactVerificationProps {
   defaultRoutes: DefaultRoutes;
@@ -88,7 +89,7 @@ const ContactVerification: React.FC<ContactVerificationProps> = (props) => {
       }
       setLoading(false);
     } catch (e: any) {
-      console.error(e.response);
+      logRequestFailure('verifying the contact', e);
       handleError(e.response.data.error);
       if (isLoggedIn) {
         logout(true);

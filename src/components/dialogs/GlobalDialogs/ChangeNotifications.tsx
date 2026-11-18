@@ -31,15 +31,15 @@ const ChangeNotifications = () => {
 
   const [weeklyEnabled, setWeeklyEnabled] = useState(false);
   const [newsletterEnabled, setNewsletterEnabled] = useState(false);
-  const [channelEmail, setChannelEmail] = useState(true);
+  const [channelEmail, setChannelEmail] = useState(false);
   const [channelWhatsapp, setChannelWhatsapp] = useState(false);
 
   const phoneInfo = currentUser.contactInfos.find(
     (info): info is PhoneContactInfo => info.type === 'phone'
   );
   const confirmedPhone = (phoneInfo?.confirmedAt ?? 0) > 0;
-  // When WhatsApp is disabled on the platform its channel is not offered and cannot be the
-  // channel left once email is switched off; stored preferences are saved back unchanged.
+  // When WhatsApp is disabled on the platform its channel is not offered; a stored WhatsApp
+  // choice is saved back unchanged.
   const whatsAppEnabled = useWhatsAppEnabled();
 
   useEffect(() => {
@@ -55,19 +55,14 @@ const ChangeNotifications = () => {
   useEffect(() => {
     setNewsletterEnabled(currentUser.contactPreferences.subscribedToNewsletter ? true : false);
     setWeeklyEnabled(currentUser.contactPreferences.subscribedToWeekly ? true : false);
+    // An empty list means the participant has chosen no channel, and the API leaves an empty
+    // list out of its answer, so a missing one means the same. Accounts from before channels
+    // existed already arrive as e-mail.
     const channels = currentUser.contactPreferences.preferredChannels ?? [];
+    setChannelEmail(channels.includes('email'));
     // WhatsApp only counts with a verified phone: a stored whatsapp channel without one cannot be
-    // delivered nor saved again, and its box is disabled, so it would leave the dialog stuck.
-    const whatsapp = channels.includes('whatsapp') && confirmedPhone;
-    // A stored list naming no usable channel is read like an empty one, as e-mail: otherwise
-    // both boxes would start unticked and saving would send no channel at all.
-    if (!channels.includes('email') && !whatsapp) {
-      setChannelEmail(true);
-      setChannelWhatsapp(false);
-    } else {
-      setChannelEmail(channels.includes('email'));
-      setChannelWhatsapp(whatsapp);
-    }
+    // delivered nor saved again, and its box is disabled, so it is shown and saved as off.
+    setChannelWhatsapp(channels.includes('whatsapp') && confirmedPhone);
   }, [currentUser]);
 
   const fetchUser = async () => {
@@ -89,8 +84,9 @@ const ChangeNotifications = () => {
     dispatch(dialogActions.closeDialog());
   }
 
+  // Both channels may be unticked: the participant then gets no notification at all, which the
+  // warning below says, and nothing switches e-mail back on for them.
   const handleChannelEmail = (value: boolean) => {
-    if (!value && (!channelWhatsapp || !whatsAppEnabled)) return;
     setChanged(true);
     setChannelEmail(value);
   }
@@ -98,7 +94,6 @@ const ChangeNotifications = () => {
   const handleChannelWhatsapp = (value: boolean) => {
     // the checkbox is already disabled without a verified phone; the guard keeps the state consistent regardless
     if (value && !confirmedPhone) return;
-    if (!value && !channelEmail) return;
     setChanged(true);
     setChannelWhatsapp(value);
   }
@@ -201,7 +196,6 @@ const ChangeNotifications = () => {
               id="channelEmail"
               name="channelEmail"
               checked={channelEmail}
-              disabled={(!confirmedPhone || !whatsAppEnabled) && channelEmail}
               onChange={handleChannelEmail}
             >
               {t('dialogs:changeNotifications.channels.email')}
@@ -235,6 +229,14 @@ const ChangeNotifications = () => {
             </p>
           )}
           </React.Fragment>)}
+
+          {!channelEmail && !channelWhatsapp && (
+            <AlertBox
+              type="warning"
+              className="mt-2"
+              content={t('dialogs:changeNotifications.channels.noChannelWarning')}
+            />
+          )}
 
           <AlertBox
             type="danger"

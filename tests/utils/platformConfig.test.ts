@@ -20,6 +20,36 @@ const jsonResponse = (body: unknown, ok = true, status = 200) => ({
   json: () => Promise.resolve(body),
 });
 
+// Lets the reader's awaited fetch, JSON parsing and timers settle under fake timers.
+const settle = async () => {
+  for (let i = 0; i < 20; i++) {
+    await Promise.resolve();
+  }
+};
+
+const advance = async (ms: number) => {
+  jest.advanceTimersByTime(ms);
+  await settle();
+};
+
+// Records how a pending promise ended, without awaiting it.
+const track = <T>(promise: Promise<T>) => {
+  const outcome: { settled: boolean; value?: T } = { settled: false };
+  promise.then((value) => {
+    outcome.settled = true;
+    outcome.value = value;
+  });
+  return outcome;
+};
+
+// Each wait is scheduled only once the attempt before it has failed, so time moves on one wait
+// at a time, with the promises settled in between.
+const runOutRetries = async () => {
+  for (const delay of [1000, 2000, 4000, 8000, 16000, 60000]) {
+    await advance(delay);
+  }
+};
+
 describe('platform config reader', () => {
   const apiBaseUrl = process.env.REACT_APP_API_BASE_URL;
   const originalFetch = (global as any).fetch;
@@ -34,6 +64,7 @@ describe('platform config reader', () => {
   });
   afterEach(() => {
     jest.restoreAllMocks();
+    jest.useRealTimers();
   });
   afterAll(() => {
     if (apiBaseUrl === undefined) {
@@ -87,9 +118,14 @@ describe('platform config reader', () => {
     await expect(loadReader().isWhatsAppEnabled('italy')).resolves.toBe(false);
   });
 
-  it('is false when the server answers with an error', async () => {
+  it('is false when the server keeps answering with an error', async () => {
+    jest.useFakeTimers();
     fetchMock.mockResolvedValue(jsonResponse({ whatsAppEnabled: true }, false, 500));
-    await expect(loadReader().isWhatsAppEnabled('italy')).resolves.toBe(false);
+    const outcome = track(loadReader().isWhatsAppEnabled('italy'));
+    await settle();
+    await runOutRetries();
+    expect(outcome).toEqual({ settled: true, value: false });
+    expect(fetchMock).toHaveBeenCalledTimes(6);
   });
 
   it('is false when the response is not valid JSON', async () => {
@@ -101,14 +137,23 @@ describe('platform config reader', () => {
     await expect(loadReader().isWhatsAppEnabled('italy')).resolves.toBe(false);
   });
 
-  it('is false when the request itself fails', async () => {
+  it('is false when the request itself keeps failing', async () => {
+    jest.useFakeTimers();
     fetchMock.mockRejectedValue(new TypeError('Failed to fetch'));
-    await expect(loadReader().isWhatsAppEnabled('italy')).resolves.toBe(false);
+    const outcome = track(loadReader().isWhatsAppEnabled('italy'));
+    await settle();
+    await runOutRetries();
+    expect(outcome).toEqual({ settled: true, value: false });
+    expect(fetchMock).toHaveBeenCalledTimes(6);
   });
 
   it('is false when fetch is not available at all', async () => {
+    jest.useFakeTimers();
     delete (global as any).fetch;
-    await expect(loadReader().isWhatsAppEnabled('italy')).resolves.toBe(false);
+    const outcome = track(loadReader().isWhatsAppEnabled('italy'));
+    await settle();
+    await runOutRetries();
+    expect(outcome).toEqual({ settled: true, value: false });
   });
 
   it('fetches once per instance per page load, however many callers ask', async () => {
@@ -133,8 +178,106 @@ describe('platform config reader', () => {
     expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 
-  it('does not retry a failed load within the same page load', async () => {
+  it.each([
+    ['the request fails', () => Promise.reject(new TypeError('Failed to fetch'))],
+    ['the server answers 500', () => Promise.resolve(jsonResponse({}, false, 500))],
+    ['the server answers 503', () => Promise.resolve(jsonResponse({}, false, 503))],
+    ['the server answers 429', () => Promise.resolve(jsonResponse({}, false, 429))],
+  ])('tries again when %s, and turns on once an attempt succeeds', async (_label, failure) => {
+    jest.useFakeTimers();
+    fetchMock
+      .mockImplementationOnce(failure)
+      .mockImplementationOnce(failure)
+      .mockResolvedValue(jsonResponse({ whatsAppEnabled: true }));
+    const outcome = track(loadReader().isWhatsAppEnabled('italy'));
+    await settle();
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(outcome.settled).toBe(false);
+
+    await advance(1000);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(outcome.settled).toBe(false);
+
+    await advance(2000);
+    expect(fetchMock).toHaveBeenCalledTimes(3);
+    expect(outcome).toEqual({ settled: true, value: true });
+  });
+
+  it('waits longer before each new attempt', async () => {
+    jest.useFakeTimers();
     fetchMock.mockRejectedValue(new TypeError('Failed to fetch'));
+    track(loadReader().isWhatsAppEnabled('italy'));
+    await settle();
+    const expectedDelays = [1000, 2000, 4000, 8000, 16000];
+    for (let i = 0; i < expectedDelays.length; i++) {
+      await advance(expectedDelays[i] - 1);
+      expect(fetchMock).toHaveBeenCalledTimes(i + 1);
+      await advance(1);
+      expect(fetchMock).toHaveBeenCalledTimes(i + 2);
+    }
+    // No attempt after the last delay.
+    await advance(60000);
+    expect(fetchMock).toHaveBeenCalledTimes(6);
+  });
+
+  it('does not try again after an answer that says no', async () => {
+    jest.useFakeTimers();
+    fetchMock.mockResolvedValue(jsonResponse({ whatsAppEnabled: true }, false, 400));
+    const outcome = track(loadReader().isWhatsAppEnabled('italy'));
+    await settle();
+    await runOutRetries();
+    expect(outcome).toEqual({ settled: true, value: false });
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not try again after a response that is not valid JSON', async () => {
+    jest.useFakeTimers();
+    fetchMock.mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: () => Promise.reject(new SyntaxError('Unexpected token < in JSON')),
+    });
+    const outcome = track(loadReader().isWhatsAppEnabled('italy'));
+    await settle();
+    await runOutRetries();
+    expect(outcome).toEqual({ settled: true, value: false });
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('shares the attempts in progress between callers', async () => {
+    jest.useFakeTimers();
+    fetchMock
+      .mockRejectedValueOnce(new TypeError('Failed to fetch'))
+      .mockResolvedValue(jsonResponse({ whatsAppEnabled: true }));
+    const reader = loadReader();
+    const first = track(reader.isWhatsAppEnabled('italy'));
+    await settle();
+    const second = track(reader.isWhatsAppEnabled('italy'));
+    await advance(1000);
+    expect(first).toEqual({ settled: true, value: true });
+    expect(second).toEqual({ settled: true, value: true });
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  it('reads again for the next caller once every attempt has failed', async () => {
+    jest.useFakeTimers();
+    fetchMock.mockRejectedValue(new TypeError('Failed to fetch'));
+    const reader = loadReader();
+    const first = track(reader.isWhatsAppEnabled('italy'));
+    await settle();
+    await runOutRetries();
+    expect(first).toEqual({ settled: true, value: false });
+    expect(fetchMock).toHaveBeenCalledTimes(6);
+
+    fetchMock.mockResolvedValue(jsonResponse({ whatsAppEnabled: true }));
+    const second = track(reader.isWhatsAppEnabled('italy'));
+    await settle();
+    expect(second).toEqual({ settled: true, value: true });
+    expect(fetchMock).toHaveBeenCalledTimes(7);
+  });
+
+  it('keeps an answer that says no for the rest of the page load', async () => {
+    fetchMock.mockResolvedValue(jsonResponse({ whatsAppEnabled: false }));
     const reader = loadReader();
     await reader.isWhatsAppEnabled('italy');
     await expect(reader.isWhatsAppEnabled('italy')).resolves.toBe(false);

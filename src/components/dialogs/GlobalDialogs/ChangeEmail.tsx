@@ -15,6 +15,7 @@ import {
   Dialog,
   ConfirmDialog,
 } from '@influenzanet/case-web-ui';
+import { logRequestFailure } from '../../../api/errorMessages';
 
 
 interface ChangeEmailProps {
@@ -74,7 +75,7 @@ const ChangeEmail: React.FC<ChangeEmailProps> = (props) => {
         }))
       }
     } catch (e: any) {
-      console.error(e.response);
+      logRequestFailure('changing the e-mail address', e);
       handleError(e.response.data.error);
     } finally {
       setLoading(false);

@@ -7,26 +7,26 @@ import { RootState } from '../store/rootReducer';
 // controls never appear and then vanish.
 export const useWhatsAppEnabled = (): boolean => {
   const instanceId = useSelector((state: RootState) => state.config.instanceId);
+  // The app stores its instance id in an effect that runs after its children's first effects,
+  // so until then the store holds a placeholder that must not be asked about.
+  const instanceIdSet = useSelector((state: RootState) => state.config.instanceIdSet === true);
   const [enabled, setEnabled] = useState(false);
 
   useEffect(() => {
-    let mounted = true;
     setEnabled(false);
-    // AppCore dispatches the real instance id in its own effect, which runs AFTER this one on
-    // first render. Deferring the fetch with a zero-delay timer lets that dispatch land first,
-    // so the cleanup below cancels the stale 'default' request before it is ever sent.
-    const timer = setTimeout(() => {
-      isWhatsAppEnabled(instanceId).then((value) => {
-        if (mounted) {
-          setEnabled(value);
-        }
-      });
-    }, 0);
+    if (!instanceIdSet) {
+      return;
+    }
+    let mounted = true;
+    isWhatsAppEnabled(instanceId).then((value) => {
+      if (mounted) {
+        setEnabled(value);
+      }
+    });
     return () => {
       mounted = false;
-      clearTimeout(timer);
     };
-  }, [instanceId]);
+  }, [instanceId, instanceIdSet]);
 
   return enabled;
 };

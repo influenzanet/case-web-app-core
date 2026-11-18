@@ -345,3 +345,25 @@ describe('AddPhone confirm button while the request is running', () => {
     releaseRequest();
   });
 });
+
+// The statement has to be read before the button that sends a code, so it comes first in the
+// order the page is read in.
+const comesBefore = (first: Element, second: Element) =>
+  (first.compareDocumentPosition(second) & Node.DOCUMENT_POSITION_FOLLOWING) !== 0;
+
+describe('AddPhone dialog, WhatsApp opt-in statement', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('states what verifying means before the number is sent', async () => {
+    (newAccountPhoneReq as jest.Mock).mockResolvedValue({ status: 500 });
+    renderWithProviders(<AddPhone />, openDialogState);
+    const statement = screen.getByText('dialogs:whatsAppOptIn.statement');
+    expect(comesBefore(statement, screen.getByText('addPhone.confirmBtn'))).toBe(true);
+    expect(newAccountPhoneReq).not.toHaveBeenCalled();
+
+    await fillAndSubmitPhone();
+    expect(newAccountPhoneReq).toHaveBeenCalledTimes(1);
+  });
+});

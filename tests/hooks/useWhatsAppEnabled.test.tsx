@@ -16,8 +16,8 @@ jest.mock('../../src/utils/platformConfig', () => ({
 
 const Probe: React.FC = () => <span data-testid="flag">{String(useWhatsAppEnabled())}</span>;
 
-// Stands in for AppCore: dispatches the real instance id in its own effect, after the store
-// starts out with the 'default' placeholder, with the probe mounted as its child.
+// Stands in for AppCore: dispatches the real instance id in its own effect, which runs after the
+// effects of the probe mounted as its child, while the store still holds the placeholder.
 const AppCoreLike: React.FC<{ instanceId: string }> = ({ instanceId }) => {
   const dispatch = useDispatch();
   useEffect(() => {
@@ -27,7 +27,7 @@ const AppCoreLike: React.FC<{ instanceId: string }> = ({ instanceId }) => {
 };
 
 const renderProbe = (instanceId = 'default') => {
-  const store = createTestStore({ config: { instanceId, languages: [], avatars: [] } });
+  const store = createTestStore({ config: { instanceId, instanceIdSet: true, languages: [], avatars: [] } });
   return render(
     <Provider store={store}>
       <Probe />
@@ -38,11 +38,6 @@ const renderProbe = (instanceId = 'default') => {
 describe('useWhatsAppEnabled', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.useFakeTimers();
-  });
-
-  afterEach(() => {
-    jest.useRealTimers();
   });
 
   it('starts hidden and turns on once the platform says WhatsApp is enabled', async () => {
@@ -50,18 +45,14 @@ describe('useWhatsAppEnabled', () => {
     renderProbe('italy');
     // The first render must not show anything that could disappear a moment later.
     expect(screen.getByTestId('flag').textContent).toBe('false');
-    await act(async () => {
-      jest.runOnlyPendingTimers();
-    });
+    await act(async () => {});
     await waitFor(() => expect(screen.getByTestId('flag').textContent).toBe('true'));
   });
 
   it('stays hidden when the platform says WhatsApp is disabled', async () => {
     (isWhatsAppEnabled as jest.Mock).mockResolvedValue(false);
     renderProbe('italy');
-    await act(async () => {
-      jest.runOnlyPendingTimers();
-    });
+    await act(async () => {});
     await waitFor(() => expect(isWhatsAppEnabled).toHaveBeenCalledTimes(1));
     expect(screen.getByTestId('flag').textContent).toBe('false');
   });
@@ -70,9 +61,7 @@ describe('useWhatsAppEnabled', () => {
     // isWhatsAppEnabled itself never rejects: a failure is already folded into `false`.
     (isWhatsAppEnabled as jest.Mock).mockResolvedValue(false);
     renderProbe('italy');
-    await act(async () => {
-      jest.runOnlyPendingTimers();
-    });
+    await act(async () => {});
     await waitFor(() => expect(isWhatsAppEnabled).toHaveBeenCalledTimes(1));
     expect(screen.getByTestId('flag').textContent).toBe('false');
   });
@@ -80,34 +69,28 @@ describe('useWhatsAppEnabled', () => {
   it('stays hidden while the platform config read is still loading', async () => {
     (isWhatsAppEnabled as jest.Mock).mockReturnValue(new Promise<boolean>(() => undefined));
     renderProbe('italy');
-    await act(async () => {
-      jest.runOnlyPendingTimers();
-    });
+    await act(async () => {});
     expect(screen.getByTestId('flag').textContent).toBe('false');
   });
 
   it('passes the instance id from the store to isWhatsAppEnabled', async () => {
     (isWhatsAppEnabled as jest.Mock).mockResolvedValue(true);
     renderProbe('italy');
-    await act(async () => {
-      jest.runOnlyPendingTimers();
-    });
+    await act(async () => {});
     expect(isWhatsAppEnabled).toHaveBeenCalledWith('italy');
   });
 
   it('refetches when the instance id changes', async () => {
     (isWhatsAppEnabled as jest.Mock).mockResolvedValue(true);
     const store = createTestStore({
-      config: { instanceId: 'italy', languages: [], avatars: [] },
+      config: { instanceId: 'italy', instanceIdSet: true, languages: [], avatars: [] },
     });
     render(
       <Provider store={store}>
         <Probe />
       </Provider>,
     );
-    await act(async () => {
-      jest.runOnlyPendingTimers();
-    });
+    await act(async () => {});
     await waitFor(() => expect(isWhatsAppEnabled).toHaveBeenCalledTimes(1));
 
     act(() => {
@@ -115,9 +98,7 @@ describe('useWhatsAppEnabled', () => {
     });
     // Resetting while the new instance is confirmed avoids showing the previous instance's flag.
     expect(screen.getByTestId('flag').textContent).toBe('false');
-    await act(async () => {
-      jest.runOnlyPendingTimers();
-    });
+    await act(async () => {});
     await waitFor(() => expect(isWhatsAppEnabled).toHaveBeenCalledTimes(2));
     expect(isWhatsAppEnabled).toHaveBeenLastCalledWith('netherlands');
   });
@@ -127,9 +108,7 @@ describe('useWhatsAppEnabled', () => {
     (isWhatsAppEnabled as jest.Mock).mockReturnValue(new Promise<boolean>((r) => { resolve = r; }));
     const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => undefined);
     const { unmount } = renderProbe('italy');
-    await act(async () => {
-      jest.runOnlyPendingTimers();
-    });
+    await act(async () => {});
     unmount();
     resolve(true);
     await act(async () => {});
@@ -137,29 +116,40 @@ describe('useWhatsAppEnabled', () => {
     errorSpy.mockRestore();
   });
 
-  it('never calls isWhatsAppEnabled when unmounted before the deferred fetch fires', async () => {
+  it('does not ask about the placeholder before the app has stored its instance id', async () => {
     (isWhatsAppEnabled as jest.Mock).mockResolvedValue(true);
-    const { unmount } = renderProbe('italy');
-    unmount();
-    await act(async () => {
-      jest.runOnlyPendingTimers();
+    const store = createTestStore({
+      config: { instanceId: 'default', instanceIdSet: false, languages: [], avatars: [] },
     });
+    render(
+      <Provider store={store}>
+        <Probe />
+      </Provider>,
+    );
+    await act(async () => {});
     expect(isWhatsAppEnabled).not.toHaveBeenCalled();
+    expect(screen.getByTestId('flag').textContent).toBe('false');
+
+    // An app with no instance configured stores 'default' as its real id: then it is asked.
+    act(() => {
+      store.dispatch(appConfig.updateInstanceID('default'));
+    });
+    await waitFor(() => expect(screen.getByTestId('flag').textContent).toBe('true'));
+    expect(isWhatsAppEnabled).toHaveBeenCalledTimes(1);
+    expect(isWhatsAppEnabled).toHaveBeenCalledWith('default');
   });
 
   it('calls isWhatsAppEnabled exactly once, with the real instance, when a parent dispatches it after the first render', async () => {
     (isWhatsAppEnabled as jest.Mock).mockResolvedValue(true);
     const store = createTestStore({
-      config: { instanceId: 'default', languages: [], avatars: [] },
+      config: { instanceId: 'default', instanceIdSet: false, languages: [], avatars: [] },
     });
     render(
       <Provider store={store}>
         <AppCoreLike instanceId="italy" />
       </Provider>,
     );
-    await act(async () => {
-      jest.runOnlyPendingTimers();
-    });
+    await act(async () => {});
     await waitFor(() => expect(isWhatsAppEnabled).toHaveBeenCalledTimes(1));
     expect(isWhatsAppEnabled).toHaveBeenCalledWith('italy');
   });

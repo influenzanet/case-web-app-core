@@ -7,6 +7,7 @@ import { getReportsForUser } from '../../api/studyAPI';
 import { ReportHistory } from '../../api/types/studyAPI';
 import { RootState } from '../../store/rootReducer';
 import { format as formatDate } from "date-fns";
+import { logRequestFailure } from '../../api/errorMessages';
 
 interface ReportListProps {
   pageKey: string;
@@ -147,8 +148,8 @@ const ReportList: React.FC<ReportListProps> = (props) => {
         props.ignoreReports
       );
       setReportHistory(resp.data);
-    } catch (e: any) {
-      console.error(e.response);
+    } catch (e: unknown) {
+      logRequestFailure('loading the reports', e);
       return;
     } finally {
       setLoading(false);

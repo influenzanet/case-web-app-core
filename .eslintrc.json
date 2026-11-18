@@ -19,7 +19,15 @@
     }
   },
   "plugins": ["react", "@typescript-eslint"],
-  "rules": {},
+  "rules": {
+    "no-restricted-syntax": [
+      "error",
+      {
+        "selector": "CallExpression[callee.object.name='console'] > MemberExpression[property.name=/^(response|config|request)$/]",
+        "message": "A failed request's response, config or request carries the participant's bearer token and request body. Use logRequestFailure from api/errorMessages instead."
+      }
+    ]
+  },
   "settings": {
     "react": {
       "version": "detect"

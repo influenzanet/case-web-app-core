@@ -9,9 +9,24 @@ import { resendWhatsAppCodeReq, getUserReq } from '../../src/api/userAPI';
 import { renderWithProviders } from './testUtils';
 import { useWhatsAppEnabled } from '../../src/hooks/useWhatsAppEnabled';
 
+// Every text comes from the locale files: a string passed next to the key would be shown
+// whenever the key is missing, in English whatever the participant's language. The mock records
+// such defaults so the check after each test catches any that comes back.
+const inlineDefaults: string[] = [];
 jest.mock('react-i18next', () => ({
-  useTranslation: () => ({ t: (key: string) => key }),
+  useTranslation: () => ({
+    t: (key: string, options?: unknown) => {
+      if (typeof options === 'string') {
+        inlineDefaults.push(`${key}: ${options}`);
+      }
+      return key;
+    },
+  }),
 }));
+afterEach(() => {
+  expect(inlineDefaults).toEqual([]);
+  inlineDefaults.length = 0;
+});
 jest.mock('../../src/api/userAPI', () => ({
   resendWhatsAppCodeReq: jest.fn(),
   getUserReq: jest.fn(),
@@ -232,19 +247,55 @@ describe('AccountSettings and the platform WhatsApp switch', () => {
     expect(screen.getByText('account.phone.resendBtn')).toBeInTheDocument();
   });
 
-  it('hides every phone control when WhatsApp is disabled', () => {
+  it('keeps a stored phone visible and deletable when WhatsApp is disabled', async () => {
     (useWhatsAppEnabled as jest.Mock).mockReturnValue(false);
-    renderWithProviders(
+    const { store } = renderWithProviders(
       <AccountSettings itemKey="account" hideProfileSettings={true} />,
       stateWithUnverifiedPhone,
     );
-    expect(screen.queryByText('account.phone.title')).toBeNull();
-    expect(screen.queryByText('account.phone.notConfirmed')).toBeNull();
-    expect(screen.queryByText('account.phone.resendBtn')).toBeNull();
-    expect(screen.queryByRole('button', { name: 'account.phone.deleteBtn' })).toBeNull();
+    expect(screen.getByText('account.phone.title')).toBeInTheDocument();
+    expect(screen.getByText('account.phone.infoWhatsAppOff')).toBeInTheDocument();
+    expect(screen.queryByText('account.phone.info')).toBeNull();
+    expect(screen.getByText('+3****90')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: 'account.phone.deleteBtn' }));
+    await waitFor(() => {
+      const state = store.getState() as { dialog: { config?: { type?: string } } };
+      expect(state.dialog.config?.type).toBe('deletePhone');
+    });
     // The rest of the account settings are untouched.
     expect(screen.getByText('account.email.title')).toBeInTheDocument();
     expect(screen.getByText('account.password.title')).toBeInTheDocument();
+  });
+
+  it('offers no change, verification or resend of a stored phone when WhatsApp is disabled', () => {
+    (useWhatsAppEnabled as jest.Mock).mockReturnValue(false);
+    const { store } = renderWithProviders(
+      <AccountSettings itemKey="account" hideProfileSettings={true} />,
+      stateWithUnverifiedPhone,
+    );
+    expect(screen.queryByText('account.phone.resendBtn')).toBeNull();
+    // The number is plain text, not the button that opens the change dialog.
+    const number = screen.getByText('+3****90');
+    expect(number.closest('button')).toBeNull();
+    fireEvent.click(number);
+    const state = store.getState() as { dialog: { config?: { type?: string } } };
+    expect(state.dialog.config).toBeUndefined();
+    expect(screen.getByRole('button', { name: 'account.phone.deleteBtn' })).toBeInTheDocument();
+  });
+
+  it('opens the change dialog from the stored phone when WhatsApp is enabled', async () => {
+    const { store } = renderWithProviders(
+      <AccountSettings itemKey="account" hideProfileSettings={true} />,
+      stateWithUnverifiedPhone,
+    );
+    expect(screen.getByText('account.phone.info')).toBeInTheDocument();
+    expect(screen.queryByText('account.phone.infoWhatsAppOff')).toBeNull();
+    fireEvent.click(screen.getByText('+3****90'));
+    await waitFor(() => {
+      const state = store.getState() as { dialog: { config?: { type?: string } } };
+      expect(state.dialog.config?.type).toBe('changePhone');
+    });
   });
 
   it('does not offer to add a phone when WhatsApp is disabled', () => {
@@ -263,5 +314,6 @@ describe('AccountSettings and the platform WhatsApp switch', () => {
     );
     expect(screen.queryByText('account.phone.btn')).toBeNull();
     expect(screen.queryByText('account.phone.infoAdd')).toBeNull();
+    expect(screen.queryByText('account.phone.title')).toBeNull();
   });
 });

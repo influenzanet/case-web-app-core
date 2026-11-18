@@ -48,6 +48,8 @@ const openState = (user: unknown) => ({
   user: { currentUser: user },
 });
 
+const noChannelWarning = 'dialogs:changeNotifications.channels.noChannelWarning';
+
 const whatsappCheckbox = () =>
   screen.getByLabelText('dialogs:changeNotifications.channels.whatsapp') as HTMLInputElement;
 const emailCheckbox = () =>
@@ -80,19 +82,39 @@ describe('ChangeNotifications dialog', () => {
     expect(whatsappCheckbox().checked).toBe(true);
   });
 
-  it('never allows unchecking the last remaining channel', async () => {
+  it('lets both channels be unticked, warns, and saves no channel', async () => {
     const user = buildUser(true);
+    (getUserReq as jest.Mock).mockResolvedValue({ data: user });
+    (updateContactPreferencesReq as jest.Mock).mockResolvedValue({ data: user });
+    renderWithProviders(<ChangeNotifications />, openState(user));
+    await waitFor(() => expect(getUserReq).toHaveBeenCalled());
+    expect(screen.queryByText(noChannelWarning)).toBeNull();
+
+    fireEvent.click(whatsappCheckbox());
+    await waitFor(() => expect(whatsappCheckbox().checked).toBe(false));
+    // One channel left is still a channel: no warning yet.
+    expect(screen.queryByText(noChannelWarning)).toBeNull();
+
+    fireEvent.click(emailCheckbox());
+    await waitFor(() => expect(emailCheckbox().checked).toBe(false));
+    expect(screen.getByText(noChannelWarning)).toBeInTheDocument();
+
+    fireEvent.click(screen.getByText('changeNotifications.submitBtn'));
+    await waitFor(() => expect(updateContactPreferencesReq).toHaveBeenCalledTimes(1));
+    expect((updateContactPreferencesReq as jest.Mock).mock.calls[0][0].preferredChannels).toEqual([]);
+  });
+
+  it('takes the warning away as soon as a channel is ticked again', async () => {
+    const user = buildUser(true);
+    user.contactPreferences.preferredChannels = [];
     (getUserReq as jest.Mock).mockResolvedValue({ data: user });
     renderWithProviders(<ChangeNotifications />, openState(user));
     await waitFor(() => expect(getUserReq).toHaveBeenCalled());
+    expect(screen.getByText(noChannelWarning)).toBeInTheDocument();
 
-    // both channels start enabled: unchecking whatsapp is allowed
-    fireEvent.click(whatsappCheckbox());
-    await waitFor(() => expect(whatsappCheckbox().checked).toBe(false));
-
-    // email is now the last channel: unchecking it must be ignored
     fireEvent.click(emailCheckbox());
     await waitFor(() => expect(emailCheckbox().checked).toBe(true));
+    expect(screen.queryByText(noChannelWarning)).toBeNull();
   });
 
   it('tells the participant when saving the settings fails', async () => {
@@ -200,13 +222,16 @@ describe('ChangeNotifications channel checkboxes', () => {
     expect(whatsappCheckbox()).toBeDisabled();
   });
 
-  it('disables the email checkbox while it is the only channel left', async () => {
+  it('lets e-mail, the only channel an unverified phone leaves, be unticked', async () => {
     const user = buildUser(false);
     (getUserReq as jest.Mock).mockResolvedValue({ data: user });
     renderWithProviders(<ChangeNotifications />, openState(user));
 
     await waitFor(() => expect(getUserReq).toHaveBeenCalled());
-    expect(emailCheckbox()).toBeDisabled();
+    expect(emailCheckbox()).not.toBeDisabled();
+    fireEvent.click(emailCheckbox());
+    await waitFor(() => expect(emailCheckbox().checked).toBe(false));
+    expect(screen.getByText(noChannelWarning)).toBeInTheDocument();
   });
 
   it('leaves both checkboxes operable once the phone is verified', async () => {
@@ -251,17 +276,31 @@ describe('ChangeNotifications with WhatsApp disabled on the platform', () => {
     expect(screen.queryByText('dialogs:changeNotifications.channels.whatsappDisabled')).toBeNull();
   });
 
-  it('keeps email, the only channel on offer, from being unchecked', async () => {
-    // The stored preferences still list whatsapp, but a channel the participant cannot see
-    // must not count as the one left when email is switched off.
+  it('lets email be unticked and keeps the hidden WhatsApp choice', async () => {
     const user = buildUser(true);
+    (getUserReq as jest.Mock).mockResolvedValue({ data: user });
+    (updateContactPreferencesReq as jest.Mock).mockResolvedValue({ data: user });
+    renderWithProviders(<ChangeNotifications />, openState(user));
+    await waitFor(() => expect(getUserReq).toHaveBeenCalled());
+
+    fireEvent.click(emailCheckbox());
+    await waitFor(() => expect(emailCheckbox().checked).toBe(false));
+    fireEvent.click(screen.getByText('changeNotifications.submitBtn'));
+
+    await waitFor(() => expect(updateContactPreferencesReq).toHaveBeenCalledTimes(1));
+    const sentPrefs = (updateContactPreferencesReq as jest.Mock).mock.calls[0][0];
+    expect(sentPrefs.preferredChannels).toEqual(['whatsapp']);
+  });
+
+  it('warns when e-mail is unticked and no WhatsApp choice is stored', async () => {
+    const user = buildUser(false);
     (getUserReq as jest.Mock).mockResolvedValue({ data: user });
     renderWithProviders(<ChangeNotifications />, openState(user));
     await waitFor(() => expect(getUserReq).toHaveBeenCalled());
 
-    expect(emailCheckbox()).toBeDisabled();
     fireEvent.click(emailCheckbox());
-    await waitFor(() => expect(emailCheckbox().checked).toBe(true));
+    await waitFor(() => expect(emailCheckbox().checked).toBe(false));
+    expect(screen.getByText(noChannelWarning)).toBeInTheDocument();
   });
 
   it('saves the stored channels as they are', async () => {
@@ -352,21 +391,25 @@ describe('ChangeNotifications stored channels', () => {
     expect(sentChannels()).toEqual(['whatsapp']);
   });
 
-  it('reads a stored list with no known channel as email, so a channel is always sent', async () => {
+  it('does not turn a stored list with no known channel into e-mail', async () => {
     await renderWithStored(['sms']);
-    expect(emailCheckbox().checked).toBe(true);
+    expect(emailCheckbox().checked).toBe(false);
     expect(whatsappCheckbox().checked).toBe(false);
+    expect(screen.getByText(noChannelWarning)).toBeInTheDocument();
 
     fireEvent.click(screen.getByLabelText('dialogs:changeNotifications.newsletter.label'));
     submit();
 
     await waitFor(() => expect(updateContactPreferencesReq).toHaveBeenCalledTimes(1));
-    expect(sentChannels()).toEqual(['email']);
+    expect(sentChannels()).toEqual([]);
   });
 
-  it.each([[['whatsapp']], [['email', 'whatsapp']]])(
+  it.each([
+    [['whatsapp'], false, []],
+    [['email', 'whatsapp'], true, ['email']],
+  ])(
     'reads a stored whatsapp channel without a verified phone as off (%p)',
-    async (stored) => {
+    async (stored, emailTicked, saved) => {
       const user = buildUser(false);
       user.contactPreferences.preferredChannels = stored as string[];
       (getUserReq as jest.Mock).mockResolvedValue({ data: user });
@@ -374,22 +417,26 @@ describe('ChangeNotifications stored channels', () => {
       renderWithProviders(<ChangeNotifications />, openState(user));
       await waitFor(() => expect(getUserReq).toHaveBeenCalled());
 
-      expect(emailCheckbox().checked).toBe(true);
+      expect(emailCheckbox().checked).toBe(emailTicked);
       expect(whatsappCheckbox().checked).toBe(false);
 
       fireEvent.click(screen.getByLabelText('dialogs:changeNotifications.newsletter.label'));
       submit();
       await waitFor(() => expect(updateContactPreferencesReq).toHaveBeenCalledTimes(1));
-      expect(sentChannels()).toEqual(['email']);
+      expect(sentChannels()).toEqual(saved);
     },
   );
 
-  it('does not let the last ticked channel be unticked', async () => {
+  it('lets the last ticked channel be unticked', async () => {
     await renderWithStored(['whatsapp']);
 
     fireEvent.click(whatsappCheckbox());
-    expect(whatsappCheckbox().checked).toBe(true);
+    await waitFor(() => expect(whatsappCheckbox().checked).toBe(false));
     expect(emailCheckbox().checked).toBe(false);
+    submit();
+
+    await waitFor(() => expect(updateContactPreferencesReq).toHaveBeenCalledTimes(1));
+    expect(sentChannels()).toEqual([]);
   });
 
   it('shows email unticked and whatsapp ticked for a stored whatsapp-only choice', async () => {
@@ -399,11 +446,29 @@ describe('ChangeNotifications stored channels', () => {
     expect(whatsappCheckbox().checked).toBe(true);
   });
 
-  it.each([[[]], [undefined]])('shows email ticked for stored channels %p', async (stored) => {
+  // The API leaves an empty list out of its answer, so a missing list is the same choice.
+  it.each([[[]], [undefined]])('shows both channels unticked, with the warning, for stored channels %p', async (stored) => {
     await renderWithStored(stored as string[] | undefined);
 
-    expect(emailCheckbox().checked).toBe(true);
+    expect(emailCheckbox().checked).toBe(false);
     expect(whatsappCheckbox().checked).toBe(false);
+    expect(screen.getByText(noChannelWarning)).toBeInTheDocument();
+  });
+
+  it('keeps an empty stored list empty when only a subscription changes', async () => {
+    await renderWithStored([]);
+
+    fireEvent.click(screen.getByLabelText('dialogs:changeNotifications.newsletter.label'));
+    submit();
+
+    await waitFor(() => expect(updateContactPreferencesReq).toHaveBeenCalledTimes(1));
+    expect(sentChannels()).toEqual([]);
+  });
+
+  it('shows no warning for a stored e-mail choice', async () => {
+    await renderWithStored(['email']);
+    expect(emailCheckbox().checked).toBe(true);
+    expect(screen.queryByText(noChannelWarning)).toBeNull();
   });
 
   it('shows the stored state again when reopened after unsaved edits', async () => {

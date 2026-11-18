@@ -28,6 +28,7 @@ import { userActions } from '../../../store/userSlice';
 import { getErrorMsg } from '../../../api/utils';
 import { parseBooleanFlag } from '../../../utils/parseBooleanFlag';
 import { PhoneNumberInput } from '../../inputs';
+import WhatsAppOptInStatement from '../../misc/WhatsAppOptInStatement';
 import { useWhatsAppEnabled } from '../../../hooks/useWhatsAppEnabled';
 import { validatePhoneNumber } from '../../../utils/phoneNumberValidation';
 
@@ -250,7 +251,7 @@ const SignupForm: React.FC<SignupFormProps> = (props) => {
             setSignupData(prev => { return { ...prev, confirmPassword: value } })
           }}
         />
-        {whatsAppEnabled ? (
+        {whatsAppEnabled ? (<React.Fragment>
         <PhoneNumberInput
           className={marginBottomClass}
           value={signupData.phone}
@@ -262,7 +263,8 @@ const SignupForm: React.FC<SignupFormProps> = (props) => {
             setPhoneValid(isValid)
           }}
         />
-        ) : null}
+        <WhatsAppOptInStatement className={marginBottomClass} />
+        </React.Fragment>) : null}
 
         {/* additional input to check signup validity --> */}
         <label style={signUpInfoCheckStyle} aria-hidden="true" htmlFor='name'></label>

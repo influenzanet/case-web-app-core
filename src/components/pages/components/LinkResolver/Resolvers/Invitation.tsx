@@ -28,6 +28,7 @@ import {
   DialogBtn,
 } from "@influenzanet/case-web-ui";
 import { LinkResolverPaths } from "./LinkResolverConst";
+import { logRequestFailure } from '../../../../../api/errorMessages';
 
 interface InvitationProps {
   defaultRoutes: DefaultRoutes;
@@ -111,10 +112,8 @@ const Invitation: React.FC<InvitationProps> = (props) => {
     if (!token) return;
     try {
       await verifyContactReq(token);
-    } catch (e: any) {
-      if (e && e.response) {
-        console.error(e.response);
-      }
+    } catch (e: unknown) {
+      logRequestFailure('verifying the e-mail address of the invitation', e);
     } finally {
       setLoading(false);
     }
