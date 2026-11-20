@@ -6,6 +6,7 @@ import ContactVerification from "./Resolvers/ContactVerification";
 import Invitation from "./Resolvers/Invitation";
 import StudyLogin from "./Resolvers/StudyLogin";
 import PasswordReset from "./Resolvers/PasswordReset";
+import Unsubscribe from "./Resolvers/Unsubscribe";
 import { LinkResolverPaths } from "./Resolvers/LinkResolverConst";
 
 interface LinkResolverProps {
@@ -35,7 +36,21 @@ const LinkResolver: React.FC<LinkResolverProps> = (props) => {
         path={LinkResolverPaths.Invitation}
         render={() => <Invitation defaultRoutes={props.defaultRoutes} />}
       />
-      {/* todo: unsubscribe */}
+      <Route
+        path={LinkResolverPaths.UnsubscribeNewsletter}
+        render={() => (
+          <Unsubscribe
+            subscription="newsletter"
+            defaultRoutes={props.defaultRoutes}
+          />
+        )}
+      />
+      <Route
+        path={LinkResolverPaths.UnsubscribeWeekly}
+        render={() => (
+          <Unsubscribe subscription="weekly" defaultRoutes={props.defaultRoutes} />
+        )}
+      />
       <Redirect
         to={isLoggedIn ? props.defaultRoutes.auth : props.defaultRoutes.unauth}
       />

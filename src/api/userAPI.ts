@@ -89,6 +89,10 @@ export const unsubscribeNewsletterReq = (token: string) =>
   apiInstance.get<ServiceStatus>("/v1/user/unsubscribe-newsletter", {
     params: { token },
   });
+export const unsubscribeWeeklyReq = (token: string) =>
+  apiInstance.get<ServiceStatus>("/v1/user/unsubscribe-weekly", {
+    params: { token },
+  });
 export const updateContactPreferencesReq = (contactPrefs: ContactPreferences) =>
   authApiInstance.post<User>("/v1/user/contact-preferences", {
     contactPreferences: contactPrefs,
