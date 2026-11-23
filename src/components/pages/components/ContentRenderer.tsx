@@ -99,7 +99,10 @@ const ContentRenderer: React.FC<ContentRendererProps> = (props) => {
     }
     const itemConfig = item.config as ExtensionComponent;
 
-    if (!itemConfig || !itemConfig.componentName) {
+    // The extension is named by the inner config's type:
+    //   { "type": "extension", "config": { "type": "<extension name>", ...its props } }
+    const extensionName = itemConfig?.config?.type;
+    if (!extensionName) {
       console.warn(
         `Extension item config is invalid: ${JSON.stringify(item)}`
       );
@@ -107,11 +110,11 @@ const ContentRenderer: React.FC<ContentRendererProps> = (props) => {
     }
 
     const currentExtensionComponent = props.extensions.filter(
-      (ext) => ext.name === itemConfig.componentName
+      (ext) => ext.name === extensionName
     );
     if (!currentExtensionComponent || currentExtensionComponent.length < 1) {
       console.warn(
-        `No extension found with name: ${itemConfig.componentName}`
+        `No extension found with name: ${extensionName}`
       );
       return null;
     }

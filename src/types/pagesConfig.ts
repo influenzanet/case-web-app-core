@@ -286,6 +286,6 @@ export interface IframeConfig {
 
 export interface ExtensionComponent {
   type: "extension";
-  componentName: string;
-  config?: any;
+  /** config.type names the extension; the rest of config is passed to it as props. */
+  config: { type: string; [key: string]: any };
 }
